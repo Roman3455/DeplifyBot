@@ -2,14 +2,29 @@ name: Build Project
 
 on:
   push:
-    branches: ["**"]
+    branches:
+      - "build/**"
+      - "chore/**"
+      - "ci/**"
+      - "docs/**"
+      - "feat/**"
+      - "fix/**"
+      - "perf/**"
+      - "refactor/**"
+      - "revert/**"
+      - "style/**"
+      - "test/**"
   pull_request:
-    branches: ["develop", "main"]
+    branches:
+      - "develop"
+      - "main"
 
 jobs:
   build-and-test:
     name: build project
     runs-on: ubuntu-latest
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
     steps:
       - name: Checkout code
@@ -26,6 +41,14 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      - name: Cache SonarQube packages
+        if: github.ref == 'refs/heads/develop' || github.event.pull_request.base.ref == 'develop'
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
       - name: Compile project
         run: ./gradlew clean assemble
 
@@ -33,4 +56,22 @@ jobs:
         run: ./gradlew checkstyleMain checkstyleTest
 
       - name: Run tests
-        run: ./gradlew test
+        run: ./gradlew test jacocoTestReport
+
+      - name: Publish Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: build/reports/tests/
+
+      - name: Publish Coverage Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: build/reports/jacoco/test/html
+
+      - name: Run SonarCloud analysis
+        if: github.ref == 'refs/heads/develop' || github.event.pull_request.base.ref == 'develop'
+        run: ./gradlew sonar --info
