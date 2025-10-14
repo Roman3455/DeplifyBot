@@ -13,9 +13,9 @@ class ApplicationTests {
     @Autowired
     private ApplicationContext applicationContext;
 
-	@Test
-	void contextLoads() {
+    @Test
+    void contextLoads() {
         assertThat(applicationContext).isNotNull();
-	}
+    }
 
 }

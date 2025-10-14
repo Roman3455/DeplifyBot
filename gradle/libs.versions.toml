@@ -5,6 +5,7 @@ dependency-management = "1.1.7"
 
 [plugins]
 java = { id = "java" }
+checkstyle = { id = "checkstyle" }
 springframework-boot = { id = "org.springframework.boot", version.ref = "springframework" }
 spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "dependency-management" }
 
