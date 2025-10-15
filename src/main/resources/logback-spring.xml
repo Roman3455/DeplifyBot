@@ -1,0 +1,60 @@
+<configuration>
+
+    <springProperty scope="context"
+                    name="APP_ENV"
+                    source="spring.profiles.active"
+                    defaultValue="local"
+    />
+    <springProperty scope="context"
+                    name="APP_NAME"
+                    source="spring.application.name"
+                    defaultValue="telegram-bot"
+    />
+
+    <conversionRule conversionWord="clr"
+                    converterClass="org.springframework.boot.logging.logback.ColorConverter"
+    />
+    <conversionRule conversionWord="wEx"
+                    converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"
+    />
+
+    <springProfile name="dev,test">
+
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>
+                    %clr(%d{yyyy-MM-dd HH:mm:ss}){faint} %clr(%5p) %clr([%thread]){cyan} %clr(%logger{-40}){blue} - %msg%n%wEx
+                </pattern>
+            </encoder>
+        </appender>
+
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="prod">
+
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>
+                    %d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{-40} - %msg%n%wEx
+                </pattern>
+            </encoder>
+        </appender>
+
+        <!--
+        <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+                <customFields>{"app":"${APP_NAME}","env":"${APP_ENV}"}</customFields>
+            </encoder>
+        </appender>
+        -->
+
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+            <!-- <appender-ref ref="JSON"/> -->
+        </root>
+    </springProfile>
+
+</configuration>
