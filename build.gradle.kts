@@ -24,6 +24,8 @@ repositories {
 dependencies {
     // === Spring Boot ===
 	implementation(libs.spring.boot.starter.web)
+    // === Utility ===
+    implementation(libs.spring.dotenv)
     // === Test ===
 	testImplementation(libs.spring.boot.starter.test)
 	testRuntimeOnly(libs.junit.jupiter)
