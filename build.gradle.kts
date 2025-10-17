@@ -48,3 +48,19 @@ tasks.jacocoTestReport {
         html.required = true
     }
 }
+
+tasks.bootJar {
+    archiveFileName.set("app-$version.jar")
+}
+
+tasks.register<Exec>("dockerBuild") {
+    group = "docker"
+    description = "Build Docker image with version from Gradle"
+    commandLine(
+        "docker", "build",
+        "--build-arg", "APP_VERSION=$version",
+//        "-t", "roman3455/deplifybot:$version",
+        "-t", "roman3455/deplifybot:latest",
+        "."
+    )
+}
