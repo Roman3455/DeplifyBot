@@ -1,0 +1,28 @@
+### VCS / IDE ###
+.git
+.gitignore
+.github/
+.idea/
+*.iml
+.vscode/
+
+### Build outputs ###
+build/
+out/
+target/
+.gradle/
+**/.gradle/
+
+### Local env / credentials ###
+.env
+*.env
+*.jks
+*.keystore
+
+### Misc ###
+Dockerfile
+docker-compose.yml
+**/*.log
+
+### Mac OS ###
+.DS_Store
