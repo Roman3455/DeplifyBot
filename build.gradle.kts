@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.checkstyle)
 	alias(libs.plugins.springframework.boot)
 	alias(libs.plugins.spring.dependency.management)
+    alias(libs.plugins.flywaydb)
 }
 
 group = "com.roman3455"
@@ -24,6 +25,11 @@ repositories {
 dependencies {
     // === Spring Boot ===
 	implementation(libs.spring.boot.starter.web)
+    implementation(libs.spring.boot.starter.data.jpa)
+    // === Database ===
+    implementation(libs.flyway.core)
+    implementation(libs.flyway.postgresql)
+    runtimeOnly(libs.postgresql)
     // === Utility ===
     implementation(libs.spring.dotenv)
     // === Test ===
@@ -65,4 +71,11 @@ tasks.register<Exec>("dockerBuild") {
         "-t", "roman3455/deplifybot:latest",
         "."
     )
+}
+
+flyway {
+    url = System.getenv("FLYWAY_URL")
+    user = System.getenv("FLYWAY_USER")
+    password = System.getenv("FLYWAY_PASSWORD")
+    locations = arrayOf("classpath:db/migration")
 }

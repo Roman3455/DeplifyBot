@@ -24,7 +24,28 @@ jobs:
     name: build project
     runs-on: ubuntu-latest
     env:
+      SPRING_PROFILES_ACTIVE: test
+      DB_TEST_URL: ${{ secrets.DB_TEST_URL }}
+      DB_TEST_USERNAME: ${{ secrets.DB_TEST_USERNAME }}
+      DB_TEST_PASSWORD: ${{ secrets.DB_TEST_PASSWORD }}
+      FLYWAY_URL: ${{ secrets.DB_TEST_URL }}
+      FLYWAY_USER: ${{ secrets.DB_TEST_USERNAME }}
+      FLYWAY_PASSWORD: ${{ secrets.DB_TEST_PASSWORD }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: ${{ secrets.DB_TEST_USERNAME }}
+          POSTGRES_PASSWORD: ${{ secrets.DB_TEST_PASSWORD }}
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - name: Checkout code
@@ -40,6 +61,17 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
+
+      - name: Wait for postgresql to be healthy
+        run: |
+          timeout 120 bash -c '
+          until pg_isready -h localhost -p 5432; do sleep 2
+          done
+          echo "Database is UP"
+          '
+
+      - name: Flyway migration
+        run: ./gradlew flywayMigrate -i
 
       - name: Cache SonarQube packages
         if: github.ref == 'refs/heads/develop' || github.event.pull_request.base.ref == 'develop'
@@ -74,4 +106,4 @@ jobs:
 
       - name: Run SonarCloud analysis
         if: github.ref == 'refs/heads/develop' || github.event.pull_request.base.ref == 'develop'
-        run: ./gradlew sonar --info
+        run: ./gradlew sonar --info -Pprofile=test
