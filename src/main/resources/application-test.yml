@@ -1,8 +1,19 @@
 spring:
+
+  cloud:
+    openfeign:
+      client:
+        config:
+          telegram:
+            url: ${TELEGRAM_API_URL}/bot${DEV_TELEGRAM_BOT_TOKEN}
+            connect-timeout: 500
+            read-timeout: 500
+
   datasource:
     url: ${DB_TEST_URL}
     username: ${DB_TEST_USERNAME}
     password: ${DB_TEST_PASSWORD}
+
   jpa:
     hibernate:
       ddl-auto: create-drop
@@ -11,3 +22,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+telegram:
+  bot:
+    webhook:
+      url: ${DEV_TELEGRAM_WEBHOOK_URL}

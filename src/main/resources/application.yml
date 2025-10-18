@@ -1,8 +1,27 @@
 spring:
+
   application:
     name: deplifybot
+
+  cloud:
+    openfeign:
+      httpclient:
+        hc5:
+          enabled: false
+      okhttp:
+        enabled: true
+
   datasource:
     driver-class-name: org.postgresql.Driver
+
   flyway:
     enabled: true
     locations: classpath:db/migration
+
+telegram:
+  bot:
+    webhook:
+      path: /telegram/webhook
+
+server:
+  port: ${PORT:8080}

@@ -26,12 +26,16 @@ dependencies {
     // === Spring Boot ===
 	implementation(libs.spring.boot.starter.web)
     implementation(libs.spring.boot.starter.data.jpa)
+    // === Spring Cloud ===
+    implementation(libs.spring.cloud.starter.openfeign)
+    implementation(platform(libs.spring.cloud.bom))
+    // === Utility ===
+    implementation(libs.spring.dotenv)
+    implementation(libs.squareup.okhttp)
     // === Database ===
     implementation(libs.flyway.core)
     implementation(libs.flyway.postgresql)
     runtimeOnly(libs.postgresql)
-    // === Utility ===
-    implementation(libs.spring.dotenv)
     // === Test ===
 	testImplementation(libs.spring.boot.starter.test)
 	testRuntimeOnly(libs.junit.jupiter)
@@ -39,7 +43,7 @@ dependencies {
 
 sonar {
     properties {
-        property ("sonar.projectKey", "Roman3455_DeplifyBot2")
+        property ("sonar.projectKey", "Roman3455_DeplifyBot")
         property ("sonar.organization", "roman3455")
     }
 }
