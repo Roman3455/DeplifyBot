@@ -1,8 +1,19 @@
 spring:
+
+  cloud:
+    openfeign:
+      client:
+        config:
+          telegram:
+            url: ${TELEGRAM_API_URL}/bot${TELEGRAM_BOT_TOKEN}
+            connect-timeout: 10000
+            read-timeout: 15000
+
   datasource:
     url: ${DB_PROD_URL}
     username: ${DB_PROD_USERNAME}
     password: ${DB_PROD_PASSWORD}
+
   jpa:
     hibernate:
       ddl-auto: validate
@@ -16,8 +27,14 @@ spring:
         order_inserts: true
         order_updates: true
         batch_versioned_data: true
+
   flyway:
     baseline-on-migrate: true
     validate-on-migrate: true
     out-of-order: false
     clean-disabled: true
+
+telegram:
+  bot:
+    webhook:
+      url: ${TELEGRAM_WEBHOOK_URL}
