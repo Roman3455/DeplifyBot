@@ -2,7 +2,8 @@ package com.roman3455.deplifybot.util.enums;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
-public enum TestEnum implements JsonEnum {
+enum TestEnum implements JsonEnum {
+
     FOO("foo"),
     BAR("bar"),
     UNKNOWN("unknown");
@@ -22,4 +23,5 @@ public enum TestEnum implements JsonEnum {
     public static TestEnum fromValue(final String value) {
         return JsonEnumUtil.fromValue(TestEnum.class, value, UNKNOWN);
     }
+
 }
