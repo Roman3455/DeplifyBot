@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class JsonEnumUtilTest {
+class JsonEnumUtilTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -51,4 +51,5 @@ public class JsonEnumUtilTest {
         TestEnum result = objectMapper.readValue("\"something_else\"", TestEnum.class);
         assertEquals(TestEnum.UNKNOWN, result);
     }
+
 }
