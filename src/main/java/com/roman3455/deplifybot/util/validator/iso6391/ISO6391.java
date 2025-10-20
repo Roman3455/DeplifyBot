@@ -44,4 +44,5 @@ public @interface ISO6391 {
      * @return the payload type.
      */
     Class<? extends Payload>[] payload() default {};
+
 }

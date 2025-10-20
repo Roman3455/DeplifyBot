@@ -41,4 +41,5 @@ public interface JsonEnum {
     static <E extends Enum<E> & JsonEnum> E fromValue(Class<E> enumClass, String value, E defaultValue) {
         return JsonEnumUtil.fromValue(enumClass, value, defaultValue);
     }
+
 }

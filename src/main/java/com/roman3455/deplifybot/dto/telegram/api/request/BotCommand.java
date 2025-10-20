@@ -23,6 +23,7 @@ import java.util.Map;
  * @see <a href="https://core.telegram.org/bots/api#setmycommands">Telegram API — setMyCommands</a>
  */
 public record BotCommand(
+
         @NotEmpty(message = "Field 'commands' is required and cannot be empty.")
         @Size(max = MAX_COMMANDS_SIZE, message = "At most 100 commands allowed.")
         List<@NotEmpty Map<String, String>> commands,
@@ -33,10 +34,12 @@ public record BotCommand(
         @Nullable
         @ISO6391(message = "Allowed ISO 639-1 'languageCode' length must be exactly 2 characters.")
         String languageCode
+
 ) {
 
     /**
      * The max allowed length of the {@code description} field.
      */
     private static final int MAX_COMMANDS_SIZE = 100;
+
 }

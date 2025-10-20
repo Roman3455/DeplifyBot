@@ -20,6 +20,7 @@ import org.springframework.lang.Nullable;
  * @see <a href="https://core.telegram.org/bots/api#setmyshortdescription">Telegram API — setMyShortDescription</a>
  */
 public record BotShortDescription(
+
         @Nullable
         @Size(
                 max = SHORT_DESCRIPTION_MAX_LENGTH,
@@ -30,6 +31,7 @@ public record BotShortDescription(
         @Nullable
         @ISO6391(message = "Allowed ISO 639-1 'languageCode' length must be exactly 2 characters.")
         String languageCode
+
 ) {
 
     /**
@@ -47,4 +49,5 @@ public record BotShortDescription(
             throw new IllegalArgumentException("Field 'shortDescription' and 'languageCode' cannot be NULL");
         }
     }
+
 }

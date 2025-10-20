@@ -13,11 +13,13 @@ import org.springframework.lang.Nullable;
  * @see <a href="https://core.telegram.org/bots/api#botcommandscope">Telegram API — BotCommandScope</a>
  */
 public record BotCommandScope(
+
         @NotNull(message = "Field 'type' is required.")
         BotCommandScopeType type,
 
         @Nullable
         Long chatId
+
 ) {
 
     /**
@@ -30,4 +32,5 @@ public record BotCommandScope(
             throw new IllegalArgumentException("'chatId' must be provided only if 'type' is 'CHAT'.");
         }
     }
+
 }
