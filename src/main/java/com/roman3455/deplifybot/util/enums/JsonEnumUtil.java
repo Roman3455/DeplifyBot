@@ -45,8 +45,8 @@ public final class JsonEnumUtil {
                 return constant;
             }
         }
-
         LOG.warn("Unknown enum value [{}] for '{}'", value, enumClass.getSimpleName());
         return defaultValue;
     }
+
 }

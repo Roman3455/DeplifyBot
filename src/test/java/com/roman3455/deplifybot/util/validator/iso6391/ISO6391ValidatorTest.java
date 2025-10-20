@@ -68,4 +68,5 @@ public class ISO6391ValidatorTest {
         assertEquals(1, violations2.size(), "'eng' should be invalid");
         assertEquals(1, violations3.size(), "'zz' should be invalid");
     }
+
 }

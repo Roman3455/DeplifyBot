@@ -28,6 +28,7 @@ import java.util.List;
  * @see <a href="https://core.telegram.org/bots/api#setwebhook">Telegram API — SetWebhook</a>
  */
 public record WebhookProperty(
+
         @NotNull(message = "Field 'url' is required.")
         String url,
 
@@ -49,6 +50,7 @@ public record WebhookProperty(
                 message = "Allowed 'secretToken' length is between 1 and 256 characters."
         )
         String secretToken
+
 ) {
 
     /**
@@ -60,4 +62,5 @@ public record WebhookProperty(
      * The max allowed length of the {@code secretToken} field.
      */
     private static final int MAX_TOKEN_LENGTH = 256;
+
 }
