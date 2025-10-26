@@ -13,11 +13,11 @@ import static org.assertj.core.api.BDDAssertions.then;
 
 @JsonTest
 @Import(JacksonConfiguration.class)
-@DisplayName("UpdateType JSON serialization/deserialization")
+@DisplayName("UpdateType — JSON serialization & deserialization")
 class UpdateTypeJsonTest {
 
     @Autowired
-    private JacksonTester<Envelope> envelopeJson;
+    private JacksonTester<Envelope> json;
 
     private static final String SOURCE = "/fixture/telegram/enums/update_type/";
 
@@ -28,8 +28,8 @@ class UpdateTypeJsonTest {
     @DisplayName("Should serialize enum to string value using @JsonValue")
     void shouldSerializeEnumAsStringValue() throws Exception {
         var given = new Envelope(UpdateType.MESSAGE);
-        var actual = envelopeJson.write(given);
-
+        var actual = json.write(given);
+        then(actual).isNotNull();
         then(actual)
                 .extractingJsonPathValue("$.type")
                 .isEqualTo(UpdateType.MESSAGE.getValue());
@@ -38,19 +38,18 @@ class UpdateTypeJsonTest {
     @Test
     @DisplayName("Should deserialize string value to enum using @JsonCreator")
     void shouldDeserializeStringToEnum() throws Exception {
-        var given = envelopeJson.readObject(SOURCE + "update_type_message_envelop.json");
-
-        then(given).isNotNull();
-        then(given.type).isEqualTo(UpdateType.MESSAGE);
+        var actual = json.readObject(SOURCE + "update_type_message_value.json");
+        then(actual).isNotNull();
+        then(actual.type).isEqualTo(UpdateType.MESSAGE);
     }
 
     @Test
     @DisplayName("Should deserialize unknown value and serialize it back as 'unknown'")
     void shouldRoundTripUnknownValue() throws Exception {
-        var serialized = envelopeJson.readObject(SOURCE + "update_type_unknown_envelop.json");
-        var deserialized = envelopeJson.write(serialized);
-
+        var serialized = json.readObject(SOURCE + "update_type_unknown_value.json");
+        var deserialized = json.write(serialized);
         then(serialized).isNotNull();
+        then(deserialized).isNotNull();
         then(serialized.type).isEqualTo(UpdateType.UNKNOWN);
         then(deserialized)
                 .extractingJsonPathStringValue("$.type")
