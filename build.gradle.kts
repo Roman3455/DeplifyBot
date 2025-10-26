@@ -44,8 +44,14 @@ dependencies {
 
 sonar {
     properties {
+        property("sonar.host.url", "https://sonarcloud.io")
         property ("sonar.projectKey", "Roman3455_DeplifyBot")
         property ("sonar.organization", "roman3455")
+        property("sonar.sources", "src/main/java")
+        property("sonar.tests", "src/test/java")
+        property("sonar.java.binaries", "build/classes/java/main")
+        property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/jacocoTestReport.xml")
+        property("sonar.junit.reportPaths", "build/test-results/test")
     }
 }
 
@@ -60,6 +66,10 @@ tasks.jacocoTestReport {
         xml.required = true
         html.required = true
     }
+}
+
+tasks.named("sonar") {
+    dependsOn(tasks.jacocoTestReport)
 }
 
 tasks.bootJar {
