@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 enum TestEnum {
 
     VALUE,
-
     @JsonEnumDefaultValue
     UNKNOWN
 

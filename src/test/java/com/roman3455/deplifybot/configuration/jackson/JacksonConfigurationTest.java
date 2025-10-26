@@ -7,11 +7,13 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+@DisplayName("JacksonConfiguration — object mapper behavior")
 class JacksonConfigurationTest {
 
     private ObjectMapper objectMapper;
@@ -29,35 +31,38 @@ class JacksonConfigurationTest {
                         DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES
                 );
         objectMapper = builder.build();
-
         sampleObject = SampleObject.createSampleObject();
     }
 
     @Test
-    void shouldUseSnakeCaseNaming() throws Exception {
-        var json = objectMapper.writeValueAsString(sampleObject);
-        assertThat(json).contains("first_name");
+    @DisplayName("Serializes property names using snake_case")
+    void serializesPropertyNamesUsingSnakeCase() throws Exception {
+        var actual = objectMapper.writeValueAsString(sampleObject);
+        assertThat(actual).contains("first_name");
     }
 
     @Test
-    void shouldExcludeNullValues() throws Exception {
-        var json = objectMapper.writeValueAsString(sampleObject);
-        assertThat(json).doesNotContain("nullable");
+    @DisplayName("Excludes null fields from serialized JSON")
+    void excludesNullFieldsFromSerializedJson() throws Exception {
+        var actual = objectMapper.writeValueAsString(sampleObject);
+        assertThat(actual).doesNotContain("nullable");
     }
 
     @Test
-    void shouldSerializeJavaTimeProperly() throws Exception {
-        var json = objectMapper.writeValueAsString(sampleObject);
-        assertThat(json).contains("2025-01-01");
+    @DisplayName("Serializes Java time fields in ISO-8601 format")
+    void serializesJavaTimeFieldsInIsoFormat() throws Exception {
+        var actual = objectMapper.writeValueAsString(sampleObject);
+        assertThat(actual).contains("2025-01-01");
     }
 
     @Test
-    void shouldReadUnknownEnumAsDefaultValue() throws Exception {
-        var json = """
+    @DisplayName("Deserializes unknown enum values as default")
+    void deserializesUnknownEnumValuesAsDefault() throws Exception {
+        var given = """
                 {"first_name":"John","created_at":"2025-01-01","status":"INVALID"}
                 """;
-        var result = objectMapper.readValue(json, SampleObject.class);
-        assertThat(result.status()).isEqualTo(TestEnum.UNKNOWN);
+        var actual = objectMapper.readValue(given, SampleObject.class);
+        assertThat(actual.status()).isEqualTo(TestEnum.UNKNOWN);
     }
 
 }

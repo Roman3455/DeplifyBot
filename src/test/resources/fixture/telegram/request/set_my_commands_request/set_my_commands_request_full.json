@@ -1,0 +1,9 @@
+{
+  "commands": [
+    {"command": "start", "description": "Init command"}
+  ],
+  "scope": {
+    "type": "default"
+  },
+  "language_code": "en"
+}
