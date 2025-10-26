@@ -1,6 +1,7 @@
 package com.roman3455.deplifybot.dto.telegram.api.request;
 
 import com.roman3455.deplifybot.util.validator.iso6391.ISO6391;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Size;
 import org.springframework.lang.Nullable;
 
@@ -8,7 +9,7 @@ import org.springframework.lang.Nullable;
  * DTO represents a Telegram bot's short description.
  *
  * <p>Either {@code shortDescription} or {@code languageCode} must be provided (non-null and non-blank).
- * If both fields are {@code null}, an {@link IllegalArgumentException} will be thrown.</p>
+ * If not, violation will be reported by {@link #isAnyProvided()}.</p>
  *
  * @param shortDescription optional. New short description for the bot; 0-120 characters
  *                         {@value #SHORT_DESCRIPTION_MAX_LENGTH}. Pass an empty string to remove the dedicated short
@@ -19,12 +20,12 @@ import org.springframework.lang.Nullable;
  * @see <a href="https://core.telegram.org/bots/api#botshortdescription">Telegram API — BotShortDescription</a>
  * @see <a href="https://core.telegram.org/bots/api#setmyshortdescription">Telegram API — setMyShortDescription</a>
  */
-public record BotShortDescription(
+public record BotShortDescriptionRequest(
 
         @Nullable
         @Size(
                 max = SHORT_DESCRIPTION_MAX_LENGTH,
-                message = "Allowed 'shortDescription' length is between 0 and 120 characters."
+                message = "Allowed 'shortDescription' length must be at most 120 characters."
         )
         String shortDescription,
 
@@ -40,14 +41,12 @@ public record BotShortDescription(
     private static final int SHORT_DESCRIPTION_MAX_LENGTH = 120;
 
     /**
-     * Validates the {@code BotShortDescription} record.
-     *
-     * @throws IllegalArgumentException if both {@code shortDescription} and {@code languageCode} are {@code null}.
+     * Cross-field constraint: require at least one field to be provided.
+     * Note: violation will be reported on the synthetic property named after this method ("anyProvided").
      */
-    public BotShortDescription {
-        if (shortDescription == null && languageCode == null) {
-            throw new IllegalArgumentException("Field 'shortDescription' and 'languageCode' cannot be NULL");
-        }
+    @AssertTrue(message = "Either 'shortDescription' or 'languageCode' must be provided.")
+    private boolean isAnyProvided() {
+        return shortDescription != null || languageCode != null;
     }
 
 }

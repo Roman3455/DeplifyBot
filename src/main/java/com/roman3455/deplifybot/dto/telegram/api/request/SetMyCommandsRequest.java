@@ -1,12 +1,14 @@
 package com.roman3455.deplifybot.dto.telegram.api.request;
 
+import com.roman3455.deplifybot.service.telegram.command.CommandType;
 import com.roman3455.deplifybot.util.validator.iso6391.ISO6391;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import org.springframework.lang.Nullable;
 
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 /**
  * DTO represents a request to set a list of bot commands in Telegram.
@@ -22,14 +24,14 @@ import java.util.Map;
  *                     dedicated description.
  * @see <a href="https://core.telegram.org/bots/api#setmycommands">Telegram API — setMyCommands</a>
  */
-public record BotCommand(
+public record SetMyCommandsRequest(
 
         @NotEmpty(message = "Field 'commands' is required and cannot be empty.")
-        @Size(max = MAX_COMMANDS_SIZE, message = "At most 100 commands allowed.")
-        List<@NotEmpty Map<String, String>> commands,
+        @Size(max = MAX_COMMANDS_AMOUNT, message = "At most 100 commands allowed.")
+        List<@Valid MyCommand> commands,
 
         @Nullable
-        BotCommandScope scope,
+        @Valid BotCommandScope scope,
 
         @Nullable
         @ISO6391(message = "Allowed ISO 639-1 'languageCode' length must be exactly 2 characters.")
@@ -38,8 +40,30 @@ public record BotCommand(
 ) {
 
     /**
-     * The max allowed length of the {@code description} field.
+     * The maximum allowed number of commands in a single request.
      */
-    private static final int MAX_COMMANDS_SIZE = 100;
+    private static final int MAX_COMMANDS_AMOUNT = 100;
+
+    public SetMyCommandsRequest {
+        if (commands == null) {
+            throw new IllegalArgumentException("Field 'commands' cannot be null");
+        }
+        commands = List.copyOf(commands.stream()
+                .distinct()
+                .toList());
+    }
+
+    public static SetMyCommandsRequest fromCommandTypes(
+            @Nullable final BotCommandScope scope,
+            @Nullable final String languageCode
+    ) {
+        List<MyCommand> commands = Arrays.stream(CommandType.values())
+                .map(c -> new MyCommand(c.getNameWithoutSlash(), c.getDescription()))
+                .toList();
+        if (commands.size() > MAX_COMMANDS_AMOUNT) {
+            throw new IllegalArgumentException("At most 100 commands allowed.");
+        }
+        return new SetMyCommandsRequest(commands, scope, languageCode);
+    }
 
 }

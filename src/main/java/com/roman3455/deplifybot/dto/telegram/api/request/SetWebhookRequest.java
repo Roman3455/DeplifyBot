@@ -3,7 +3,7 @@ package com.roman3455.deplifybot.dto.telegram.api.request;
 import com.roman3455.deplifybot.dto.telegram.api.enums.UpdateType;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import org.springframework.lang.Nullable;
@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * DTO represents a Telegram bot's webhook properties.
  *
- * @param url                required. HTTPS URL to send updates to. Use an empty string to remove webhook integration.
+ * @param url                required. HTTPS URL to send updates to.
  * @param maxConnections     optional. The maximum allowed number of simultaneous HTTPS connections to the webhook for
  *                           update delivery, 1-100 {@value #MAX_HTTP_CONNECTIONS}. Defaults to 40.
  * @param allowedUpdates     optional. A list of the update types you want your bot to receive. Specify an empty list to
@@ -27,9 +27,10 @@ import java.util.List;
  * @see <a href="https://core.telegram.org/bots/api#update">Telegram API — Update</a>
  * @see <a href="https://core.telegram.org/bots/api#setwebhook">Telegram API — SetWebhook</a>
  */
-public record WebhookProperty(
+public record SetWebhookRequest(
 
-        @NotNull(message = "Field 'url' is required.")
+        @NotBlank(message = "Field 'url' is required.")
+        @Pattern(regexp = "^https://.+$", message = "Field 'url' must start with 'https://'.")
         String url,
 
         @Nullable
@@ -56,7 +57,7 @@ public record WebhookProperty(
     /**
      * The max allowed http connections to the webhook for update delivery.
      */
-    private static final int MAX_HTTP_CONNECTIONS = 120;
+    private static final int MAX_HTTP_CONNECTIONS = 100;
 
     /**
      * The max allowed length of the {@code secretToken} field.
