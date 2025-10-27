@@ -1,6 +1,7 @@
 package com.roman3455.deplifybot;
 
 import com.roman3455.deplifybot.client.TelegramClient;
+import com.roman3455.deplifybot.configuration.TelegramFeignConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,6 +21,9 @@ class ApplicationTest {
     @Autowired
     private TelegramClient telegramClient;
 
+    @Autowired
+    private TelegramFeignConfig telegramFeignConfig;
+
     @Test
     void contextLoads() {
         assertThat(applicationContext).isNotNull();
@@ -28,6 +32,11 @@ class ApplicationTest {
     @Test
     void  contextLoadsTelegramClient() {
         assertThat(telegramClient).isNotNull();
+    }
+
+    @Test
+    void  contextLoadsTelegramFeignConfig() {
+        assertThat(telegramFeignConfig).isNotNull();
     }
 
     @Test
