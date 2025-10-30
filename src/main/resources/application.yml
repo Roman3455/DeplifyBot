@@ -22,6 +22,8 @@ telegram:
   bot:
     webhook:
       path: /telegram/webhook
+    token:
+      bytes-size: 32
 
 server:
   port: ${PORT:8080}
