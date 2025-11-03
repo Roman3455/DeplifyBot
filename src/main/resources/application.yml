@@ -3,6 +3,11 @@ spring:
   application:
     name: deplifybot
 
+  messages:
+    basename: i18n/messages
+    encoding: UTF-8
+    fallback-to-system-locale: false
+
   cloud:
     openfeign:
       httpclient:
@@ -20,6 +25,8 @@ spring:
 
 telegram:
   bot:
+    connections:
+      value: 40
     webhook:
       path: /telegram/webhook
     token:

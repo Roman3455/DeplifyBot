@@ -9,6 +9,9 @@ spring:
             connect-timeout: 10000
             read-timeout: 15000
 
+  messages:
+    cache-duration: 15s
+
   datasource:
     url: ${DB_PROD_URL}
     username: ${DB_PROD_USERNAME}

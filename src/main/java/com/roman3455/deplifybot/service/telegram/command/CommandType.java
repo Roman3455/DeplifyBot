@@ -4,14 +4,14 @@ import com.roman3455.deplifybot.service.telegram.BotActionType;
 
 public enum CommandType implements BotActionType {
 
-    START("/start", "Начало работы");
+    START("/start", "bot.command.start");
 
     private final String name;
-    private final String description;
+    private final String messageCode;
 
-    CommandType(final String name, final String description) {
+    CommandType(final String name, final String messageCode) {
         this.name = name;
-        this.description = description;
+        this.messageCode = messageCode;
     }
 
     @Override
@@ -20,12 +20,12 @@ public enum CommandType implements BotActionType {
     }
 
     @Override
-    public String getDescription() {
-        return description;
+    public String getMessageCode() {
+        return messageCode;
     }
 
     public String getNameWithoutSlash() {
-        return this.name.replace("/", "");
+        return name.replace("/", "");
     }
 
 }
