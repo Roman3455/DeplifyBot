@@ -1,13 +1,11 @@
 package com.roman3455.deplifybot.dto.telegram.api.request;
 
-import com.roman3455.deplifybot.service.telegram.command.CommandType;
 import com.roman3455.deplifybot.util.validator.iso6391.ISO6391;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import org.springframework.lang.Nullable;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -51,19 +49,6 @@ public record SetMyCommandsRequest(
         commands = List.copyOf(commands.stream()
                 .distinct()
                 .toList());
-    }
-
-    public static SetMyCommandsRequest fromCommandTypes(
-            @Nullable final BotCommandScope scope,
-            @Nullable final String languageCode
-    ) {
-        List<MyCommand> commands = Arrays.stream(CommandType.values())
-                .map(c -> new MyCommand(c.getNameWithoutSlash(), c.getDescription()))
-                .toList();
-        if (commands.size() > MAX_COMMANDS_AMOUNT) {
-            throw new IllegalArgumentException("At most 100 commands allowed.");
-        }
-        return new SetMyCommandsRequest(commands, scope, languageCode);
     }
 
 }

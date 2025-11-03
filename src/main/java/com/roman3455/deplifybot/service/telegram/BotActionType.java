@@ -4,6 +4,6 @@ public interface BotActionType {
 
     String getName();
 
-    String getDescription();
+    String getMessageCode();
 
 }
