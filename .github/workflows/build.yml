@@ -34,6 +34,7 @@ jobs:
       FLYWAY_USER: ${{ secrets.DB_TEST_USERNAME }}
       FLYWAY_PASSWORD: ${{ secrets.DB_TEST_PASSWORD }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      TEST_TELEGRAM_WEBHOOK_URL: ${{ secrets.TEST_TELEGRAM_WEBHOOK_URL }}
 
     services:
       postgres:

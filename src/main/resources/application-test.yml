@@ -29,4 +29,6 @@ spring:
 telegram:
   bot:
     webhook:
-      url: ${DEV_TELEGRAM_WEBHOOK_URL}
+      url: ${TEST_TELEGRAM_WEBHOOK_URL}
+    init:
+      enabled: false
