@@ -17,76 +17,51 @@ class SetWebhookRequestValidationTest extends ValidationTestSupport {
     @DisplayName("Valid payload passes validation")
     void payloadPassesValidation() {
         final int maxConnections = 80;
-        assertValid(
-                new SetWebhookRequest(
-                        VALID_URL,
-                        maxConnections,
-                        List.of(UpdateType.MESSAGE),
-                        Boolean.TRUE,
-                        VALID_TOKEN
-                )
+        var valid = new SetWebhookRequest(
+                VALID_URL,
+                maxConnections,
+                List.of(UpdateType.MESSAGE),
+                Boolean.TRUE,
+                VALID_TOKEN
         );
+        assertValid(valid);
     }
 
     @Test
     @DisplayName("Field 'url' @NotBlank: Null value should fail")
     void urlConstraintsNullValue() {
-        assertViolationContains(
-                new SetWebhookRequest(
-                        null,
-                        null,
-                        null,
-                        null,
-                        null
-                ),
-                "url", "Field 'url' is required."
-        );
+        final String field = "url";
+        final String messageTemplate = "{jakarta.validation.constraints.NotBlank.message}";
+        var invalid = new SetWebhookRequest(null, null, null, null, null);
+        assertViolationContains(invalid, field, messageTemplate);
     }
 
     @Test
     @DisplayName("Field 'url' @NotBlank: Blank value should fail")
     void urlConstraintsBlankValue() {
-        assertViolationContains(
-                new SetWebhookRequest(
-                        "   ",
-                        null,
-                        null,
-                        null,
-                        null
-                ),
-                "url", "Field 'url' is required."
-        );
+        final String field = "url";
+        final String messageTemplate = "{jakarta.validation.constraints.NotBlank.message}";
+        var invalid = new SetWebhookRequest("   ", null, null, null, null);
+        assertViolationContains(invalid, field, messageTemplate);
     }
 
     @Test
     @DisplayName("Field 'url' @Pattern: Pattern mismatch should fail")
     void urlConstraintsMismatchPattern() {
-        assertViolationContains(
-                new SetWebhookRequest(
-                        "http://example.com",
-                        null,
-                        null,
-                        null,
-                        null
-                ),
-                "url", "Field 'url' must start with 'https://'."
-        );
+        final String field = "url";
+        final String messageTemplate = "{SetWebhookRequest.url.Pattern.message}";
+        var invalid = new SetWebhookRequest("http://ok", null, null, null, null);
+        assertViolationContains(invalid, field, messageTemplate);
     }
 
     @SuppressWarnings("DataFlowIssue")
     @Test
     @DisplayName("Field 'maxConnections' @Min: Value below min should fail")
     void maxConnectionsConstraintsBelowMin() {
-        assertViolationContains(
-                new SetWebhookRequest(
-                        VALID_URL,
-                        0,
-                        null,
-                        null,
-                        null
-                ),
-                "maxConnections", "Minimum allowed 'maxConnections' is 1"
-        );
+        final String field = "maxConnections";
+        final String messageTemplate = "{Size.min.message}";
+        var invalid = new SetWebhookRequest(VALID_URL, 0, null, null, null);
+        assertViolationContains(invalid, field, messageTemplate);
     }
 
     @SuppressWarnings("DataFlowIssue")
@@ -94,62 +69,38 @@ class SetWebhookRequestValidationTest extends ValidationTestSupport {
     @DisplayName("Field 'maxConnections' @Max: Value above max should fail")
     void maxConnectionsConstraints() {
         final int outOfBoundConnections = 101;
-        assertViolationContains(
-                new SetWebhookRequest(
-                        VALID_URL,
-                        outOfBoundConnections,
-                        null,
-                        null,
-                        null
-                ),
-                "maxConnections", "Maximum allowed 'maxConnections' is 100"
-        );
+        final String field = "maxConnections";
+        final String messageTemplate = "{Size.max.message}";
+        var invalid = new SetWebhookRequest(VALID_URL, outOfBoundConnections, null, null, null);
+        assertViolationContains(invalid, field, messageTemplate);
     }
 
     @Test
     @DisplayName("Field 'secretToken' @Size: Value below min should fail")
     void secretTokenConstraintsBelowMin() {
-        assertViolationContains(
-                new SetWebhookRequest(
-                        VALID_URL,
-                        null,
-                        null,
-                        null,
-                        ""
-                ),
-                "secretToken", "Allowed 'secretToken' length is between 1 and 256 characters."
-        );
+        final String field = "secretToken";
+        final String messageTemplate = "{jakarta.validation.constraints.Size.message}";
+        var invalid = new SetWebhookRequest(VALID_URL, null, null, null, "");
+        assertViolationContains(invalid, field, messageTemplate);
     }
 
     @Test
     @DisplayName("Field 'secretToken' @Size: Value above max should fail")
     void secretTokenConstraintsAboveMax() {
         final int outOfBoundToken = 257;
-        assertViolationContains(
-                new SetWebhookRequest(
-                        VALID_URL,
-                        null,
-                        null,
-                        null,
-                        "1".repeat(outOfBoundToken)
-                ),
-                "secretToken", "Allowed 'secretToken' length is between 1 and 256 characters."
-        );
+        final String field = "secretToken";
+        final String messageTemplate = "{jakarta.validation.constraints.Size.message}";
+        var invalid = new SetWebhookRequest(VALID_URL, null, null, null, "1".repeat(outOfBoundToken));
+        assertViolationContains(invalid, field, messageTemplate);
     }
 
     @Test
     @DisplayName("Field 'secretToken' @Pattern: Pattern mismatch should fail")
     void secretTokenConstraintsMismatchPattern() {
-        assertViolationContains(
-                new SetWebhookRequest(
-                        VALID_URL,
-                        null,
-                        null,
-                        null,
-                        "bad*token!"
-                ),
-                "secretToken", "Only characters 'A-Z', 'a-z', '0-9', '_', '-' are allowed"
-        );
+        final String field = "secretToken";
+        final String messageTemplate = "{SetWebhookRequest.secretToken.Pattern.message}";
+        var invalid = new SetWebhookRequest(VALID_URL, null, null, null, "bad*token!");
+        assertViolationContains(invalid, field, messageTemplate);
     }
 
 }

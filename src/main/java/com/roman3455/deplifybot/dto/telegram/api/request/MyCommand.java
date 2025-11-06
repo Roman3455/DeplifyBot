@@ -15,13 +15,12 @@ import jakarta.validation.constraints.Size;
  */
 public record MyCommand(
 
-        @NotBlank(message = "Field 'command' is required.")
-        @Size(max = MAX_COMMAND_LENGTH, message = "Allowed 'command' length must be at most 32 characters.")
-        @Pattern(regexp = "^[a-z0-9_]+$", message = "Only characters 'a-z', '0-9', '_' are allowed.")
+        @NotBlank
+        @Size(max = MAX_COMMAND_LENGTH, message = "{Size.max.message}")
+        @Pattern(regexp = "^[a-z0-9_]+$", message = "{MyCommand.command.Pattern.message}")
         String command,
-
-        @NotBlank(message = "Field 'description' is required.")
-        @Size(max = MAX_DESCRIPTION_LENGTH, message = "Allowed 'description' length must be at most 256 characters.")
+        @NotBlank
+        @Size(max = MAX_DESCRIPTION_LENGTH, message = "{Size.max.message}")
         String description
 
 ) {

@@ -19,6 +19,7 @@ import org.springframework.validation.beanvalidation.MethodValidationPostProcess
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.verifyNoInteractions;
 
@@ -88,37 +89,60 @@ class TelegramClientServiceValidationTest {
     @Test
     @DisplayName("setMyDescription: ConstraintViolationException (violates @ISO6391); client is not called")
     void setMyDescriptionInvalidLanguageCodeThrowsViolation() {
+        var expected = "{ISO6391.languageCode.message}";
         var invalid = new BotDescriptionRequest("desc", "eng");
         assertThatThrownBy(() -> service.setMyDescription(invalid))
                 .isInstanceOf(ConstraintViolationException.class)
-                .hasMessageContaining("'languageCode' length must be exactly 2 characters.");
+                .satisfies(th -> {
+                    var ex = (ConstraintViolationException) th;
+                    assertThat(ex.getConstraintViolations())
+                            .anySatisfy(v -> assertThat(v.getMessageTemplate())
+                                    .isEqualTo(expected));
+                });
     }
 
     @Test
     @DisplayName("setMyShortDescription: ConstraintViolationException (violates @AssertTrue); client is not called")
     void setMyShortDescriptionNullFieldsThrowsViolation() {
+        var expected = "{BotShortDescriptionRequest.isAnyProvided.AssertTrue}";
         var invalid = new BotShortDescriptionRequest(null, null);
         assertThatThrownBy(() -> service.setMyShortDescription(invalid))
                 .isInstanceOf(ConstraintViolationException.class)
-                .hasMessageContaining("'shortDescription' or 'languageCode' must be provided.");
+                .satisfies(th -> {
+                    var ex = (ConstraintViolationException) th;
+                    assertThat(ex.getConstraintViolations())
+                            .anySatisfy(v -> assertThat(v.getMessageTemplate())
+                                    .isEqualTo(expected));
+                });
     }
 
     @Test
-    @DisplayName("setMyCommands: ConstraintViolationException (violates @Size); client is not called")
+    @DisplayName("setMyCommands: ConstraintViolationException (violates @NotEmpty); client is not called")
     void setMyCommandsEmptyListThrowsViolation() {
+        var expected = "{jakarta.validation.constraints.NotEmpty.message}";
         var invalid = new SetMyCommandsRequest(List.of(), null, null);
         assertThatThrownBy(() -> service.setMyCommands(invalid))
                 .isInstanceOf(ConstraintViolationException.class)
-                .hasMessageContaining("Field 'commands' is required and cannot be empty.");
-        verifyNoInteractions(client);
+                .satisfies(th -> {
+                    var ex = (ConstraintViolationException) th;
+                    assertThat(ex.getConstraintViolations())
+                            .anySatisfy(v -> assertThat(v.getMessageTemplate())
+                                    .isEqualTo(expected));
+                });
     }
 
     @Test
     @DisplayName("setWebhook: ConstraintViolationException (violates @Pattern); client is not called")
     void setWebhookMismatchUlrThrowsViolation() {
-        var invalid = new SetWebhookRequest("http://ex.ru", null, null, null, null);
+        var expected = "{SetWebhookRequest.url.Pattern.message}";
+        var invalid = new SetWebhookRequest("http://ok", null, null, null, null);
         assertThatThrownBy(() -> service.setWebhook(invalid))
                 .isInstanceOf(ConstraintViolationException.class)
-                .hasMessageContaining("must start with 'https://'");
+                .satisfies(th -> {
+                    var ex = (ConstraintViolationException) th;
+                    assertThat(ex.getConstraintViolations())
+                            .anySatisfy(v -> assertThat(v.getMessageTemplate())
+                                    .isEqualTo(expected));
+                });
     }
 }

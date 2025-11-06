@@ -72,16 +72,16 @@ public abstract class ValidationTestSupport {
      *
      * @param bean         the object to validate
      * @param field        the expected property path of the violation
-     * @param messagePart  a substring expected to appear in the violation message
+     * @param messageTemplate  a substring expected to appear in the violation message
      * @param <T>          the type of the bean under validation
      */
-    protected static <T> void assertViolationContains(final T bean, final String field, final String messagePart) {
+    protected static <T> void assertViolationContains(final T bean, final String field, final String messageTemplate) {
         Set<ConstraintViolation<T>> violations = validator.validate(bean);
         assertThat(violations)
-                .as("Expected violation on '%s' containing '%s'", field, messagePart)
+                .as("Expected violation on '%s' containing '%s'", field, messageTemplate)
                 .anySatisfy(v -> {
                     assertThat(v.getPropertyPath().toString()).isEqualTo(field);
-                    assertThat(v.getMessage()).contains(messagePart);
+                    assertThat(v.getMessageTemplate()).contains(messageTemplate);
                 });
     }
 
