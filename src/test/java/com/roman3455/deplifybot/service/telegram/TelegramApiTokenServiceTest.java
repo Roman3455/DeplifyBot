@@ -9,10 +9,10 @@ import org.springframework.context.annotation.Import;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(classes = TelegramApiTokenServiceImplSpringTest.class)
+@SpringBootTest(classes = {TelegramApiTokenServiceTest.class})
 @Import(TelegramApiTokenServiceImpl.class)
 @DisplayName("TelegramApiTokenService — Token format & behavior test")
-class TelegramApiTokenServiceImplSpringTest {
+class TelegramApiTokenServiceTest {
 
     @Autowired
     private TelegramApiTokenService service;

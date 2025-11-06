@@ -4,9 +4,11 @@ import com.roman3455.deplifybot.util.validator.iso6391.ISO6391;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.lang.Nullable;
 
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * DTO represents a request to set a list of bot commands in Telegram.
@@ -24,15 +26,13 @@ import java.util.List;
  */
 public record SetMyCommandsRequest(
 
-        @NotEmpty(message = "Field 'commands' is required and cannot be empty.")
-        @Size(max = MAX_COMMANDS_AMOUNT, message = "At most 100 commands allowed.")
+        @NotEmpty
+        @Size(max = MAX_COMMANDS_AMOUNT, message = "{Size.max.message}")
         List<@Valid MyCommand> commands,
-
         @Nullable
         @Valid BotCommandScope scope,
-
         @Nullable
-        @ISO6391(message = "Allowed ISO 639-1 'languageCode' length must be exactly 2 characters.")
+        @ISO6391(message = "{ISO6391.languageCode.message}")
         String languageCode
 
 ) {
@@ -42,9 +42,26 @@ public record SetMyCommandsRequest(
      */
     private static final int MAX_COMMANDS_AMOUNT = 100;
 
+    /**
+     * Resource bundle used to retrieve localized guard-exception messages.
+     */
+    private static final ResourceBundle BUNDLE = ResourceBundle
+            .getBundle("i18n/messages", LocaleContextHolder.getLocale());
+
+
+    /**
+     * Ensures {@code commands} is not {@code null} before normalization.
+     *
+     * <p>The list is then de-duplicated and wrapped into an immutable structure,
+     * preventing subsequent modification and enforcing consistent behavior.</p>
+     *
+     * @throws IllegalArgumentException if {@code commands} is {@code null}
+     */
     public SetMyCommandsRequest {
         if (commands == null) {
-            throw new IllegalArgumentException("Field 'commands' cannot be null");
+            throw new IllegalArgumentException(
+                    BUNDLE.getString("IllegalArgumentException.field.NotNull.bundle").formatted("commands")
+            );
         }
         commands = List.copyOf(commands.stream()
                 .distinct()

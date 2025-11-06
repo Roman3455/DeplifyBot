@@ -13,72 +13,73 @@ class MyCommandValidationTest extends ValidationTestSupport {
     @Test
     @DisplayName("Valid full payload passes validation")
     void validPayloadAllFields() {
-        assertValid(new MyCommand(COMMAND, DESCRIPTION));
+        var valid = new MyCommand(COMMAND, DESCRIPTION);
+        assertValid(valid);
     }
 
     @Test
     @DisplayName("Field 'command' @NotBlank: Null value should fail")
     void commandConstraintsNullValue() {
-        assertViolationContains(
-                new MyCommand(null, DESCRIPTION),
-                "command", "Field 'command' is required."
-        );
+        final String field = "command";
+        final String messageTemplate = "{jakarta.validation.constraints.NotBlank.message}";
+        var invalid = new MyCommand(null, DESCRIPTION);
+        assertViolationContains(invalid, field, messageTemplate);
     }
 
     @Test
     @DisplayName("Field 'command' @NotBlank: Blank value should fail")
     void commandConstraintsBlankValue() {
-        assertViolationContains(
-                new MyCommand("", DESCRIPTION),
-                "command", "Field 'command' is required."
-        );
+        final String field = "command";
+        final String messageTemplate = "{jakarta.validation.constraints.NotBlank.message}";
+        var invalid = new MyCommand("", DESCRIPTION);
+        assertViolationContains(invalid, field, messageTemplate);
     }
 
     @Test
     @DisplayName("Field 'command' @Size: Value above max should fail")
     void commandConstraintsAboveMax() {
         final int outOfBoundChars = 33;
-        assertViolationContains(
-                new MyCommand("x".repeat(outOfBoundChars), DESCRIPTION),
-                "command", "Allowed 'command' length must be at most 32 characters."
-        );
+        final String field = "command";
+        final String messageTemplate = "{Size.max.message}";
+        var invalid = new MyCommand("x".repeat(outOfBoundChars), DESCRIPTION);
+        assertViolationContains(invalid, field, messageTemplate);
     }
 
     @Test
     @DisplayName("Field 'command' @Pattern: Pattern mismatch should fail")
     void commandConstraintMismatchPattern() {
-        assertViolationContains(
-                new MyCommand("/" + COMMAND, DESCRIPTION),
-                "command", "Only characters 'a-z', '0-9', '_' are allowed."
-        );
+        final String field = "command";
+        final String messageTemplate = "{MyCommand.command.Pattern.message}";
+        var invalid = new MyCommand("/" + COMMAND, DESCRIPTION);
+        assertViolationContains(invalid, field, messageTemplate);
     }
 
     @Test
     @DisplayName("Field 'description' @NotBlank: Null value should fail")
     void descriptionConstraintsNullValue() {
-        assertViolationContains(
-                new MyCommand(COMMAND, null),
-                "description", "Field 'description' is required."
-        );
+        final String field = "description";
+        final String messageTemplate = "{jakarta.validation.constraints.NotBlank.message}";
+        var invalid = new MyCommand(COMMAND, null);
+        assertViolationContains(invalid, field, messageTemplate);
     }
 
     @Test
     @DisplayName("Field 'description' @NotBlank: Blank value should fail")
     void descriptionConstraintsBlankValue() {
-        assertViolationContains(
-                new MyCommand(COMMAND, "  "),
-                "description", "Field 'description' is required."
-        );
+        final String field = "description";
+        final String messageTemplate = "{jakarta.validation.constraints.NotBlank.message}";
+        var invalid = new MyCommand(COMMAND, "  ");
+        assertViolationContains(invalid, field, messageTemplate);
     }
 
     @Test
     @DisplayName("Field 'description' @Size: Value above max should fail")
     void descriptionConstraintAboveMax() {
         final int outOfBoundChars = 257;
-        assertViolationContains(
-                new MyCommand(COMMAND, "x".repeat(outOfBoundChars)),
-                "description", "Allowed 'description' length must be at most 256 characters."
-        );
+        final String field = "description";
+        final String messageTemplate = "{Size.max.message}";
+        var invalid = new MyCommand(COMMAND, "x".repeat(outOfBoundChars));
+        assertViolationContains(invalid, field, messageTemplate);
     }
 
 }

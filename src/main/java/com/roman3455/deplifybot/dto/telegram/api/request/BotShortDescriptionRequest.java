@@ -23,14 +23,10 @@ import org.springframework.lang.Nullable;
 public record BotShortDescriptionRequest(
 
         @Nullable
-        @Size(
-                max = SHORT_DESCRIPTION_MAX_LENGTH,
-                message = "Allowed 'shortDescription' length must be at most 120 characters."
-        )
+        @Size(max = SHORT_DESCRIPTION_MAX_LENGTH, message = "{Size.max.message}")
         String shortDescription,
-
         @Nullable
-        @ISO6391(message = "Allowed ISO 639-1 'languageCode' length must be exactly 2 characters.")
+        @ISO6391(message = "{ISO6391.languageCode.message}")
         String languageCode
 
 ) {
@@ -42,9 +38,12 @@ public record BotShortDescriptionRequest(
 
     /**
      * Cross-field constraint: require at least one field to be provided.
-     * Note: violation will be reported on the synthetic property named after this method ("anyProvided").
+     *
+     * <p>Violation will be reported on the synthetic property named after this method.</p>
+     *
+     * @return {@code true} if {@code shortDescription} or {@code languageCode} is not {@code null}.
      */
-    @AssertTrue(message = "Either 'shortDescription' or 'languageCode' must be provided.")
+    @AssertTrue(message = "{BotShortDescriptionRequest.isAnyProvided.AssertTrue}")
     private boolean isAnyProvided() {
         return shortDescription != null || languageCode != null;
     }

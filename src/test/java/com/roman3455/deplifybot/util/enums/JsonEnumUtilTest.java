@@ -1,5 +1,6 @@
 package com.roman3455.deplifybot.util.enums;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -11,6 +12,23 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class JsonEnumUtilTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+
+    private enum TestEnum implements JsonEnum {
+        FOO("foo"), BAR("bar"), UNKNOWN("unknown");
+        private final String value;
+        TestEnum(final String value) {
+            this.value = value;
+        }
+        @Override
+        public String getValue() {
+            return value;
+        }
+        @JsonCreator
+        public static TestEnum fromValue(final String value) {
+            return JsonEnumUtil.fromValue(TestEnum.class, value, UNKNOWN);
+        }
+
+    }
 
     @Test
     @DisplayName("Maps string value to enum constant ignoring case")

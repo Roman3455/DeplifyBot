@@ -1,5 +1,6 @@
 package com.roman3455.deplifybot.configuration.jackson;
 
+import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,10 +12,23 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
+import java.time.LocalDate;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DisplayName("JacksonConfiguration — object mapper behavior")
 class JacksonConfigurationTest {
+
+    private record SampleObject(String firstName, LocalDate createdAt, String nullable, TestEnum status) {
+        static final int YEAR = 2025;
+        static SampleObject createSampleObject() {
+            return new SampleObject("John", LocalDate.of(YEAR, 1, 1), null, TestEnum.VALUE);
+        }
+    }
+
+    private enum TestEnum {
+        VALUE, @JsonEnumDefaultValue UNKNOWN
+    }
 
     private ObjectMapper objectMapper;
     private SampleObject sampleObject;

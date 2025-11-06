@@ -10,46 +10,45 @@ class BotShortDescriptionRequestValidationTest extends ValidationTestSupport {
     @Test
     @DisplayName("Valid payload passes validation")
     void validPayload() {
-        assertValid(
-                new BotShortDescriptionRequest("Short description", "en")
-        );
+        var valid = new BotShortDescriptionRequest("Short description", "en");
+        assertValid(valid);
     }
 
     @Test
     @DisplayName("Field 'shortDescription' @Size: Value above max should fail")
     void shortDescriptionConstraintAboveMax() {
         final int outOfBoundLength = 121;
-        assertViolationContains(
-                new BotShortDescriptionRequest("x".repeat(outOfBoundLength), null),
-                "shortDescription", "Allowed 'shortDescription' length must be at most 120 characters."
-        );
+        final String field = "shortDescription";
+        final String messageTemplate = "{Size.max.message}";
+        var invalid = new BotShortDescriptionRequest("x".repeat(outOfBoundLength), null);
+        assertViolationContains(invalid, field, messageTemplate);
     }
 
     @Test
     @DisplayName("Field 'languageCode' @ISO6391: Unexisted language code should fail")
     void languageCodeConstraintUnexisted() {
-        assertViolationContains(
-                new BotShortDescriptionRequest(null, "xx"),
-                "languageCode", "Allowed ISO 639-1 'languageCode' length must be exactly 2 characters."
-        );
+        final String field = "languageCode";
+        final String messageTemplate = "{ISO6391.languageCode.message}";
+        var invalid = new BotShortDescriptionRequest(null, "xx");
+        assertViolationContains(invalid, field, messageTemplate);
     }
 
     @Test
     @DisplayName("Field 'languageCode' @ISO6391: Invalid language code length should fail")
     void languageCodeConstraintInvalid() {
-        assertViolationContains(
-                new BotShortDescriptionRequest(null, "eng"),
-                "languageCode", "Allowed ISO 639-1 'languageCode' length must be exactly 2 characters."
-        );
+        final String field = "languageCode";
+        final String messageTemplate = "{ISO6391.languageCode.message}";
+        var invalid = new BotShortDescriptionRequest(null, "eng");
+        assertViolationContains(invalid, field, messageTemplate);
     }
 
     @Test
     @DisplayName("Fields 'shortDescription' and 'languageCode' @AssertTrue: Both null value should fail")
     void invalidWhenBothNull() {
-        assertViolationContains(
-                new BotShortDescriptionRequest(null, null),
-                "anyProvided", "Either 'shortDescription' or 'languageCode' must be provided."
-        );
+        final String field = "anyProvided";
+        final String messageTemplate = "{BotShortDescriptionRequest.isAnyProvided.AssertTrue}";
+        var invalid = new BotShortDescriptionRequest(null, null);
+        assertViolationContains(invalid, field, messageTemplate);
     }
 
 }

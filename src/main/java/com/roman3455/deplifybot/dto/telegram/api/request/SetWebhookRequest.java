@@ -29,27 +29,20 @@ import java.util.List;
  */
 public record SetWebhookRequest(
 
-        @NotBlank(message = "Field 'url' is required.")
-        @Pattern(regexp = "^https://.+$", message = "Field 'url' must start with 'https://'.")
+        @NotBlank
+        @Pattern(regexp = "^https://.+$", message = "{SetWebhookRequest.url.Pattern.message}")
         String url,
-
         @Nullable
-        @Min(value = 1, message = "Minimum allowed 'maxConnections' is 1.")
-        @Max(value = MAX_HTTP_CONNECTIONS, message = "Maximum allowed 'maxConnections' is 100.")
+        @Min(value = 1, message = "{Size.min.message}")
+        @Max(value = MAX_HTTP_CONNECTIONS, message = "{Size.max.message}")
         Integer maxConnections,
-
         @Nullable
         List<UpdateType> allowedUpdates,
-
         @Nullable
         Boolean dropPendingUpdates,
-
         @Nullable
-        @Pattern(regexp = "^[A-Za-z0-9_-]+$", message = "Only characters 'A-Z', 'a-z', '0-9', '_', '-' are allowed.")
-        @Size(
-                min = 1, max = MAX_TOKEN_LENGTH,
-                message = "Allowed 'secretToken' length is between 1 and 256 characters."
-        )
+        @Pattern(regexp = "^[A-Za-z0-9_-]+$", message = "{SetWebhookRequest.secretToken.Pattern.message}")
+        @Size(min = 1, max = MAX_TOKEN_LENGTH)
         String secretToken
 
 ) {

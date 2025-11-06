@@ -13,47 +13,37 @@ class BotCommandScopeValidationTest extends ValidationTestSupport {
     @Test
     @DisplayName("Valid full payload passes validation")
     void validPayloadAllFields() {
-        assertValid(
-                new BotCommandScope(BotCommandScopeType.CHAT, CHAT_ID)
-        );
+        var valid = new BotCommandScope(BotCommandScopeType.CHAT, CHAT_ID);
+        assertValid(valid);
     }
 
     @Test
     @DisplayName("Valid required payload passes validation")
     void validPayloadRequiredFields() {
-        assertValid(
-                new BotCommandScope(BotCommandScopeType.DEFAULT, null)
-        );
+        var valid = new BotCommandScope(BotCommandScopeType.DEFAULT, null);
+        assertValid(valid);
     }
 
     @Test
     @DisplayName("Field 'type': @NotNull should fail")
     void typeConstraint() {
         final String field = "type";
-        final String messagePart = "Field 'type' is required.";
-        assertViolationContains(
-                new BotCommandScope(null, null),
-                field, messagePart
-        );
-        assertViolationContains(
-                new BotCommandScope(null, CHAT_ID),
-                field, messagePart
-        );
+        final String messageTemplate = "{jakarta.validation.constraints.NotNull.message}";
+        var invalidWithAllNullFields = new BotCommandScope(null, null);
+        assertViolationContains(invalidWithAllNullFields, field, messageTemplate);
+        var invalidWithNonNullChatId = new BotCommandScope(null, CHAT_ID);
+        assertViolationContains(invalidWithNonNullChatId, field, messageTemplate);
     }
 
     @Test
     @DisplayName("Fields 'type' and 'chatId' @AssertTrue: Invalid values should fail")
     void chatIdAssertConstraint() {
         final String field = "chatIdConsistentWithType";
-        final String messagePart = "'chatId' must be provided if 'type' is 'CHAT', and must be null otherwise.";
-        assertViolationContains(
-                new BotCommandScope(BotCommandScopeType.CHAT, null),
-                field, messagePart
-        );
-        assertViolationContains(
-                new BotCommandScope(BotCommandScopeType.DEFAULT, CHAT_ID),
-                field, messagePart
-        );
+        final String messageTemplate = "{BotCommandScope.isChatIdConsistentWithType.AssertTrue}";
+        var invalidChatTypeWithNullChatId = new BotCommandScope(BotCommandScopeType.CHAT, null);
+        assertViolationContains(invalidChatTypeWithNullChatId, field, messageTemplate);
+        var invalidDefaultTypeWithChatId = new BotCommandScope(BotCommandScopeType.DEFAULT, CHAT_ID);
+        assertViolationContains(invalidDefaultTypeWithChatId, field, messageTemplate);
     }
 
 }

@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("TelegramClientServiceImpl — delegation & exceptions tests")
-class TelegramClientServiceImplTest {
+class TelegramClientServiceTest {
 
     @Mock
     private TelegramClient client;
@@ -37,7 +37,7 @@ class TelegramClientServiceImplTest {
     @Test
     @DisplayName("setMyDescription: delegates to Feign client and returns expected response")
     void setMyDescriptionDelegatesToFeignClientAndReturnsExpectedResponse() {
-        var req = new BotDescriptionRequest("Test description", "en");
+        var req = new BotDescriptionRequest("description", "en");
         var expected = new ResponseBody<>(true, true, null, null, null);
         when(client.setMyDescription(req)).thenReturn(expected);
         var actual = service.setMyDescription(req);
@@ -49,7 +49,7 @@ class TelegramClientServiceImplTest {
     @Test
     @DisplayName("setMyShortDescription: delegates to Feign client and returns expected response")
     void setMyShortDescriptionDelegatesToClientAndReturnsResponse() {
-        var req = new BotShortDescriptionRequest("Test short description", "en");
+        var req = new BotShortDescriptionRequest("short description", "en");
         var expected = new ResponseBody<>(true, true, null, null, null);
         when(client.setMyShortDescription(req)).thenReturn(expected);
         var actual = service.setMyShortDescription(req);
@@ -73,7 +73,7 @@ class TelegramClientServiceImplTest {
     @Test
     @DisplayName("setWebhook: delegates to Feign client and returns expected response")
     void setWebhookDelegatesToClientAndReturnsResponse() {
-        var req = new SetWebhookRequest("https://example.com/webhook", null, null, null, null);
+        var req = new SetWebhookRequest("https://ok", null, null, null, null);
         var expected = new ResponseBody<>(true, true, null, null, null);
         when(client.setWebhook(req)).thenReturn(expected);
         var actual = service.setWebhook(req);

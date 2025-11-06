@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 @DisplayName("Bean Validation of ISO6391Validator")
 class ISO6391ValidatorTest extends ValidationTestSupport {
 
-    record TestDto(@ISO6391 String languageCode) {
+    private record TestDto(@ISO6391 String languageCode) {
     }
 
     @Test
