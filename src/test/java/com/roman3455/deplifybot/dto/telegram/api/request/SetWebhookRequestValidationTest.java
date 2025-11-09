@@ -4,8 +4,12 @@ import com.roman3455.deplifybot.dto.telegram.api.enums.UpdateType;
 import com.roman3455.deplifybot.util.ValidationTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @DisplayName("Bean Validation of SetWebhookRequest")
 class SetWebhookRequestValidationTest extends ValidationTestSupport {
@@ -27,31 +31,39 @@ class SetWebhookRequestValidationTest extends ValidationTestSupport {
         assertValid(valid);
     }
 
-    @Test
-    @DisplayName("Field 'url' @NotBlank: Null value should fail")
-    void urlConstraintsNullValue() {
-        final String field = "url";
-        final String messageTemplate = "{jakarta.validation.constraints.NotBlank.message}";
-        var invalid = new SetWebhookRequest(null, null, null, null, null);
+    @ParameterizedTest(name = "[{index}] {0}")
+    @MethodSource("invalidWebhookUrlCases")
+    @DisplayName("SetWebhookRequest — field 'url' validation failures")
+    void urlConstraintFailures(
+            final String caseName,
+            final SetWebhookRequest invalid,
+            final String field,
+            final String messageTemplate
+    ) {
         assertViolationContains(invalid, field, messageTemplate);
     }
 
-    @Test
-    @DisplayName("Field 'url' @NotBlank: Blank value should fail")
-    void urlConstraintsBlankValue() {
-        final String field = "url";
-        final String messageTemplate = "{jakarta.validation.constraints.NotBlank.message}";
-        var invalid = new SetWebhookRequest("   ", null, null, null, null);
-        assertViolationContains(invalid, field, messageTemplate);
-    }
-
-    @Test
-    @DisplayName("Field 'url' @Pattern: Pattern mismatch should fail")
-    void urlConstraintsMismatchPattern() {
-        final String field = "url";
-        final String messageTemplate = "{SetWebhookRequest.url.Pattern.message}";
-        var invalid = new SetWebhookRequest("http://ok", null, null, null, null);
-        assertViolationContains(invalid, field, messageTemplate);
+    static Stream<Arguments> invalidWebhookUrlCases() {
+        return Stream.of(
+                Arguments.of(
+                        "url @NotBlank: null value",
+                        new SetWebhookRequest(null, null, null, null, null),
+                        "url",
+                        "{jakarta.validation.constraints.NotBlank.message}"
+                ),
+                Arguments.of(
+                        "url @NotBlank: blank value",
+                        new SetWebhookRequest("   ", null, null, null, null),
+                        "url",
+                        "{jakarta.validation.constraints.NotBlank.message}"
+                ),
+                Arguments.of(
+                        "url @Pattern: mismatch",
+                        new SetWebhookRequest("http://ok", null, null, null, null),
+                        "url",
+                        "{SetWebhookRequest.url.Pattern.message}"
+                )
+        );
     }
 
     @SuppressWarnings("DataFlowIssue")

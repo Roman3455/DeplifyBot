@@ -80,7 +80,7 @@ public abstract class ValidationTestSupport {
         assertThat(violations)
                 .as("Expected violation on '%s' containing '%s'", field, messageTemplate)
                 .anySatisfy(v -> {
-                    assertThat(v.getPropertyPath().toString()).isEqualTo(field);
+                    assertThat(v.getPropertyPath()).hasToString(field);
                     assertThat(v.getMessageTemplate()).contains(messageTemplate);
                 });
     }

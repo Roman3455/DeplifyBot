@@ -23,11 +23,11 @@ class TelegramApiTokenServiceTest {
         final int expectedTokenLength = 43;
         String t1 = service.getToken();
         String t2 = service.getToken();
-        assertThat(t1).isNotBlank();
-        assertThat(t1).isEqualTo(t2);
-        assertThat(t1).matches("^[A-Za-z0-9_-]+$");
-        assertThat(t1).doesNotContain("=");
-        assertThat(t1.length()).isEqualTo(expectedTokenLength);
+        assertThat(t1).isNotBlank()
+                .isEqualTo(t2)
+                .matches("^[A-Za-z0-9_-]+$")
+                .doesNotContain("=")
+                .hasSize(expectedTokenLength);
     }
 
     @Test

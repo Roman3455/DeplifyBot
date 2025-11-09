@@ -43,17 +43,8 @@
             </encoder>
         </appender>
 
-        <!--
-        <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-                <customFields>{"app":"${APP_NAME}","env":"${APP_ENV}"}</customFields>
-            </encoder>
-        </appender>
-        -->
-
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
-            <!-- <appender-ref ref="JSON"/> -->
         </root>
     </springProfile>
 

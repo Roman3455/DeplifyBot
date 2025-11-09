@@ -3,6 +3,11 @@ package com.roman3455.deplifybot.dto.telegram.api.request;
 import com.roman3455.deplifybot.util.ValidationTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 @DisplayName("Bean Validation of BotDescriptionRequest")
 class BotDescriptionRequestValidationTest extends ValidationTestSupport {
@@ -24,31 +29,39 @@ class BotDescriptionRequestValidationTest extends ValidationTestSupport {
         assertViolationContains(invalid, field, messageTemplate);
     }
 
-    @Test
-    @DisplayName("Field 'languageCode' @ISO6391: Unexisted language code should fail")
-    void languageCodeConstraintUnexisted() {
-        final String field = "languageCode";
-        final String messageTemplate = "{ISO6391.languageCode.message}";
-        var invalid = new BotDescriptionRequest(null, "xx");
+    @ParameterizedTest(name = "[{index}] {0}")
+    @MethodSource("invalidBotDescriptionCases")
+    @DisplayName("BotDescriptionRequest — bean validation failures")
+    void validationFails(
+            final String caseName,
+            final BotDescriptionRequest invalid,
+            final String field,
+            final String messageTemplate
+    ) {
         assertViolationContains(invalid, field, messageTemplate);
     }
 
-    @Test
-    @DisplayName("Field 'languageCode' @ISO6391: Invalid language code length should fail")
-    void languageCodeConstraintInvalid() {
-        final String field = "languageCode";
-        final String messageTemplate = "{ISO6391.languageCode.message}";
-        var invalid = new BotDescriptionRequest(null, "eng");
-        assertViolationContains(invalid, field, messageTemplate);
-    }
-
-    @Test
-    @DisplayName("Fields 'description' and 'languageCode' @AssertTrue: Both null value should fail")
-    void invalidWhenBothNull() {
-        final String field = "anyProvided";
-        final String messageTemplate = "{BotDescriptionRequest.isAnyProvided.AssertTrue}";
-        var invalid = new BotDescriptionRequest(null, null);
-        assertViolationContains(invalid, field, messageTemplate);
+    static Stream<Arguments> invalidBotDescriptionCases() {
+        return Stream.of(
+                Arguments.of(
+                        "ISO6391: unknown language code 'xx'",
+                        new BotDescriptionRequest(null, "xx"),
+                        "languageCode",
+                        "{ISO6391.languageCode.message}"
+                ),
+                Arguments.of(
+                        "ISO6391: invalid length 'eng'",
+                        new BotDescriptionRequest(null, "eng"),
+                        "languageCode",
+                        "{ISO6391.languageCode.message}"
+                ),
+                Arguments.of(
+                        "@AssertTrue: both description and languageCode are null",
+                        new BotDescriptionRequest(null, null),
+                        "anyProvided",
+                        "{BotDescriptionRequest.isAnyProvided.AssertTrue}"
+                )
+        );
     }
 
 }
