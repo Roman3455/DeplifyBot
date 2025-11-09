@@ -1,4 +1,4 @@
-package com.roman3455.deplifybot.configuration.jackson;
+package com.roman3455.deplifybot.configuration;
 
 import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 import com.fasterxml.jackson.annotation.JsonInclude;

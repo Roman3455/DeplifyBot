@@ -7,7 +7,7 @@ package com.roman3455.deplifybot.exception.telegram;
  */
 public abstract class TelegramApiException extends RuntimeException {
 
-    public TelegramApiException(final String message) {
+    protected TelegramApiException(final String message) {
         super(message);
     }
 

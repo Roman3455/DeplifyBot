@@ -186,16 +186,16 @@ public class BotInitializer {
      * @param actionLabel     label for logs/exceptions (e.g., {@code "description"}).
      * @param apiCall         function to perform API call (transport errors are caught and wrapped).
      * @param requestSupplier supplier to build per-locale request.
-     * @param <TReq>          request type (e.g., {@link BotDescriptionRequest}).
+     * @param <R>          request type (e.g., {@link BotDescriptionRequest}).
      * @throws BotInitializationException on transport or domain error.
      */
-    private <TReq> void setForLocales(
+    private <R> void setForLocales(
             final String actionLabel,
-            final Function<TReq, ResponseBody<Boolean>> apiCall,
-            final Function<LanguageSpec, TReq> requestSupplier
+            final Function<R, ResponseBody<Boolean>> apiCall,
+            final Function<LanguageSpec, R> requestSupplier
     ) {
         LANGUAGE_SPECS.forEach(spec -> {
-            TReq request = requestSupplier.apply(spec);
+            R request = requestSupplier.apply(spec);
             ResponseBody<Boolean> response;
             try {
                 response = apiCall.apply(request);
