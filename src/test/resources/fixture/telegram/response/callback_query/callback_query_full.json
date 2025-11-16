@@ -1,0 +1,17 @@
+{
+  "id": "123",
+  "from": {
+    "id": 456,
+    "is_bot": true,
+    "first_name": "awesome bot"
+  },
+  "message": {
+    "message_id": 1,
+    "date": "2024-03-12T13:03:13Z",
+    "chat": {
+      "id": 2,
+      "type": "supergroup"
+    }
+  },
+  "data": "callback"
+}

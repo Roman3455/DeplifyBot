@@ -1,0 +1,8 @@
+{
+  "id": 1234,
+  "type": "private",
+  "title": "Title",
+  "username": "@username",
+  "first_name": "John",
+  "is_forum": true
+}
