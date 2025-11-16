@@ -1,0 +1,11 @@
+{
+  "update_id": 123,
+  "message": {
+    "message_id": 1,
+    "date": "2024-03-12T13:03:13Z",
+    "chat": {
+      "id": 2,
+      "type": "supergroup"
+    }
+  }
+}

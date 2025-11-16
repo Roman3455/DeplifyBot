@@ -1,0 +1,8 @@
+{
+  "status": "administrator",
+  "user": {
+    "id": 123,
+    "is_bot": false,
+    "first_name": "John"
+  }
+}

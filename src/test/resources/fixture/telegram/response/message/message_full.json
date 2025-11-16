@@ -1,0 +1,21 @@
+{
+  "message_id": 1,
+  "message_thread_id": 2,
+  "from": {
+    "id": 1,
+    "is_bot": false,
+    "first_name": "John"
+  },
+  "date": "2024-03-12T13:03:13Z",
+  "chat": {
+    "id": 2,
+    "type": "supergroup"
+  },
+  "text": "message",
+  "migrate_to_chat_id": 2,
+  "migrate_from_chat_id": 1,
+  "chat_shared": {
+    "request_id": 1,
+    "chat_id": 1
+  }
+}
