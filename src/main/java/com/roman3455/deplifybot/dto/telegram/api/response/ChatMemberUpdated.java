@@ -24,12 +24,16 @@ public record ChatMemberUpdated(
 
         @NotNull
         @Valid Chat chat,
+
         @NotNull
         @Valid User from,
+
         @NotNull
         Instant date,
+
         @NotNull
         @Valid ChatMember oldChatMember,
+
         @NotNull
         @Valid ChatMember newChatMember
 

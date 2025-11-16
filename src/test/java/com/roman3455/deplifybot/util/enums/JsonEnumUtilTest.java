@@ -31,50 +31,50 @@ class JsonEnumUtilTest {
     }
 
     @Test
-    @DisplayName("Maps string value to enum constant ignoring case")
-    void mapsStringValueIgnoringCase() {
+    @DisplayName("Should map string value to enum constant ignoring case")
+    void shouldMapStringValueToEnumIgnoringCase() {
         TestEnum actual = JsonEnumUtil.fromValue(TestEnum.class, "FOO", TestEnum.UNKNOWN);
         assertEquals(TestEnum.FOO, actual);
     }
 
     @Test
-    @DisplayName("Returns default enum when value is null")
-    void returnsDefaultWhenValueIsNull() {
+    @DisplayName("Should return default enum when value is null")
+    void shouldReturnDefaultWhenValueIsNull() {
         TestEnum actual = JsonEnumUtil.fromValue(TestEnum.class, null, TestEnum.UNKNOWN);
         assertEquals(TestEnum.UNKNOWN, actual);
     }
 
     @Test
-    @DisplayName("Returns default enum when value is unknown")
-    void returnsDefaultWhenValueIsUnknown() {
+    @DisplayName("Should return default enum when value is unknown")
+    void shouldReturnDefaultWhenValueIsUnknown() {
         TestEnum actual = JsonEnumUtil.fromValue(TestEnum.class, "baz", TestEnum.UNKNOWN);
         assertEquals(TestEnum.UNKNOWN, actual);
     }
 
     @Test
-    @DisplayName("Maps value through JsonEnum static helper method")
-    void mapsValueThroughJsonEnumStaticMethod() {
+    @DisplayName("Should map value using JsonEnum static helper method")
+    void shouldMapValueThroughJsonEnumStaticMethod() {
         TestEnum actual = JsonEnum.fromValue(TestEnum.class, "bar", TestEnum.UNKNOWN);
         assertEquals(TestEnum.BAR, actual);
     }
 
     @Test
-    @DisplayName("Serializes enum using @JsonValue")
-    void serializesEnumUsingJsonValue() throws JsonProcessingException {
+    @DisplayName("Should serialize enum using @JsonValue")
+    void shouldSerializeEnumUsingJsonValue() throws JsonProcessingException {
         String actual = objectMapper.writeValueAsString(TestEnum.FOO);
         assertEquals("\"foo\"", actual);
     }
 
     @Test
-    @DisplayName("Deserializes enum using @JsonCreator")
-    void deserializesEnumUsingJsonCreator() throws JsonProcessingException {
+    @DisplayName("Should deserialize enum using @JsonCreator")
+    void shouldDeserializeEnumUsingJsonCreator() throws JsonProcessingException {
         TestEnum actual = objectMapper.readValue("\"bar\"", TestEnum.class);
         assertEquals(TestEnum.BAR, actual);
     }
 
     @Test
-    @DisplayName("Deserializes unknown value to default enum")
-    void deserializesUnknownValueToDefaultEnum() throws JsonProcessingException {
+    @DisplayName("Should deserialize unknown value to default enum")
+    void shouldDeserializeUnknownValueToDefaultEnum() throws JsonProcessingException {
         TestEnum actual = objectMapper.readValue("\"something_else\"", TestEnum.class);
         assertEquals(TestEnum.UNKNOWN, actual);
     }

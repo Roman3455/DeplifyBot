@@ -51,39 +51,57 @@ class SetWebhookRequestJsonTest {
     }
 
     @Test
-    @DisplayName("Serializes full payload with all fields present")
-    void serializeFullPayload() throws Exception {
-        var actual = json.write(fullPayload);
-        then(actual).isNotNull();
-        then(actual).isEqualToJson(new ClassPathResource(FULL_JSON));
-        then(actual).doesNotHaveJsonPath("$.maxConnections");
-        then(actual).doesNotHaveJsonPath("$.allowedUpdates");
-        then(actual).doesNotHaveJsonPath("$.dropPendingUpdates");
-        then(actual).doesNotHaveJsonPath("$.secretToken");
+    @DisplayName("Should serialize full payload object into expected JSON fixture")
+    void shouldSerializeFullPayload() throws Exception {
+        var serialized = json.write(fullPayload);
+        then(serialized).isNotNull()
+                .isEqualToJson(new ClassPathResource(FULL_JSON))
+                .doesNotHaveJsonPath("$.maxConnections")
+                .doesNotHaveJsonPath("$.allowedUpdates")
+                .doesNotHaveJsonPath("$.dropPendingUpdates")
+                .doesNotHaveJsonPath("$.secretToken");
     }
 
     @Test
-    @DisplayName("Deserializes full payload fixture into populated fields")
-    void deserializeFullPayload() throws Exception {
-        var actual = json.readObject(FULL_JSON);
-        then(actual).isNotNull();
-        then(actual).isEqualTo(fullPayload);
+    @DisplayName("Should deserialize full payload JSON fixture into expected object")
+    void shouldDeserializeFullPayload() throws Exception {
+        var deserialized = json.readObject(new ClassPathResource(FULL_JSON));
+        then(deserialized).isNotNull()
+                .isEqualTo(fullPayload);
     }
 
     @Test
-    @DisplayName("Serializes payload with 'url' only (omitting optional fields)")
-    void serializeUrlOnlyPayload() throws Exception {
-        var actual = json.write(urlOnlyPayload);
-        then(actual).isNotNull();
-        then(actual).isEqualToJson(new ClassPathResource(URL_ONLY_JSON));
+    @DisplayName("Should round-trip full payload JSON fixture")
+    void shouldRoundTripFullPayload() throws Exception {
+        var deserialized = json.readObject(new ClassPathResource(FULL_JSON));
+        var serialized = json.write(deserialized);
+        then(serialized).isNotNull()
+                .isEqualToJson(new ClassPathResource(FULL_JSON));
     }
 
     @Test
-    @DisplayName("Deserializes payload with 'url' only")
-    void deserializeUrlOnlyPayload() throws Exception {
-        var actual = json.readObject(URL_ONLY_JSON);
-        then(actual).isNotNull();
-        then(actual).isEqualTo(urlOnlyPayload);
+    @DisplayName("Should serialize 'url'-only payload object into expected JSON fixture")
+    void shouldSerializeUrlOnlyPayload() throws Exception {
+        var serialized = json.write(urlOnlyPayload);
+        then(serialized).isNotNull()
+                .isEqualToJson(new ClassPathResource(URL_ONLY_JSON));
+    }
+
+    @Test
+    @DisplayName("Should deserialize 'url'-only payload JSON fixture into expected object")
+    void shouldDeserializeUrlOnlyPayload() throws Exception {
+        var deserialized = json.readObject(new ClassPathResource(URL_ONLY_JSON));
+        then(deserialized).isNotNull()
+                .isEqualTo(urlOnlyPayload);
+    }
+
+    @Test
+    @DisplayName("Should round-trip 'url'-only payload object")
+    void shouldRoundTripUrlOnlyPayload() throws Exception {
+        var serialized = json.write(urlOnlyPayload);
+        var deserialized = json.parseObject(serialized.getJson());
+        then(deserialized).isNotNull()
+                .isEqualTo(urlOnlyPayload);
     }
 
 }

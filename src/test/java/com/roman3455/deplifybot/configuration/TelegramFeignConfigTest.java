@@ -18,8 +18,8 @@ class TelegramFeignConfigTest {
             .withUserConfiguration(TelegramFeignConfig.class);
 
     @Test
-    @DisplayName("Provides TelegramErrorDecoder bean when ObjectMapper is present")
-    void providesTelegramErrorDecoderBean() {
+    @DisplayName("Should provide TelegramErrorDecoder bean when ObjectMapper is present")
+    void shouldProvideTelegramErrorDecoderBean() {
         contextRunner.run(ctx -> {
             assertThat(ctx).hasSingleBean(ErrorDecoder.class);
             ErrorDecoder decoder = ctx.getBean(ErrorDecoder.class);
@@ -30,8 +30,8 @@ class TelegramFeignConfigTest {
     }
 
     @Test
-    @DisplayName("Context fails when no ObjectMapper bean is available")
-    void failsToStartWithoutObjectMapper() {
+    @DisplayName("Should fail to start context when no ObjectMapper bean is available")
+    void shouldFailToStartWithoutObjectMapper() {
         new ApplicationContextRunner()
                 .withUserConfiguration(TelegramFeignConfig.class)
                 .run(ctx -> {

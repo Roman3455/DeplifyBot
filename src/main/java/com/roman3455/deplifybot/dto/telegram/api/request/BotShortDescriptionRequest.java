@@ -25,6 +25,7 @@ public record BotShortDescriptionRequest(
         @Nullable
         @Size(max = SHORT_DESCRIPTION_MAX_LENGTH, message = "{Size.max.message}")
         String shortDescription,
+
         @Nullable
         @ISO6391(message = "{ISO6391.languageCode.message}")
         String languageCode

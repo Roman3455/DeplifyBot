@@ -11,28 +11,46 @@ import org.springframework.lang.Nullable;
  * Each callback query carries a unique {@code id} and information about the user who triggered it,
  * along with either the original message or an identifier for an inline message.</p>
  *
- * @param id              required. Unique identifier for this query.
- * @param from            required. The {@link User} who triggered the callback. Contains information about the
- *                        user and their account.
- * @param message         optional. The {@link Message} associated with the callback. Present only if the button
- *                        was attached to a standard chat message.
- * @param inlineMessageId optional. Identifier of the message in case the callback originated from an
- *                        inline message. Used for editing messages sent via inline mode.
- * @param data            optional. The callback data payload specified when the button was created.
+ * @param id      required. Unique identifier for this query.
+ * @param from    required. The {@link User} who triggered the callback. Contains information about the
+ *                user and their account.
+ * @param message optional. The {@link Message} associated with the callback. Present only if the button
+ *                was attached to a standard chat message.
+ * @param data    optional. The callback data payload specified when the button was created.
  * @see <a href="https://core.telegram.org/bots/api#callbackquery">Telegram API — CallbackQuery</a>
  */
 public record CallbackQuery(
 
         @NotNull
         String id,
+
         @NotNull
         @Valid User from,
+
         @Nullable
         @Valid Message message,
-        @Nullable
-        String inlineMessageId,
+
         @Nullable
         String data
 
 ) {
+
+    /**
+     * Check if callback query contains message.
+     *
+     * @return {@code true} if {@link #message} is not {@code null}.
+     */
+    public boolean hasMessage() {
+        return message != null;
+    }
+
+    /**
+     * Check if callback query contains data.
+     *
+     * @return {@code true} if {@link #data} is not {@code null}.
+     */
+    public boolean hasData() {
+        return data != null;
+    }
+
 }

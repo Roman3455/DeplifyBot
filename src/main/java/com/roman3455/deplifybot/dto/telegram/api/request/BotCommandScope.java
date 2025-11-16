@@ -17,6 +17,7 @@ public record BotCommandScope(
 
         @NotNull
         BotCommandScopeType type,
+
         @Nullable
         Long chatId
 

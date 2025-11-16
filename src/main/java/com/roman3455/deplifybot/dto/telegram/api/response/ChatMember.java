@@ -21,6 +21,7 @@ public record ChatMember(
 
         @NotNull
         ChatMemberStatusType status,
+
         @NotNull
         @Valid User user
 

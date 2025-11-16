@@ -19,6 +19,7 @@ public record MyCommand(
         @Size(max = MAX_COMMAND_LENGTH, message = "{Size.max.message}")
         @Pattern(regexp = "^[a-z0-9_]+$", message = "{MyCommand.command.Pattern.message}")
         String command,
+
         @NotBlank
         @Size(max = MAX_DESCRIPTION_LENGTH, message = "{Size.max.message}")
         String description

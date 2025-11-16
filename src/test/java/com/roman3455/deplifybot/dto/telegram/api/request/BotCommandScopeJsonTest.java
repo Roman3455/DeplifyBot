@@ -36,36 +36,55 @@ class BotCommandScopeJsonTest {
     }
 
     @Test
-    @DisplayName("Serializes full payload with both fields present")
-    void serializeFullPayload() throws Exception {
-        var actual = json.write(fullPayload);
-        then(actual).isNotNull();
-        then(actual).isEqualToJson(new ClassPathResource(FULL_JSON));
-        then(actual).doesNotHaveJsonPath("$.chatId");
+    @DisplayName("Should serialize full payload object into expected JSON fixture")
+    void shouldSerializeFullPayload() throws Exception {
+        var serialized = json.write(fullPayload);
+        then(serialized).isNotNull()
+                .isEqualToJson(new ClassPathResource(FULL_JSON))
+                .doesNotHaveJsonPath("$.chatId");
     }
 
     @Test
-    @DisplayName("Deserializes full payload fixture into populated fields")
-    void deserializeFullPayload() throws Exception {
-        var actual = json.readObject(FULL_JSON);
-        then(actual).isNotNull();
-        then(actual).isEqualTo(fullPayload);
+    @DisplayName("Should deserialize full payload JSON fixture into expected object")
+    void shouldDeserializeFullPayload() throws Exception {
+        var deserialized = json.readObject(new ClassPathResource(FULL_JSON));
+        then(deserialized).isNotNull()
+                .isEqualTo(fullPayload);
     }
 
     @Test
-    @DisplayName("Serializes payload with 'type' only (omitting optional field)")
-    void serializeTypeOnlyPayload() throws Exception {
-        var actual = json.write(typeOnlyPayload);
-        then(actual).isNotNull();
-        then(actual).isEqualToJson(new ClassPathResource(TYPE_ONLY_JSON));
+    @DisplayName("Should round-trip full payload JSON fixture")
+    void shouldRoundTripFullPayload() throws Exception {
+        var deserialized = json.readObject(new ClassPathResource(FULL_JSON));
+        var serialized = json.write(deserialized);
+        then(serialized).isNotNull()
+                .isEqualToJson(new ClassPathResource(FULL_JSON));
     }
 
     @Test
-    @DisplayName("Deserializes payload with 'type' only")
-    void deserializeTypeOnlyPayload() throws Exception {
-        var actual = json.readObject(TYPE_ONLY_JSON);
-        then(actual).isNotNull();
-        then(actual).isEqualTo(typeOnlyPayload);
+    @DisplayName("Should serialize 'type'-only payload object into expected JSON fixture")
+    void shouldSerializeTypeOnlyPayload() throws Exception {
+        var serialized = json.write(typeOnlyPayload);
+        then(serialized).isNotNull()
+                .isEqualToJson(new ClassPathResource(TYPE_ONLY_JSON))
+                .doesNotHaveJsonPath("$.chat_id");
+    }
+
+    @Test
+    @DisplayName("Should deserialize 'type'-only payload JSON fixture into expected object")
+    void shouldDeserializeTypeOnlyPayload() throws Exception {
+        var deserialized = json.readObject(new ClassPathResource(TYPE_ONLY_JSON));
+        then(deserialized).isNotNull()
+                .isEqualTo(typeOnlyPayload);
+    }
+
+    @Test
+    @DisplayName("Should round-trip 'type'-only payload object")
+    void shouldRoundTripTypeOnlyPayload() throws Exception {
+        var serialized = json.write(typeOnlyPayload);
+        var deserialized = json.parseObject(serialized.getJson());
+        then(deserialized).isNotNull()
+                .isEqualTo(typeOnlyPayload);
     }
 
 }

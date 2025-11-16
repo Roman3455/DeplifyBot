@@ -25,14 +25,19 @@ public record Chat(
 
         @NotNull
         Long id,
+
         @NotNull
         ChatType type,
+
         @Nullable
         String title,
+
         @Nullable
         String username,
+
         @Nullable
         String firstName,
+
         @Nullable
         Boolean isForum
 

@@ -16,10 +16,18 @@ import org.springframework.lang.Nullable;
 public record ResponseBody<T>(
 
         boolean ok,
-        @Nullable T result,
-        @Nullable Integer errorCode,
-        @Nullable String description,
-        @Nullable ResponseParameters parameters
+
+        @Nullable
+        T result,
+
+        @Nullable
+        Integer errorCode,
+
+        @Nullable
+        String description,
+
+        @Nullable
+        ResponseParameters parameters
 
 ) {
 
@@ -33,8 +41,11 @@ public record ResponseBody<T>(
      */
     public record ResponseParameters(
 
-            @Nullable Long migrateToChatId,
-            @Nullable Integer retryAfter
+            @Nullable
+            Long migrateToChatId,
+
+            @Nullable
+            Integer retryAfter
 
     ) {
     }

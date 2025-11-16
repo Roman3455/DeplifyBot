@@ -9,19 +9,19 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
-@DisplayName("Bean Validation of BotShortDescriptionRequest")
+@DisplayName("BotShortDescriptionRequest - bean validation")
 class BotShortDescriptionRequestValidationTest extends ValidationTestSupport {
 
     @Test
-    @DisplayName("Valid payload passes validation")
-    void validPayload() {
+    @DisplayName("Should pass validation for valid full payload")
+    void shouldPassValidationFullPayload() {
         var valid = new BotShortDescriptionRequest("Short description", "en");
         assertValid(valid);
     }
 
     @Test
-    @DisplayName("Field 'shortDescription' @Size: Value above max should fail")
-    void shortDescriptionConstraintAboveMax() {
+    @DisplayName("Should fail validation when field 'shortDescription' has value above max (@Size)")
+    void shouldFailValidationShortDescriptionAboveMaxConstraint() {
         final int outOfBoundLength = 121;
         final String field = "shortDescription";
         final String messageTemplate = "{Size.max.message}";
@@ -31,8 +31,8 @@ class BotShortDescriptionRequestValidationTest extends ValidationTestSupport {
 
     @ParameterizedTest(name = "[{index}] {0}")
     @MethodSource("invalidBotShortDescriptionCases")
-    @DisplayName("BotShortDescriptionRequest — bean validation failures")
-    void validationFails(
+    @DisplayName("Should fail validation when")
+    void shouldFailValidationLanguageCodeAndShortDescriptionParameterized(
             final String caseName,
             final BotShortDescriptionRequest invalid,
             final String field,
@@ -44,19 +44,19 @@ class BotShortDescriptionRequestValidationTest extends ValidationTestSupport {
     static Stream<Arguments> invalidBotShortDescriptionCases() {
         return Stream.of(
                 Arguments.of(
-                        "ISO6391: unknown language code 'xx'",
+                        "field 'languageCode' has unknown 2 chars value (@ISO6391)",
                         new BotShortDescriptionRequest(null, "xx"),
                         "languageCode",
                         "{ISO6391.languageCode.message}"
                 ),
                 Arguments.of(
-                        "ISO6391: invalid language code length 'eng'",
+                        "field 'languageCode' has invalid length (@ISO6391)",
                         new BotShortDescriptionRequest(null, "eng"),
                         "languageCode",
                         "{ISO6391.languageCode.message}"
                 ),
                 Arguments.of(
-                        "@AssertTrue: both shortDescription and languageCode are null",
+                        "both fields 'shortDescription' and 'languageCode' are null (@AssertTrue)",
                         new BotShortDescriptionRequest(null, null),
                         "anyProvided",
                         "{BotShortDescriptionRequest.isAnyProvided.AssertTrue}"

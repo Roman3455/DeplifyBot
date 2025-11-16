@@ -22,10 +22,13 @@ public record ChatShared(
 
         @NotNull
         Long requestId,
+
         @NotNull
         Long chatId,
+
         @Nullable
         String title,
+
         @Nullable
         String username
 

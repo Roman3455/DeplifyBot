@@ -37,52 +37,71 @@ class BotDescriptionRequestJsonTest {
     }
 
     @Test
-    @DisplayName("Serializes full payload with both fields present")
-    void serializeFullPayload() throws Exception {
-        var actual = json.write(fullPayload);
-        then(actual).isNotNull();
-        then(actual).isEqualToJson(new ClassPathResource(FULL_JSON));
-        then(actual).doesNotHaveJsonPath("$.languageCode");
+    @DisplayName("Should serialize full payload object into expected JSON fixture")
+    void shouldSerializeFullPayload() throws Exception {
+        var serialized = json.write(fullPayload);
+        then(serialized).isNotNull()
+                .isEqualToJson(new ClassPathResource(FULL_JSON))
+                .doesNotHaveJsonPath("$.languageCode");
     }
 
     @Test
-    @DisplayName("Deserializes full payload fixture into populated fields")
-    void deserializeFullPayload() throws Exception {
-        var actual = json.readObject(FULL_JSON);
-        then(actual).isNotNull();
-        then(actual).isEqualTo(fullPayload);
+    @DisplayName("Should deserialize full payload JSON fixture into expected object")
+    void shouldDeserializeFullPayload() throws Exception {
+        var deserialized = json.readObject(new ClassPathResource(FULL_JSON));
+        then(deserialized).isNotNull()
+                .isEqualTo(fullPayload);
     }
 
     @Test
-    @DisplayName("Serializes payload with 'description' only (omitting optional fields)")
-    void serializeDescriptionOnlyPayload() throws Exception {
-        var actual = json.write(descriptionOnlyPayload);
-        then(actual).isNotNull();
-        then(actual).isEqualToJson(new ClassPathResource(DESCRIPTION_ONLY_JSON));
+    @DisplayName("Should round-trip full payload JSON fixture")
+    void shouldRoundTripFullPayload() throws Exception {
+        var deserialized = json.readObject(new ClassPathResource(FULL_JSON));
+        var serialized = json.write(deserialized);
+        then(serialized).isNotNull()
+                .isEqualToJson(new ClassPathResource(FULL_JSON));
     }
 
     @Test
-    @DisplayName("Deserializes payload with 'description' only")
-    void deserializeDescriptionOnlyPayload() throws Exception {
-        var actual = json.readObject(DESCRIPTION_ONLY_JSON);
-        then(actual).isNotNull();
-        then(actual).isEqualTo(descriptionOnlyPayload);
+    @DisplayName("Should serialize 'description'-only payload object into expected JSON fixture")
+    void shouldSerializeDescriptionOnlyPayload() throws Exception {
+        var serialized = json.write(descriptionOnlyPayload);
+        then(serialized).isNotNull()
+                .isEqualToJson(new ClassPathResource(DESCRIPTION_ONLY_JSON))
+                .doesNotHaveJsonPath("$.language_code");
     }
 
     @Test
-    @DisplayName("Serializes payload with 'languageCode' only (omitting optional fields)")
-    void serializeLanguageOnlyPayload() throws Exception {
-        var actual = json.write(languageOnlyPayload);
-        then(actual).isNotNull();
-        then(actual).isEqualToJson(new ClassPathResource(LANGUAGE_ONLY_JSON));
+    @DisplayName("Should deserialize 'description'-only payload JSON fixture into expected object")
+    void shouldDeserializeDescriptionOnlyPayload() throws Exception {
+        var deserialized = json.readObject(new ClassPathResource(DESCRIPTION_ONLY_JSON));
+        then(deserialized).isNotNull()
+                .isEqualTo(descriptionOnlyPayload);
     }
 
     @Test
-    @DisplayName("Deserializes payload with 'languageCode' only")
-    void deserializeLanguageOnlyPayload() throws Exception {
-        var actual = json.readObject(LANGUAGE_ONLY_JSON);
-        then(actual).isNotNull();
-        then(actual).isEqualTo(languageOnlyPayload);
+    @DisplayName("Should serialize 'languageCode'-only payload object into expected JSON fixture")
+    void shouldSerializeLanguageOnlyPayload() throws Exception {
+        var serialized = json.write(languageOnlyPayload);
+        then(serialized).isNotNull()
+                .isEqualToJson(new ClassPathResource(LANGUAGE_ONLY_JSON));
+    }
+
+    @Test
+    @DisplayName("Should deserialize 'languageCode'-only payload JSON fixture into expected object")
+    void shouldDeserializeLanguageOnlyPayload() throws Exception {
+        var deserialized = json.readObject(new ClassPathResource(LANGUAGE_ONLY_JSON));
+        then(deserialized).isNotNull()
+                .isEqualTo(languageOnlyPayload);
+    }
+
+    @Test
+    @DisplayName("Should round-trip 'languageCode'-only payload object")
+    void shouldRoundTripLanguageCodeOnlyPayload() throws Exception {
+        var serialized = json.write(languageOnlyPayload);
+        var deserialized = json.parseObject(serialized.getJson());
+        then(deserialized).isNotNull()
+                .isEqualTo(languageOnlyPayload);
     }
 
 }
