@@ -11,15 +11,15 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.List;
 import java.util.stream.Stream;
 
-@DisplayName("Bean Validation of SetWebhookRequest")
+@DisplayName("SetWebhookRequest - bean validation")
 class SetWebhookRequestValidationTest extends ValidationTestSupport {
 
     private static final String VALID_URL = "https://ok";
     private static final String VALID_TOKEN = "A_token-123";
 
     @Test
-    @DisplayName("Valid payload passes validation")
-    void payloadPassesValidation() {
+    @DisplayName("Should pass validation for valid full payload")
+    void shouldPassValidationFullPayload() {
         final int maxConnections = 80;
         var valid = new SetWebhookRequest(
                 VALID_URL,
@@ -33,8 +33,8 @@ class SetWebhookRequestValidationTest extends ValidationTestSupport {
 
     @ParameterizedTest(name = "[{index}] {0}")
     @MethodSource("invalidWebhookUrlCases")
-    @DisplayName("SetWebhookRequest — field 'url' validation failures")
-    void urlConstraintFailures(
+    @DisplayName("Should fail validation when field 'url'")
+    void shouldFailValidationUrlParameterized(
             final String caseName,
             final SetWebhookRequest invalid,
             final String field,
@@ -46,19 +46,19 @@ class SetWebhookRequestValidationTest extends ValidationTestSupport {
     static Stream<Arguments> invalidWebhookUrlCases() {
         return Stream.of(
                 Arguments.of(
-                        "url @NotBlank: null value",
+                        "is null (@NotBlank)",
                         new SetWebhookRequest(null, null, null, null, null),
                         "url",
                         "{jakarta.validation.constraints.NotBlank.message}"
                 ),
                 Arguments.of(
-                        "url @NotBlank: blank value",
+                        "is blank (@NotBlank)",
                         new SetWebhookRequest("   ", null, null, null, null),
                         "url",
                         "{jakarta.validation.constraints.NotBlank.message}"
                 ),
                 Arguments.of(
-                        "url @Pattern: mismatch",
+                        "mismatch pattern (@Pattern)",
                         new SetWebhookRequest("http://ok", null, null, null, null),
                         "url",
                         "{SetWebhookRequest.url.Pattern.message}"
@@ -68,8 +68,8 @@ class SetWebhookRequestValidationTest extends ValidationTestSupport {
 
     @SuppressWarnings("DataFlowIssue")
     @Test
-    @DisplayName("Field 'maxConnections' @Min: Value below min should fail")
-    void maxConnectionsConstraintsBelowMin() {
+    @DisplayName("Should fail validation when field 'maxConnections' has value below min (@Min)")
+    void shouldFailValidationMaxConnectionsBelowMinConstraint() {
         final String field = "maxConnections";
         final String messageTemplate = "{Size.min.message}";
         var invalid = new SetWebhookRequest(VALID_URL, 0, null, null, null);
@@ -78,8 +78,8 @@ class SetWebhookRequestValidationTest extends ValidationTestSupport {
 
     @SuppressWarnings("DataFlowIssue")
     @Test
-    @DisplayName("Field 'maxConnections' @Max: Value above max should fail")
-    void maxConnectionsConstraints() {
+    @DisplayName("Should fail validation when field 'maxConnections' has value above max (@Max)")
+    void shouldFailValidationMaxConnectionsAboveMaxConstraint() {
         final int outOfBoundConnections = 101;
         final String field = "maxConnections";
         final String messageTemplate = "{Size.max.message}";
@@ -88,8 +88,8 @@ class SetWebhookRequestValidationTest extends ValidationTestSupport {
     }
 
     @Test
-    @DisplayName("Field 'secretToken' @Size: Value below min should fail")
-    void secretTokenConstraintsBelowMin() {
+    @DisplayName("Should fail validation when field 'secretToken' has value below min (@Size)")
+    void shouldFailValidationSecretTokenBelowMinConstraint() {
         final String field = "secretToken";
         final String messageTemplate = "{jakarta.validation.constraints.Size.message}";
         var invalid = new SetWebhookRequest(VALID_URL, null, null, null, "");
@@ -97,8 +97,8 @@ class SetWebhookRequestValidationTest extends ValidationTestSupport {
     }
 
     @Test
-    @DisplayName("Field 'secretToken' @Size: Value above max should fail")
-    void secretTokenConstraintsAboveMax() {
+    @DisplayName("Should fail validation when field 'secretToken' has value above max (@Size)")
+    void shouldFailValidationSecretTokenAboveMaxConstraint() {
         final int outOfBoundToken = 257;
         final String field = "secretToken";
         final String messageTemplate = "{jakarta.validation.constraints.Size.message}";
@@ -107,8 +107,8 @@ class SetWebhookRequestValidationTest extends ValidationTestSupport {
     }
 
     @Test
-    @DisplayName("Field 'secretToken' @Pattern: Pattern mismatch should fail")
-    void secretTokenConstraintsMismatchPattern() {
+    @DisplayName("Should fail validation when field 'secretToken' mismatch pattern (@Pattern)")
+    void shouldFailValidationSecretTokenMismatchPatternConstraint() {
         final String field = "secretToken";
         final String messageTemplate = "{SetWebhookRequest.secretToken.Pattern.message}";
         var invalid = new SetWebhookRequest(VALID_URL, null, null, null, "bad*token!");

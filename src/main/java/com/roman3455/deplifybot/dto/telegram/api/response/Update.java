@@ -24,11 +24,14 @@ public record Update(
 
         @NotNull
         @Positive
-        long updateId,
+        Long updateId,
+
         @Nullable
         @Valid Message message,
+
         @Nullable
         @Valid CallbackQuery callbackQuery,
+
         @Nullable
         @Valid ChatMemberUpdated myChatMember
 

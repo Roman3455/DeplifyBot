@@ -61,58 +61,78 @@ class ResponseBodyJsonTest {
     }
 
     @Test
-    @DisplayName("Serializes success payload")
-    void serializeSuccessPayload() throws Exception {
-        var actual = json.write(successPayload);
-        then(actual).isNotNull();
-        then(actual).isEqualToJson(new ClassPathResource(SUCCESS));
+    @DisplayName("Should serialize success payload object into expected JSON fixture")
+    void shouldSerializeSuccessPayload() throws Exception {
+        var serialized = json.write(successPayload);
+        then(serialized).isNotNull()
+                .isEqualToJson(new ClassPathResource(SUCCESS));
     }
 
     @Test
-    @DisplayName("Deserializes success payload into populated fields")
-    void deserializeSuccessPayload() throws Exception {
-        var actual = json.readObject(SUCCESS);
-        then(actual).isNotNull();
-        then(actual).isEqualTo(successPayload);
-        assertThat(actual.isError()).isFalse();
-        assertThat(actual.hasParameters()).isFalse();
+    @DisplayName("Should deserialize success payload JSON fixture into expected object")
+    void shouldDeserializeSuccessPayload() throws Exception {
+        var deserialized = json.readObject(new ClassPathResource(SUCCESS));
+        then(deserialized).isNotNull()
+                .isEqualTo(successPayload);
+        assertThat(deserialized.isError()).isFalse();
+        assertThat(deserialized.hasParameters()).isFalse();
     }
 
     @Test
-    @DisplayName("Serializes error 429 payload with 'retryAfter' parameter")
-    void serializeError429Payload() throws Exception {
-        var actual = json.write(error429Payload);
-        then(actual).isNotNull();
-        then(actual).isEqualToJson(new ClassPathResource(ERROR_429));
-        then(actual).doesNotHaveJsonPath("$.errorCode");
+    @DisplayName("Should round-trip success payload JSON fixture")
+    void shouldRoundTripSuccessPayload() throws Exception {
+        var deserialized = json.readObject(new ClassPathResource(SUCCESS));
+        var serialized = json.write(deserialized);
+        then(serialized).isNotNull()
+                .isEqualToJson(new ClassPathResource(SUCCESS));
     }
 
     @Test
-    @DisplayName("Deserializes error 429 payload into populated fields")
-    void deserializeError429Payload() throws Exception {
-        var actual = json.readObject(ERROR_429);
-        then(actual).isNotNull();
-        then(actual).isEqualTo(error429Payload);
-        assertThat(actual.isError()).isTrue();
-        assertThat(actual.hasParameters()).isTrue();
+    @DisplayName("Should serialize error 429 payload object with 'retryAfter' into expected JSON fixture")
+    void shouldSerializeError429Payload() throws Exception {
+        var serialized = json.write(error429Payload);
+        then(serialized).isNotNull()
+                .isEqualToJson(new ClassPathResource(ERROR_429))
+                .doesNotHaveJsonPath("$.errorCode")
+                .doesNotHaveJsonPath("$.parameters.retryAfter");
     }
 
     @Test
-    @DisplayName("Serializes error 404 payload with 'migrateToChatId' parameter")
-    void serializeError404Payload() throws Exception {
-        var actual = json.write(error404Payload);
-        then(actual).isNotNull();
-        then(actual).isEqualToJson(new ClassPathResource(ERROR_404));
+    @DisplayName("Should deserialize error 429 payload JSON fixture into expected object")
+    void shouldDeserializeError429Payload() throws Exception {
+        var deserialized = json.readObject(new ClassPathResource(ERROR_429));
+        then(deserialized).isNotNull()
+                .isEqualTo(error429Payload);
+        assertThat(deserialized.isError()).isTrue();
+        assertThat(deserialized.hasParameters()).isTrue();
     }
 
     @Test
-    @DisplayName("Deserializes error 404 payload into populated fields")
-    void deserializeError404Payload() throws Exception {
-        var actual = json.readObject(ERROR_404);
-        then(actual).isNotNull();
-        then(actual).isEqualTo(error404Payload);
-        assertThat(actual.isError()).isTrue();
-        assertThat(actual.hasParameters()).isTrue();
+    @DisplayName("Should serialize error 404 payload object with 'migrateToChatId' into expected JSON fixture")
+    void shouldSerializeError404Payload() throws Exception {
+        var serialized = json.write(error404Payload);
+        then(serialized).isNotNull()
+                .isEqualToJson(new ClassPathResource(ERROR_404))
+                .doesNotHaveJsonPath("$.parameters.migrateToChatId");
+    }
+
+    @Test
+    @DisplayName("Should deserialize error 404 payload JSON fixture into expected object")
+    void shouldDeserializeError404Payload() throws Exception {
+        var deserialized = json.readObject(new ClassPathResource(ERROR_404));
+        then(deserialized).isNotNull()
+                .isEqualTo(error404Payload);
+        assertThat(deserialized.isError()).isTrue();
+        assertThat(deserialized.hasParameters()).isTrue();
+    }
+
+    @Test
+    @DisplayName("Should round-trip error 404 payload object")
+    void shouldRoundTripError404OnlyPayload() throws Exception {
+        var serialized = json.write(error404Payload);
+        var deserialized = json.parseObject(serialized.getJson());
+        then(deserialized).isNotNull()
+                .isEqualTo(error404Payload);
     }
 
 }

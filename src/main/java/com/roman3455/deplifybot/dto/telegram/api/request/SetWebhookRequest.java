@@ -32,14 +32,18 @@ public record SetWebhookRequest(
         @NotBlank
         @Pattern(regexp = "^https://.+$", message = "{SetWebhookRequest.url.Pattern.message}")
         String url,
+
         @Nullable
         @Min(value = 1, message = "{Size.min.message}")
         @Max(value = MAX_HTTP_CONNECTIONS, message = "{Size.max.message}")
         Integer maxConnections,
+
         @Nullable
         List<UpdateType> allowedUpdates,
+
         @Nullable
         Boolean dropPendingUpdates,
+
         @Nullable
         @Pattern(regexp = "^[A-Za-z0-9_-]+$", message = "{SetWebhookRequest.secretToken.Pattern.message}")
         @Size(min = 1, max = MAX_TOKEN_LENGTH)

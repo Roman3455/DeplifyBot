@@ -18,8 +18,8 @@ class TelegramApiTokenServiceTest {
     private TelegramApiTokenService service;
 
     @Test
-    @DisplayName("getToken(): URL-safe Base64 without '=' and stability through the bean lifecycle")
-    void tokenFormatAndStability() {
+    @DisplayName("Should return URL-safe Base64 token without '=' and remain stable through bean lifecycle")
+    void shouldReturnUrlSafeTokenFormatAndStability() {
         final int expectedTokenLength = 43;
         String t1 = service.getToken();
         String t2 = service.getToken();
@@ -31,8 +31,8 @@ class TelegramApiTokenServiceTest {
     }
 
     @Test
-    @DisplayName("matches(): true for exact match, false for null and differences")
-    void matchesBehaviour() {
+    @DisplayName("Should return true for exact match and false for null or different values")
+    void shouldMatchesBehaviour() {
         String token = service.getToken();
         assertThat(service.matches(token)).isTrue();
         assertThat(service.matches(token + "x")).isFalse();

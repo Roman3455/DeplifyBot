@@ -24,11 +24,15 @@ public record User(
 
         @NotNull
         Long id,
+
         boolean isBot,
+
         @NotNull
         String firstName,
+
         @Nullable
         String username,
+
         @Nullable
         @ISO6391(message = "{ISO6391.languageCode.message}")
         String languageCode

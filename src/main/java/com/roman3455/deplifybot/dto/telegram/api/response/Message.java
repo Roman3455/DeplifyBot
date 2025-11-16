@@ -32,20 +32,28 @@ public record Message(
 
         @NotNull
         Long messageId,
+
         @Nullable
         Long messageThreadId,
+
         @Nullable
         @Valid User from,
+
         @NotNull
         Instant date,
+
         @NotNull
         @Valid Chat chat,
+
         @Nullable
         String text,
+
         @Nullable
         Long migrateToChatId,
+
         @Nullable
         Long migrateFromChatId,
+
         @Nullable
         @Valid ChatShared chatShared
 

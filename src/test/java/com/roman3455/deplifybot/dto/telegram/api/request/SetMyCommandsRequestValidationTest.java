@@ -13,15 +13,15 @@ import java.util.stream.IntStream;
 
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 
-@DisplayName("Bean Validation of SetMyCommandsRequest")
+@DisplayName("SetMyCommandsRequest - bean validation")
 class SetMyCommandsRequestValidationTest extends ValidationTestSupport {
 
     private static final ResourceBundle BUNDLE = ResourceBundle
             .getBundle("i18n/messages", LocaleContextHolder.getLocale());
 
     @Test
-    @DisplayName("Valid full payload passes validation")
-    void validPayloadAllFields() {
+    @DisplayName("Should pass validation for valid full payload")
+    void shouldPassValidationFullPayload() {
         var valid = new SetMyCommandsRequest(
                 List.of(new MyCommand("c", "d")),
                 new BotCommandScope(BotCommandScopeType.DEFAULT, null),
@@ -31,8 +31,8 @@ class SetMyCommandsRequestValidationTest extends ValidationTestSupport {
     }
 
     @Test
-    @DisplayName("Field 'commands' @NotEmpty: Empty list should fail")
-    void commandsConstraintEmpty() {
+    @DisplayName("Should fail validation when field 'commands' has empty <List> (@NotEmpty)")
+    void shouldFailValidationCommandsEmptyConstraint() {
         final String field = "commands";
         final String messageTemplate = "{jakarta.validation.constraints.NotEmpty.message}";
         var invalid = new SetMyCommandsRequest(List.of(), null, null);
@@ -40,8 +40,8 @@ class SetMyCommandsRequestValidationTest extends ValidationTestSupport {
     }
 
     @Test
-    @DisplayName("Field 'commands' @Size: Value above max should fail")
-    void commandsConstraintAboveMax() {
+    @DisplayName("Should fail validation when field 'commands' has value above max (@Size)")
+    void shouldFailValidationCommandsAboveMaxConstraint() {
         final int outOfBoundValue = 101;
         final String field = "commands";
         final String messageTemplate = "{Size.max.message}";
@@ -56,8 +56,8 @@ class SetMyCommandsRequestValidationTest extends ValidationTestSupport {
     }
 
     @Test
-    @DisplayName("Field 'commands' @Valid: Invalid MyCommand should fail")
-    void commandsConstraintInvalidCommand() {
+    @DisplayName("Should fail validation when field 'commands' has invalid object (@Valid)")
+    void shouldFailValidationCommandsInvalidCommandConstraint() {
         final String field = "commands[0].command";
         final String messageTemplate = "{jakarta.validation.constraints.NotBlank.message}";
         var invalidCommands = List.of(new MyCommand("  ", "description"));
@@ -66,8 +66,8 @@ class SetMyCommandsRequestValidationTest extends ValidationTestSupport {
     }
 
     @Test
-    @DisplayName("Field 'scope' @Valid: Invalid BotCommandScope should fail")
-    void scopeConstraintInvalidBotCommandScope() {
+    @DisplayName("Should fail validation when field 'scope' has invalid object (@Valid)")
+    void shouldFailValidationScopeInvalidBotCommandScopeConstraint() {
         final String field = "scope.type";
         final String messageTemplate = "{jakarta.validation.constraints.NotNull.message}";
         var invalidBotCommandScope = new BotCommandScope(null, null);
@@ -80,8 +80,8 @@ class SetMyCommandsRequestValidationTest extends ValidationTestSupport {
     }
 
     @Test
-    @DisplayName("Field 'languageCode' @ISO6391: Unexisted language code should fail")
-    void languageCodeConstraintUnexisted() {
+    @DisplayName("Should fail validation when field 'languageCode' has unknown 2 chars value (@ISO6391)")
+    void shouldFailValidationLanguageCodeUnexistedConstraint() {
         final String field = "languageCode";
         final String messageTemplate = "{ISO6391.languageCode.message}";
         var invalid = new SetMyCommandsRequest(
@@ -93,8 +93,8 @@ class SetMyCommandsRequestValidationTest extends ValidationTestSupport {
     }
 
     @Test
-    @DisplayName("Field 'languageCode' @ISO6391: Invalid language code length should fail")
-    void languageCodeConstraintInvalid() {
+    @DisplayName("Should fail validation when field 'languageCode' has invalid length (@ISO6391)")
+    void shouldFailValidationLanguageCodeInvalidConstraint() {
         final String field = "languageCode";
         final String messageTemplate = "{ISO6391.languageCode.message}";
         var invalid = new SetMyCommandsRequest(
@@ -106,8 +106,8 @@ class SetMyCommandsRequestValidationTest extends ValidationTestSupport {
     }
 
     @Test
-    @DisplayName("Field 'commands' @NotEmpty: Null value should throw IllegalArgumentException")
-    void commandsConstraintNullValue() {
+    @DisplayName("Should throw IllegalArgumentException when field 'commands' is null (@NotEmpty)")
+    void shouldFailValidationCommandsNullValueConstraint() {
         final String field = "commands";
         thenThrownBy(() -> new SetMyCommandsRequest(null, null, null))
                 .isInstanceOf(IllegalArgumentException.class)

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.io.ClassPathResource;
 
 import static org.assertj.core.api.BDDAssertions.then;
 
@@ -20,6 +21,8 @@ class UpdateTypeJsonTest {
     private JacksonTester<Envelope> json;
 
     private static final String SOURCE = "/fixture/telegram/enums/update_type/";
+    private static final String MESSAGE_JSON = SOURCE + "update_type_message_value.json";
+    private static final String UNKNOWN_JSON = SOURCE + "update_type_unknown_value.json";
 
     private record Envelope(UpdateType type) {
     }
@@ -28,9 +31,9 @@ class UpdateTypeJsonTest {
     @DisplayName("Should serialize enum to string value using @JsonValue")
     void shouldSerializeEnumAsStringValue() throws Exception {
         var given = new Envelope(UpdateType.MESSAGE);
-        var actual = json.write(given);
-        then(actual).isNotNull();
-        then(actual)
+        var serialized = json.write(given);
+        then(serialized).isNotNull()
+                .isEqualToJson(new ClassPathResource(MESSAGE_JSON))
                 .extractingJsonPathValue("$.type")
                 .isEqualTo(UpdateType.MESSAGE.getValue());
     }
@@ -38,21 +41,19 @@ class UpdateTypeJsonTest {
     @Test
     @DisplayName("Should deserialize string value to enum using @JsonCreator")
     void shouldDeserializeStringToEnum() throws Exception {
-        var actual = json.readObject(SOURCE + "update_type_message_value.json");
-        then(actual).isNotNull();
-        then(actual.type).isEqualTo(UpdateType.MESSAGE);
+        var deserialized = json.readObject(new ClassPathResource(MESSAGE_JSON));
+        then(deserialized).isNotNull();
+        then(deserialized.type()).isEqualTo(UpdateType.MESSAGE);
     }
 
     @Test
     @DisplayName("Should deserialize unknown value and serialize it back as 'unknown'")
     void shouldRoundTripUnknownValue() throws Exception {
-        var serialized = json.readObject(SOURCE + "update_type_unknown_value.json");
-        var deserialized = json.write(serialized);
-        then(serialized).isNotNull();
+        var deserialized = json.readObject(new ClassPathResource(UNKNOWN_JSON));
         then(deserialized).isNotNull();
-        then(serialized.type).isEqualTo(UpdateType.UNKNOWN);
-        then(deserialized)
-                .extractingJsonPathStringValue("$.type")
+        then(deserialized.type()).isEqualTo(UpdateType.UNKNOWN);
+        var serialized = json.write(deserialized);
+        then(serialized).extractingJsonPathStringValue("$.type")
                 .isEqualTo(UpdateType.UNKNOWN.getValue());
     }
 

@@ -31,19 +31,28 @@ class MyCommandJsonTest {
     }
 
     @Test
-    @DisplayName("Serializes full payload with all fields present")
-    void serializeFullPayload() throws Exception {
-        var actual = json.write(fullPayload);
-        then(actual).isNotNull();
-        then(actual).isEqualToJson(new ClassPathResource(FULL_JSON));
+    @DisplayName("Should serialize full payload object into expected JSON fixture")
+    void shouldSerializeFullPayload() throws Exception {
+        var serialized = json.write(fullPayload);
+        then(serialized).isNotNull()
+                .isEqualToJson(new ClassPathResource(FULL_JSON));
     }
 
     @Test
-    @DisplayName("Deserializes full payload fixture into populated fields")
-    void deserializeFullPayload() throws Exception {
-        var actual = json.readObject(FULL_JSON);
-        then(actual).isNotNull();
-        then(actual).isEqualTo(fullPayload);
+    @DisplayName("Should deserialize full payload JSON fixture into expected object")
+    void shouldDeserializeFullPayload() throws Exception {
+        var deserialized = json.readObject(new ClassPathResource(FULL_JSON));
+        then(deserialized).isNotNull()
+                .isEqualTo(fullPayload);
+    }
+
+    @Test
+    @DisplayName("Should round-trip full payload JSON fixture")
+    void shouldRoundTripFullPayload() throws Exception {
+        var deserialized = json.readObject(new ClassPathResource(FULL_JSON));
+        var serialized = json.write(deserialized);
+        then(serialized).isNotNull()
+                .isEqualToJson(new ClassPathResource(FULL_JSON));
     }
 
 }

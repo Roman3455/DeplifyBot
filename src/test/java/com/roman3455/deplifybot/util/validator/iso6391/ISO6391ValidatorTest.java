@@ -11,27 +11,27 @@ class ISO6391ValidatorTest extends ValidationTestSupport {
     }
 
     @Test
-    @DisplayName("Allows null language code")
-    void allowsNullLanguageCode() {
+    @DisplayName("Should allow null language code")
+    void shouldAllowNullLanguageCode() {
         assertValid(new TestDto(null));
     }
 
     @Test
-    @DisplayName("Allows empty language code")
-    void allowsEmptyLanguageCode() {
+    @DisplayName("Should allow empty language code")
+    void shouldAllowEmptyLanguageCode() {
         assertValid(new TestDto(""));
     }
 
     @Test
-    @DisplayName("Accepts valid ISO 639-1 codes regardless of case")
-    void acceptsValidLanguageCodes() {
+    @DisplayName("Should accept valid ISO 639-1 codes regardless of case")
+    void shouldAcceptValidLanguageCodes() {
         assertValid(new TestDto("en"));
         assertValid(new TestDto("RU"));
     }
 
     @Test
-    @DisplayName("Rejects invalid language codes")
-    void rejectsInvalidLanguageCodes() {
+    @DisplayName("Should reject invalid language codes")
+    void shouldRejectInvalidLanguageCodes() {
         final String field = "languageCode";
         final String messagePart = "Invalid ISO 639-1 language code";
         assertViolationContains(new TestDto("x"), field, messagePart);

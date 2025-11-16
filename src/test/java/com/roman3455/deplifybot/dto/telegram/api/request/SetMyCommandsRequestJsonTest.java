@@ -44,36 +44,54 @@ class SetMyCommandsRequestJsonTest {
     }
 
     @Test
-    @DisplayName("Serializes full payload with all fields present")
-    void serializeFullPayload() throws Exception {
-        var actual = json.write(fullPayload);
-        then(actual).isNotNull();
-        then(actual).isEqualToJson(new ClassPathResource(FULL_JSON));
-        then(actual).doesNotHaveJsonPath("$.languageCode");
+    @DisplayName("Should serialize full payload object into expected JSON fixture")
+    void shouldSerializeFullPayload() throws Exception {
+        var serialized = json.write(fullPayload);
+        then(serialized).isNotNull()
+                .isEqualToJson(new ClassPathResource(FULL_JSON))
+                .doesNotHaveJsonPath("$.languageCode");
     }
 
     @Test
-    @DisplayName("Deserializes full payload fixture into populated fields")
-    void deserializeFullPayload() throws Exception {
-        var actual = json.readObject(FULL_JSON);
-        then(actual).isNotNull();
-        then(actual).isEqualTo(fullPayload);
+    @DisplayName("Should deserialize full payload JSON fixture into expected object")
+    void shouldDeserializeFullPayload() throws Exception {
+        var deserialized = json.readObject(new ClassPathResource(FULL_JSON));
+        then(deserialized).isNotNull()
+                .isEqualTo(fullPayload);
     }
 
     @Test
-    @DisplayName("Serializes payload with 'commands' only (omitting optional fields)")
-    void serializeCommandsOnlyPayload() throws Exception {
-        var actual = json.write(commandsOnlyPayload);
-        then(actual).isNotNull();
-        then(actual).isEqualToJson(new ClassPathResource(COMMANDS_ONLY_JSON));
+    @DisplayName("Should round-trip full payload JSON fixture")
+    void shouldRoundTripFullPayload() throws Exception {
+        var deserialized = json.readObject(new ClassPathResource(FULL_JSON));
+        var serialized = json.write(deserialized);
+        then(serialized).isNotNull()
+                .isEqualToJson(new ClassPathResource(FULL_JSON));
     }
 
     @Test
-    @DisplayName("Deserializes payload with 'commands' only")
-    void deserializeCommandsOnlyPayload() throws Exception {
-        var actual = json.readObject(COMMANDS_ONLY_JSON);
-        then(actual).isNotNull();
-        then(actual).isEqualTo(commandsOnlyPayload);
+    @DisplayName("Should serialize 'commands'-only payload object into expected JSON fixture")
+    void shouldSerializeCommandsOnlyPayload() throws Exception {
+        var serialized = json.write(commandsOnlyPayload);
+        then(serialized).isNotNull()
+                .isEqualToJson(new ClassPathResource(COMMANDS_ONLY_JSON));
+    }
+
+    @Test
+    @DisplayName("Should deserialize 'commands'-only payload JSON fixture into expected object")
+    void shouldDeserializeCommandsOnlyPayload() throws Exception {
+        var deserialized = json.readObject(new ClassPathResource(COMMANDS_ONLY_JSON));
+        then(deserialized).isNotNull()
+                .isEqualTo(commandsOnlyPayload);
+    }
+
+    @Test
+    @DisplayName("Should round-trip 'commands'-only payload object")
+    void shouldRoundTripCommandsOnlyPayload() throws Exception {
+        var serialized = json.write(commandsOnlyPayload);
+        var deserialized = json.parseObject(serialized.getJson());
+        then(deserialized).isNotNull()
+                .isEqualTo(commandsOnlyPayload);
     }
 
 }

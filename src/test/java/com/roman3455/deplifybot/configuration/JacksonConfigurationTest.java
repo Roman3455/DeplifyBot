@@ -49,29 +49,29 @@ class JacksonConfigurationTest {
     }
 
     @Test
-    @DisplayName("Serializes property names using snake_case")
-    void serializesPropertyNamesUsingSnakeCase() throws Exception {
+    @DisplayName("Should serialize property names using snake_case")
+    void shouldSerializePropertyNamesUsingSnakeCase() throws Exception {
         var actual = objectMapper.writeValueAsString(sampleObject);
         assertThat(actual).contains("first_name");
     }
 
     @Test
-    @DisplayName("Excludes null fields from serialized JSON")
-    void excludesNullFieldsFromSerializedJson() throws Exception {
+    @DisplayName("Should exclude null fields from serialized JSON")
+    void shouldExcludeNullFieldsFromSerializedJson() throws Exception {
         var actual = objectMapper.writeValueAsString(sampleObject);
         assertThat(actual).doesNotContain("nullable");
     }
 
     @Test
-    @DisplayName("Serializes Java time fields in ISO-8601 format")
-    void serializesJavaTimeFieldsInIsoFormat() throws Exception {
+    @DisplayName("Should serialize Java time fields in ISO-8601 format")
+    void shouldSerializeJavaTimeFieldsInIsoFormat() throws Exception {
         var actual = objectMapper.writeValueAsString(sampleObject);
         assertThat(actual).contains("2025-01-01");
     }
 
     @Test
-    @DisplayName("Deserializes unknown enum values as default")
-    void deserializesUnknownEnumValuesAsDefault() throws Exception {
+    @DisplayName("Should deserialize unknown enum values as default")
+    void shouldDeserializeUnknownEnumValuesAsDefault() throws Exception {
         var given = """
                 {"first_name":"John","created_at":"2025-01-01","status":"INVALID"}
                 """;

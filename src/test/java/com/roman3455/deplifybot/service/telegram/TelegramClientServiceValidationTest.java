@@ -55,40 +55,40 @@ class TelegramClientServiceValidationTest {
     private TelegramClient client;
 
     @Test
-    @DisplayName("setMyDescription(null) -> ConstraintViolationException; client is not called")
-    void setMyDescriptionNullThrowsViolation() {
+    @DisplayName("Should throw CVE when setMyDescription(null); Client is not called")
+    void shouldThrowCVEWhenSetMyDescriptionIsNull() {
         assertThatThrownBy(() -> service.setMyDescription(null))
                 .isInstanceOf(ConstraintViolationException.class);
         verifyNoInteractions(client);
     }
 
     @Test
-    @DisplayName("setMyShortDescription(null) -> ConstraintViolationException; client is not called")
-    void setMyShortDescriptionNullThrowsViolation() {
+    @DisplayName("Should throw CVE when setMyShortDescription(null); Client is not called")
+    void shouldThrowCVEWhenSetMyShortDescriptionIsNull() {
         assertThatThrownBy(() -> service.setMyShortDescription(null))
                 .isInstanceOf(ConstraintViolationException.class);
         verifyNoInteractions(client);
     }
 
     @Test
-    @DisplayName("setMyCommands(null) -> ConstraintViolationException; client is not called")
-    void setMyCommandsNullThrowsViolation() {
+    @DisplayName("Should throw CVE when setMyCommands(null); Client is not called")
+    void shouldThrowCVEWhenSetMyCommandsIsNull() {
         assertThatThrownBy(() -> service.setMyCommands(null))
                 .isInstanceOf(ConstraintViolationException.class);
         verifyNoInteractions(client);
     }
 
     @Test
-    @DisplayName("setWebhook(null) -> ConstraintViolationException; client is not called")
-    void setWebhookNullThrowsViolation() {
+    @DisplayName("Should throw CVE when setWebhook(null); Client is not called")
+    void shouldThrowCVEWhenSetWebhookIsNull() {
         assertThatThrownBy(() -> service.setWebhook(null))
                 .isInstanceOf(ConstraintViolationException.class);
         verifyNoInteractions(client);
     }
 
     @Test
-    @DisplayName("setMyDescription: ConstraintViolationException (violates @ISO6391); client is not called")
-    void setMyDescriptionInvalidLanguageCodeThrowsViolation() {
+    @DisplayName("Should throw CVE for setMyDescription() when @ISO6391 is violated; Client is not called")
+    void shouldThrowCVEWhenSetMyDescriptionHasInvalidLanguageCode() {
         var expected = "{ISO6391.languageCode.message}";
         var invalid = new BotDescriptionRequest("desc", "eng");
         assertThatThrownBy(() -> service.setMyDescription(invalid))
@@ -102,8 +102,8 @@ class TelegramClientServiceValidationTest {
     }
 
     @Test
-    @DisplayName("setMyShortDescription: ConstraintViolationException (violates @AssertTrue); client is not called")
-    void setMyShortDescriptionNullFieldsThrowsViolation() {
+    @DisplayName("Should throw CVE for setMyShortDescription() when @AssertTrue is violated; Client is not called")
+    void shouldThrowCVEWhenSetMyShortDescriptionHasNullFields() {
         var expected = "{BotShortDescriptionRequest.isAnyProvided.AssertTrue}";
         var invalid = new BotShortDescriptionRequest(null, null);
         assertThatThrownBy(() -> service.setMyShortDescription(invalid))
@@ -117,8 +117,8 @@ class TelegramClientServiceValidationTest {
     }
 
     @Test
-    @DisplayName("setMyCommands: ConstraintViolationException (violates @NotEmpty); client is not called")
-    void setMyCommandsEmptyListThrowsViolation() {
+    @DisplayName("Should throw CVE for setMyCommands() when @NotEmpty is violated; Client is not called")
+    void shouldThrowCVEWhenSetMyCommandsHasEmptyList() {
         var expected = "{jakarta.validation.constraints.NotEmpty.message}";
         var invalid = new SetMyCommandsRequest(List.of(), null, null);
         assertThatThrownBy(() -> service.setMyCommands(invalid))
@@ -132,8 +132,8 @@ class TelegramClientServiceValidationTest {
     }
 
     @Test
-    @DisplayName("setWebhook: ConstraintViolationException (violates @Pattern); client is not called")
-    void setWebhookMismatchUlrThrowsViolation() {
+    @DisplayName("Should throw CVE for setWebhook() when @Pattern is violated; Client is not called")
+    void shouldThrowCVEWhenSetWebhookHasMismatchUrl() {
         var expected = "{SetWebhookRequest.url.Pattern.message}";
         var invalid = new SetWebhookRequest("http://ok", null, null, null, null);
         assertThatThrownBy(() -> service.setWebhook(invalid))

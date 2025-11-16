@@ -29,8 +29,10 @@ public record SetMyCommandsRequest(
         @NotEmpty
         @Size(max = MAX_COMMANDS_AMOUNT, message = "{Size.max.message}")
         List<@Valid MyCommand> commands,
+
         @Nullable
         @Valid BotCommandScope scope,
+
         @Nullable
         @ISO6391(message = "{ISO6391.languageCode.message}")
         String languageCode

@@ -35,8 +35,8 @@ class TelegramClientServiceTest {
     private TelegramClientServiceImpl service;
 
     @Test
-    @DisplayName("setMyDescription: delegates to Feign client and returns expected response")
-    void setMyDescriptionDelegatesToFeignClientAndReturnsExpectedResponse() {
+    @DisplayName("Should delegate 'setMyDescription()' to Feign client and return expected response")
+    void shouldDelegateSetMyDescriptionToFeignClientAndReturnExpectedResponse() {
         var req = new BotDescriptionRequest("description", "en");
         var expected = new ResponseBody<>(true, true, null, null, null);
         when(client.setMyDescription(req)).thenReturn(expected);
@@ -47,8 +47,8 @@ class TelegramClientServiceTest {
     }
 
     @Test
-    @DisplayName("setMyShortDescription: delegates to Feign client and returns expected response")
-    void setMyShortDescriptionDelegatesToClientAndReturnsResponse() {
+    @DisplayName("Should delegate 'setMyShortDescription()' to Feign client and return expected response")
+    void shouldDelegateSetMyShortDescriptionToClientAndReturnResponse() {
         var req = new BotShortDescriptionRequest("short description", "en");
         var expected = new ResponseBody<>(true, true, null, null, null);
         when(client.setMyShortDescription(req)).thenReturn(expected);
@@ -59,8 +59,8 @@ class TelegramClientServiceTest {
     }
 
     @Test
-    @DisplayName("setMyCommands: delegates to Feign client and returns expected response")
-    void setMyCommandsDelegatesToClientAndReturnsResponse() {
+    @DisplayName("Should delegate 'setMyCommands()' to Feign client and return expected response")
+    void shouldDelegateSetMyCommandsToClientAndReturnResponse() {
         var req = new SetMyCommandsRequest(List.of(new MyCommand("c", "d")), null, null);
         var expected = new ResponseBody<>(true, true, null, null, null);
         when(client.setMyCommands(req)).thenReturn(expected);
@@ -71,8 +71,8 @@ class TelegramClientServiceTest {
     }
 
     @Test
-    @DisplayName("setWebhook: delegates to Feign client and returns expected response")
-    void setWebhookDelegatesToClientAndReturnsResponse() {
+    @DisplayName("Should delegate 'setWebhook()' to Feign client and return expected response")
+    void shouldDelegateSetWebhookToClientAndReturnResponse() {
         var req = new SetWebhookRequest("https://ok", null, null, null, null);
         var expected = new ResponseBody<>(true, true, null, null, null);
         when(client.setWebhook(req)).thenReturn(expected);
@@ -83,8 +83,8 @@ class TelegramClientServiceTest {
     }
 
     @Test
-    @DisplayName("setMyCommands: propagates TelegramTooManyRequestsException from Feign client")
-    void setMyCommandsPropagatesClientException() {
+    @DisplayName("Should propagate TelegramTooManyRequestsException from Feign client in 'setMyCommands()'")
+    void shouldPropagateTelegramTooManyRequestsExceptionInSetMyCommands() {
         var req = new SetMyCommandsRequest(List.of(), null, null);
         var err = new TelegramTooManyRequestsException("429", 1);
         when(client.setMyCommands(req)).thenThrow(err);
