@@ -1,21 +1,35 @@
 package com.roman3455.deplifybot.service.telegram;
 
+import com.roman3455.deplifybot.configuration.TelegramBotProperties;
 import com.roman3455.deplifybot.service.telegram.impl.TelegramApiTokenServiceImpl;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(classes = {TelegramApiTokenServiceTest.class})
-@Import(TelegramApiTokenServiceImpl.class)
 @DisplayName("TelegramApiTokenService — Token format & behavior test")
 class TelegramApiTokenServiceTest {
 
-    @Autowired
     private TelegramApiTokenService service;
+
+    @BeforeEach
+    void setUp() {
+        final int bytesSize = 32;
+        final int maxConnections = 40;
+        TelegramBotProperties properties = new TelegramBotProperties(
+                List.of("message"),
+                new TelegramBotProperties.Connections(maxConnections),
+                new TelegramBotProperties.Webhook(
+                        "https://example.com/webhook",
+                        "/telegram/webhook"
+                ),
+                new TelegramBotProperties.Token(bytesSize)
+        );
+        service = new TelegramApiTokenServiceImpl(properties);
+    }
 
     @Test
     @DisplayName("Should return URL-safe Base64 token without '=' and remain stable through bean lifecycle")

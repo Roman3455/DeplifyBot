@@ -16,7 +16,6 @@ import com.roman3455.deplifybot.service.telegram.command.CommandType;
 import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.MessageSource;
@@ -69,9 +68,7 @@ public class BotInitializer {
     private final MessageSource messageSource;
     private final TelegramClientService clientService;
     private final TelegramApiTokenService tokenService;
-
-    private final String botUrl;
-    private final int maxConnections;
+    private final TelegramBotProperties botProperties;
 
     /**
      * Value object describing one locale variant to be applied to Telegram API.
@@ -87,15 +84,12 @@ public class BotInitializer {
             final MessageSource messageSource,
             final TelegramClientService clientService,
             final TelegramApiTokenService tokenService,
-            @Value("${telegram.bot.webhook.url}") final String webhookUrl,
-            @Value("${telegram.bot.webhook.path}") final String webhookPath,
-            @Value("${telegram.bot.connections.value}") final int maxConnections
+            final TelegramBotProperties botProperties
     ) {
         this.messageSource = messageSource;
         this.clientService = clientService;
         this.tokenService = tokenService;
-        this.botUrl = webhookUrl + webhookPath;
-        this.maxConnections = maxConnections;
+        this.botProperties = botProperties;
     }
 
     /**
@@ -165,7 +159,9 @@ public class BotInitializer {
      * @throws BotInitializationException on transport or domain error.
      */
     private void setBotWebhook() {
-        var request = new SetWebhookRequest(botUrl, maxConnections, null, true, tokenService.getToken());
+        String botUrl = botProperties.webhook().url() + botProperties.webhook().path();
+        int connections = botProperties.connections().value();
+        var request = new SetWebhookRequest(botUrl, connections, null, true, tokenService.getToken());
         ResponseBody<Boolean> responseBody;
         try {
             responseBody = clientService.setWebhook(request);
