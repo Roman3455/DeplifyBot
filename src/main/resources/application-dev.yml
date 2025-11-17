@@ -31,4 +31,4 @@ telegram:
     webhook:
       url: ${DEV_TELEGRAM_WEBHOOK_URL}
     init:
-      enabled: false
+      enabled: true

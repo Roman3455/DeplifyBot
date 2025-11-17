@@ -25,6 +25,10 @@ spring:
 
 telegram:
   bot:
+    allowed-update-types:
+      - message
+      - callback_query
+      - my_chat_member
     connections:
       value: 40
     webhook:

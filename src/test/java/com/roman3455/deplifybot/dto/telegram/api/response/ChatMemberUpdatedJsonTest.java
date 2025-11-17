@@ -11,11 +11,13 @@ import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.Instant;
 
 import static org.assertj.core.api.BDDAssertions.then;
 
+@ActiveProfiles("test")
 @JsonTest
 @Import(JacksonConfiguration.class)
 @DisplayName("ChatMemberUpdated — JSON serialization & deserialization")
