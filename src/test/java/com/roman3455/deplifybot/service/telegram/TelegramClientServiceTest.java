@@ -1,11 +1,15 @@
 package com.roman3455.deplifybot.service.telegram;
 
 import com.roman3455.deplifybot.client.TelegramClient;
+import com.roman3455.deplifybot.dto.telegram.api.enums.ChatType;
 import com.roman3455.deplifybot.dto.telegram.api.request.BotDescriptionRequest;
 import com.roman3455.deplifybot.dto.telegram.api.request.BotShortDescriptionRequest;
 import com.roman3455.deplifybot.dto.telegram.api.request.MyCommand;
+import com.roman3455.deplifybot.dto.telegram.api.request.SendMessageRequest;
 import com.roman3455.deplifybot.dto.telegram.api.request.SetMyCommandsRequest;
 import com.roman3455.deplifybot.dto.telegram.api.request.SetWebhookRequest;
+import com.roman3455.deplifybot.dto.telegram.api.response.Chat;
+import com.roman3455.deplifybot.dto.telegram.api.response.Message;
 import com.roman3455.deplifybot.dto.telegram.api.response.ResponseBody;
 import com.roman3455.deplifybot.exception.telegram.TelegramTooManyRequestsException;
 import com.roman3455.deplifybot.service.telegram.impl.TelegramClientServiceImpl;
@@ -16,6 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.Instant;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,7 +42,10 @@ class TelegramClientServiceTest {
     @Test
     @DisplayName("Should delegate 'setMyDescription()' to Feign client and return expected response")
     void shouldDelegateSetMyDescriptionToFeignClientAndReturnExpectedResponse() {
-        var req = new BotDescriptionRequest("description", "en");
+        var req = new BotDescriptionRequest(
+                "description",
+                "en"
+        );
         var expected = new ResponseBody<>(true, true, null, null, null);
         when(client.setMyDescription(req)).thenReturn(expected);
         var actual = service.setMyDescription(req);
@@ -49,7 +57,10 @@ class TelegramClientServiceTest {
     @Test
     @DisplayName("Should delegate 'setMyShortDescription()' to Feign client and return expected response")
     void shouldDelegateSetMyShortDescriptionToClientAndReturnResponse() {
-        var req = new BotShortDescriptionRequest("short description", "en");
+        var req = new BotShortDescriptionRequest(
+                "short description",
+                "en"
+        );
         var expected = new ResponseBody<>(true, true, null, null, null);
         when(client.setMyShortDescription(req)).thenReturn(expected);
         var actual = service.setMyShortDescription(req);
@@ -61,7 +72,11 @@ class TelegramClientServiceTest {
     @Test
     @DisplayName("Should delegate 'setMyCommands()' to Feign client and return expected response")
     void shouldDelegateSetMyCommandsToClientAndReturnResponse() {
-        var req = new SetMyCommandsRequest(List.of(new MyCommand("c", "d")), null, null);
+        var req = new SetMyCommandsRequest(
+                List.of(new MyCommand("c", "d")),
+                null,
+                null
+        );
         var expected = new ResponseBody<>(true, true, null, null, null);
         when(client.setMyCommands(req)).thenReturn(expected);
         var actual = service.setMyCommands(req);
@@ -71,9 +86,31 @@ class TelegramClientServiceTest {
     }
 
     @Test
+    @DisplayName("Should propagate TelegramTooManyRequestsException from Feign client in 'setMyCommands()'")
+    void shouldPropagateTelegramTooManyRequestsExceptionInSetMyCommands() {
+        var req = new SetMyCommandsRequest(
+                List.of(),
+                null,
+                null
+        );
+        var err = new TelegramTooManyRequestsException("429", 1);
+        when(client.setMyCommands(req)).thenThrow(err);
+        assertThatThrownBy(() -> service.setMyCommands(req))
+                .isSameAs(err);
+        verify(client).setMyCommands(req);
+        verifyNoMoreInteractions(client);
+    }
+
+    @Test
     @DisplayName("Should delegate 'setWebhook()' to Feign client and return expected response")
     void shouldDelegateSetWebhookToClientAndReturnResponse() {
-        var req = new SetWebhookRequest("https://ok", null, null, null, null);
+        var req = new SetWebhookRequest(
+                "https://ok",
+                null,
+                null,
+                null,
+                null
+        );
         var expected = new ResponseBody<>(true, true, null, null, null);
         when(client.setWebhook(req)).thenReturn(expected);
         var actual = service.setWebhook(req);
@@ -83,15 +120,46 @@ class TelegramClientServiceTest {
     }
 
     @Test
-    @DisplayName("Should propagate TelegramTooManyRequestsException from Feign client in 'setMyCommands()'")
-    void shouldPropagateTelegramTooManyRequestsExceptionInSetMyCommands() {
-        var req = new SetMyCommandsRequest(List.of(), null, null);
-        var err = new TelegramTooManyRequestsException("429", 1);
-        when(client.setMyCommands(req)).thenThrow(err);
-        assertThatThrownBy(() -> service.setMyCommands(req))
-                .isSameAs(err);
-        verify(client).setMyCommands(req);
+    @DisplayName("Should delegate 'sendMessage()' to Feign client and return expected response")
+    void shouldDelegateSendMessageToClientAndReturnResponse() {
+        var req = new SendMessageRequest(
+                "123",
+                null,
+                "text",
+                null,
+                null,
+                null
+        );
+        var expected = expectedSendMessageResponse();
+        when(client.sendMessage(req)).thenReturn(expected);
+        var actual = service.sendMessage(req);
+        assertThat(actual).isSameAs(expected);
+        verify(client).sendMessage(req);
         verifyNoMoreInteractions(client);
+    }
+
+    private ResponseBody<Message> expectedSendMessageResponse() {
+        var chat = new Chat(
+                2L,
+                ChatType.PRIVATE,
+                null,
+                null,
+                null,
+                null
+        );
+        final Instant dateTime = Instant.ofEpochSecond(1710248593);
+        var message = new Message(
+                1L,
+                null,
+                null,
+                dateTime,
+                chat,
+                "text",
+                null,
+                null,
+                null
+        );
+        return new ResponseBody<>(true, message, null, null, null);
     }
 
 }

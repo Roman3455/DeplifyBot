@@ -12,8 +12,6 @@ import com.roman3455.deplifybot.util.enums.JsonEnumUtil;
  * case of new status types introduced by Telegram.</p>
  *
  * @see <a href="https://core.telegram.org/bots/api#chatmember">Telegram API — ChatMember</a>
- * @see com.roman3455.deplifybot.util.enums.JsonEnum
- * @see com.roman3455.deplifybot.util.enums.JsonEnumUtil
  */
 public enum ChatMemberStatusType implements JsonEnum {
 

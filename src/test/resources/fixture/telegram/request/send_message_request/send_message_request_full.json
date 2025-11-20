@@ -1,0 +1,8 @@
+{
+  "chat_id": "123",
+  "message_thread_id": -13435667,
+  "text": "message",
+  "parse_mode": "HTML",
+  "disable_notification": true,
+  "protect_content": true
+}

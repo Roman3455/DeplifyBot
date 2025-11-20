@@ -2,8 +2,10 @@ package com.roman3455.deplifybot.service.telegram;
 
 import com.roman3455.deplifybot.dto.telegram.api.request.BotDescriptionRequest;
 import com.roman3455.deplifybot.dto.telegram.api.request.BotShortDescriptionRequest;
+import com.roman3455.deplifybot.dto.telegram.api.request.SendMessageRequest;
 import com.roman3455.deplifybot.dto.telegram.api.request.SetMyCommandsRequest;
 import com.roman3455.deplifybot.dto.telegram.api.request.SetWebhookRequest;
+import com.roman3455.deplifybot.dto.telegram.api.response.Message;
 import com.roman3455.deplifybot.dto.telegram.api.response.ResponseBody;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -52,5 +54,13 @@ public interface TelegramClientService {
      * @return response indicating success or failure.
      */
     ResponseBody<Boolean> setWebhook(@Valid @NotNull SetWebhookRequest request);
+
+    /**
+     * Sends a text message to a specified chat.
+     *
+     * @param request the validated send message request.
+     * @return response indicating success or failure.
+     */
+    ResponseBody<Message>  sendMessage(@Valid @NotNull SendMessageRequest request);
 
 }

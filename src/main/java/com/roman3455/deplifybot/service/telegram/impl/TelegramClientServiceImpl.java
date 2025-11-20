@@ -3,8 +3,10 @@ package com.roman3455.deplifybot.service.telegram.impl;
 import com.roman3455.deplifybot.client.TelegramClient;
 import com.roman3455.deplifybot.dto.telegram.api.request.BotDescriptionRequest;
 import com.roman3455.deplifybot.dto.telegram.api.request.BotShortDescriptionRequest;
+import com.roman3455.deplifybot.dto.telegram.api.request.SendMessageRequest;
 import com.roman3455.deplifybot.dto.telegram.api.request.SetMyCommandsRequest;
 import com.roman3455.deplifybot.dto.telegram.api.request.SetWebhookRequest;
+import com.roman3455.deplifybot.dto.telegram.api.response.Message;
 import com.roman3455.deplifybot.dto.telegram.api.response.ResponseBody;
 import com.roman3455.deplifybot.service.telegram.TelegramClientService;
 import jakarta.validation.Valid;
@@ -60,6 +62,14 @@ public class TelegramClientServiceImpl implements TelegramClientService {
     @Override
     public ResponseBody<Boolean> setWebhook(@Valid @NotNull final SetWebhookRequest request) {
         return client.setWebhook(request);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseBody<Message> sendMessage(@Valid @NotNull final SendMessageRequest request) {
+        return client.sendMessage(request);
     }
 
 }
