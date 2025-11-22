@@ -1,6 +1,7 @@
 package com.roman3455.deplifybot.configuration;
 
 import com.roman3455.deplifybot.dto.telegram.api.enums.BotCommandScopeType;
+import com.roman3455.deplifybot.dto.telegram.api.enums.UpdateType;
 import com.roman3455.deplifybot.dto.telegram.api.request.BotCommandScope;
 import com.roman3455.deplifybot.dto.telegram.api.request.BotDescriptionRequest;
 import com.roman3455.deplifybot.dto.telegram.api.request.BotShortDescriptionRequest;
@@ -23,9 +24,11 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * Initializes Telegram bot metadata and webhook on application startup.
@@ -161,7 +164,11 @@ public class BotInitializer {
     private void setBotWebhook() {
         String botUrl = botProperties.webhook().url() + botProperties.webhook().path();
         int connections = botProperties.connections().value();
-        var request = new SetWebhookRequest(botUrl, connections, null, true, tokenService.getToken());
+        var configuredUpdateTypes = new HashSet<>(botProperties.allowedUpdateTypes());
+        var allowedUpdates = Stream.of(UpdateType.values())
+                .filter(updateType -> configuredUpdateTypes.contains(updateType.getValue()))
+                .toList();
+        var request = new SetWebhookRequest(botUrl, connections, allowedUpdates, true, tokenService.getToken());
         ResponseBody<Boolean> responseBody;
         try {
             responseBody = clientService.setWebhook(request);
@@ -182,7 +189,7 @@ public class BotInitializer {
      * @param actionLabel     label for logs/exceptions (e.g., {@code "description"}).
      * @param apiCall         function to perform API call (transport errors are caught and wrapped).
      * @param requestSupplier supplier to build per-locale request.
-     * @param <R>          request type (e.g., {@link BotDescriptionRequest}).
+     * @param <R>             request type (e.g., {@link BotDescriptionRequest}).
      * @throws BotInitializationException on transport or domain error.
      */
     private <R> void setForLocales(
