@@ -13,29 +13,26 @@ import org.springframework.context.annotation.Import;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.io.IOException;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.BDDAssertions.then;
 
-
 @ActiveProfiles("test")
 @JsonTest
 @Import(JacksonConfiguration.class)
-@DisplayName("UpdateType — JSON serialization & deserialization")
-class UpdateTypeJsonTest {
+@DisplayName("ParseModeType — JSON serialization & deserialization")
+class ParseModeTypeJsonTest {
 
     @Autowired
     private JacksonTester<Envelope> envelopeJson;
 
-    private static final String SOURCE = "/fixture/telegram/enums/update_type/update_type_";
-    private static final String MESSAGE_JSON = SOURCE + "message.json";
-    private static final String EDITED_MESSAGE_JSON = SOURCE + "edited_message.json";
-    private static final String CALLBACK_QUERY_JSON = SOURCE + "callback_query.json";
-    private static final String MY_CHAT_MEMBER_JSON = SOURCE + "my_chat_member.json";
+    private static final String SOURCE = "/fixture/telegram/enums/parse_mode_type/parse_mode_type_";
+    private static final String HTML_JSON = SOURCE + "HTML.json";
+    private static final String MARKDOWN_V2_JSON = SOURCE + "MarkdownV2.json";
+    private static final String PLAIN_JSON = SOURCE + "plain.json";
     private static final String UNKNOWN_JSON = SOURCE + "unknown.json";
 
-    private record Envelope(UpdateType type) {
+    private record Envelope(ParseModeType parseMode) {
     }
 
     @ParameterizedTest(name = "[{index}] {0}")
@@ -43,15 +40,16 @@ class UpdateTypeJsonTest {
     @DisplayName("Should serialize enum to string value using @JsonValue")
     void shouldSerializeEnumAsStringValue(
             final String caseName,
-            final UpdateType type,
+            final ParseModeType parseMode,
             final String fixturePath
     ) throws Exception {
-        var given = new Envelope(type);
+        var given = new Envelope(parseMode);
         var serialized = envelopeJson.write(given);
         then(serialized).isNotNull()
                 .isEqualToJson(new ClassPathResource(fixturePath))
-                .extractingJsonPathStringValue("$.type")
-                .isEqualTo(type.getValue());
+                .doesNotHaveJsonPath("$.parseMode")
+                .extractingJsonPathStringValue("$.parse_mode")
+                .isEqualTo(parseMode.getValue());
     }
 
     @ParameterizedTest(name = "[{index}] {0}")
@@ -59,48 +57,43 @@ class UpdateTypeJsonTest {
     @DisplayName("Should deserialize string value to enum using @JsonCreator")
     void shouldDeserializeStringToEnum(
             final String caseName,
-            final UpdateType type,
+            final ParseModeType parseMode,
             final String fixturePath
-    ) throws IOException {
+    ) throws Exception {
         var deserialized = envelopeJson.readObject(new ClassPathResource(fixturePath));
         then(deserialized).isNotNull();
-        then(deserialized.type()).isEqualTo(type);
+        then(deserialized.parseMode()).isEqualTo(parseMode);
     }
 
     static Stream<Arguments> enumSerializableAndDeserializableValues() {
         return Stream.of(
                 Arguments.of(
-                        "message",
-                        UpdateType.MESSAGE,
-                        MESSAGE_JSON
+                        "MarkdownV2",
+                        ParseModeType.MARKDOWN_V2,
+                        MARKDOWN_V2_JSON
                 ),
                 Arguments.of(
-                        "edited_message",
-                        UpdateType.EDITED_MESSAGE,
-                        EDITED_MESSAGE_JSON
+                        "HTML",
+                        ParseModeType.HTML,
+                        HTML_JSON
                 ),
                 Arguments.of(
-                        "callback_query",
-                        UpdateType.CALLBACK_QUERY,
-                        CALLBACK_QUERY_JSON
-                ),
-                Arguments.of(
-                        "my_chat_member",
-                        UpdateType.MY_CHAT_MEMBER,
-                        MY_CHAT_MEMBER_JSON
+                        "Plain",
+                        ParseModeType.PLAIN,
+                        PLAIN_JSON
                 )
         );
     }
 
     @Test
     @DisplayName("Should deserialize unknown value and serialize it back as 'unknown'")
-    void shouldRoundTripUnknownValue() throws Exception {
+    void shouldDeserializeUnknownValueAndSerialize() throws Exception {
         var deserialized = envelopeJson.readObject(new ClassPathResource(UNKNOWN_JSON));
         then(deserialized).isNotNull();
-        then(deserialized.type()).isEqualTo(UpdateType.UNKNOWN);
+        then(deserialized.parseMode()).isEqualTo(ParseModeType.UNKNOWN);
         var serialized = envelopeJson.write(deserialized);
-        then(serialized).extractingJsonPathStringValue("$.type")
-                .isEqualTo(UpdateType.UNKNOWN.getValue());
+        then(serialized).extractingJsonPathStringValue("$.parse_mode")
+                .isEqualTo(ChatType.UNKNOWN.getValue());
     }
 
 }

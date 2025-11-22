@@ -3,8 +3,10 @@ package com.roman3455.deplifybot.client;
 import com.roman3455.deplifybot.configuration.TelegramFeignConfig;
 import com.roman3455.deplifybot.dto.telegram.api.request.BotDescriptionRequest;
 import com.roman3455.deplifybot.dto.telegram.api.request.BotShortDescriptionRequest;
+import com.roman3455.deplifybot.dto.telegram.api.request.SendMessageRequest;
 import com.roman3455.deplifybot.dto.telegram.api.request.SetMyCommandsRequest;
 import com.roman3455.deplifybot.dto.telegram.api.request.SetWebhookRequest;
+import com.roman3455.deplifybot.dto.telegram.api.response.Message;
 import com.roman3455.deplifybot.dto.telegram.api.response.ResponseBody;
 import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -62,5 +64,17 @@ public interface TelegramClient {
      */
     @PostMapping(value = "/setWebhook", consumes = "application/json", produces = "application/json")
     ResponseBody<Boolean> setWebhook(@RequestBody @Valid SetWebhookRequest request);
+
+    /**
+     * Sends a text message to a specified chat.
+     *
+     * @param request a {@link SendMessageRequest} containing target chat information, message text,
+     *                optional formatting mode, and delivery settings.
+     * @return a {@link ResponseBody} containing the created {@link Message} object received from Telegram
+     * upon successful delivery.
+     * @see <a href="https://core.telegram.org/bots/api#sendmessage">Telegram API — sendMessage</a>
+     */
+    @PostMapping(value = "/sendMessage", consumes = "application/json", produces = "application/json")
+    ResponseBody<Message> sendMessage(@RequestBody @Valid SendMessageRequest request);
 
 }

@@ -12,8 +12,6 @@ import com.roman3455.deplifybot.util.enums.JsonEnumUtil;
  * ensuring forward compatibility and safe deserialization.</p>
  *
  * @see <a href="https://core.telegram.org/bots/api#chat">Telegram Bot API — Chat</a>
- * @see com.roman3455.deplifybot.util.enums.JsonEnum
- * @see com.roman3455.deplifybot.util.enums.JsonEnumUtil
  */
 public enum ChatType implements JsonEnum {
 

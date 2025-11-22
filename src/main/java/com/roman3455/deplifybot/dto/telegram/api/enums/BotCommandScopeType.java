@@ -11,8 +11,6 @@ import com.roman3455.deplifybot.util.enums.JsonEnumUtil;
  * fallback for unrecognized values.<p/>
  *
  * @see <a href="https://core.telegram.org/bots/api#botcommandscope">Telegram Bot API — BotCommandScope</a>
- * @see com.roman3455.deplifybot.util.enums.JsonEnum
- * @see com.roman3455.deplifybot.util.enums.JsonEnumUtil
  */
 public enum BotCommandScopeType implements JsonEnum {
 

@@ -3,6 +3,7 @@ package com.roman3455.deplifybot.service.telegram;
 import com.roman3455.deplifybot.client.TelegramClient;
 import com.roman3455.deplifybot.dto.telegram.api.request.BotDescriptionRequest;
 import com.roman3455.deplifybot.dto.telegram.api.request.BotShortDescriptionRequest;
+import com.roman3455.deplifybot.dto.telegram.api.request.SendMessageRequest;
 import com.roman3455.deplifybot.dto.telegram.api.request.SetMyCommandsRequest;
 import com.roman3455.deplifybot.dto.telegram.api.request.SetWebhookRequest;
 import com.roman3455.deplifybot.service.telegram.impl.TelegramClientServiceImpl;
@@ -135,7 +136,13 @@ class TelegramClientServiceValidationTest {
     @DisplayName("Should throw CVE for setWebhook() when @Pattern is violated; Client is not called")
     void shouldThrowCVEWhenSetWebhookHasMismatchUrl() {
         var expected = "{SetWebhookRequest.url.Pattern.message}";
-        var invalid = new SetWebhookRequest("http://ok", null, null, null, null);
+        var invalid = new SetWebhookRequest(
+                "http://ok",
+                null,
+                null,
+                null,
+                null
+        );
         assertThatThrownBy(() -> service.setWebhook(invalid))
                 .isInstanceOf(ConstraintViolationException.class)
                 .satisfies(th -> {
@@ -145,4 +152,27 @@ class TelegramClientServiceValidationTest {
                                     .isEqualTo(expected));
                 });
     }
+
+    @Test
+    @DisplayName("Should throw CVE for SendMessageRequest() when @NotNull is violated; Client is not called")
+    void shouldThrowCVEWhenSendMessageRequestHasNullFields() {
+        var expected = "{jakarta.validation.constraints.NotNull.message}";
+        var invalid = new SendMessageRequest(
+                null,
+                null,
+                "text",
+                null,
+                null,
+                null
+        );
+        assertThatThrownBy(() -> service.sendMessage(invalid))
+                .isInstanceOf(ConstraintViolationException.class)
+                .satisfies(th -> {
+                    var ex = (ConstraintViolationException) th;
+                    assertThat(ex.getConstraintViolations())
+                            .anySatisfy(v -> assertThat(v.getMessageTemplate())
+                                    .isEqualTo(expected));
+                });
+    }
+
 }

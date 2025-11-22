@@ -12,8 +12,6 @@ import com.roman3455.deplifybot.util.enums.JsonEnumUtil;
  * compatibility.</p>
  *
  * @see <a href="https://core.telegram.org/bots/api#update">Telegram Bot API — Update</a>
- * @see com.roman3455.deplifybot.util.enums.JsonEnum
- * @see com.roman3455.deplifybot.util.enums.JsonEnumUtil
  */
 public enum UpdateType implements JsonEnum {
 

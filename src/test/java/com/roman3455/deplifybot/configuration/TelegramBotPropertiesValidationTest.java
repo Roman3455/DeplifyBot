@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 @DisplayName("TelegramBotProperties - bean validation")
-public class TelegramBotPropertiesValidationTest extends ValidationTestSupport {
+class TelegramBotPropertiesValidationTest extends ValidationTestSupport {
 
     private static final int MAX_CONNECTIONS = 40;
     private static final int BYTES_SIZE = 32;
@@ -18,7 +18,7 @@ public class TelegramBotPropertiesValidationTest extends ValidationTestSupport {
     private static TelegramBotProperties.Token token;
 
     @BeforeAll
-    public static void setup() {
+    static void setup() {
         allowedUpdateTypes = List.of("message", "callback_query");
         connections = new TelegramBotProperties.Connections(MAX_CONNECTIONS);
         webhook = new TelegramBotProperties.Webhook("https://example.com", "/telegram/webhook");
