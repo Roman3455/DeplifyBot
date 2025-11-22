@@ -17,7 +17,7 @@ LABEL org.opencontainers.image.title="DeplifyBot" \
       org.opencontainers.image.version=${APP_VERSION}
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 USER appuser
-COPY --from=builder --chown=appuser:appgroup /app/build/libs/app-${APP_VERSION}.jar app.jar
+COPY --from=builder --chown=appuser:appgroup /app/build/libs/app-*.jar app.jar
 ENV JAVA_TOOL_OPTIONS="-XX:MaxRAMPercentage=75.0 -Dfile.encoding=UTF-8"
 ARG SPRING_PROFILE=prod
 ENV SPRING_PROFILES_ACTIVE=${SPRING_PROFILE}
