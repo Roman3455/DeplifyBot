@@ -47,13 +47,13 @@ class BotDescriptionRequestValidationTest extends ValidationTestSupport {
                         "field 'languageCode' has unknown 2 chars value (@ISO6391)",
                         new BotDescriptionRequest(null, "xx"),
                         "languageCode",
-                        "{ISO6391.languageCode.message}"
+                        "{ISO6391.validation.constraints.message}"
                 ),
                 Arguments.of(
                         "field 'languageCode' has invalid length (@ISO6391)",
                         new BotDescriptionRequest(null, "eng"),
                         "languageCode",
-                        "{ISO6391.languageCode.message}"
+                        "{ISO6391.validation.constraints.message}"
                 ),
                 Arguments.of(
                         "both fields 'description' and 'languageCode' are null (@AssertTrue)",

@@ -6,6 +6,10 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.springframework.lang.Nullable;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+
 /**
  * DTO represents an incoming update from the Telegram Bot API.
  *
@@ -73,16 +77,8 @@ public record Update(
      */
     @AssertTrue(message = "{Update.isAnyProvided.AssertTrue}")
     private boolean isAnyProvided() {
-        int filledOptionalFields = 0;
-        if (message != null) {
-            filledOptionalFields++;
-        }
-        if (callbackQuery != null) {
-            filledOptionalFields++;
-        }
-        if (myChatMember != null) {
-            filledOptionalFields++;
-        }
+        List<Object> optionalFields = Arrays.asList(message, callbackQuery, myChatMember);
+        long filledOptionalFields = optionalFields.stream().filter(Objects::nonNull).count();
         return filledOptionalFields == 1;
     }
 

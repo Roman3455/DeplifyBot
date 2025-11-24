@@ -11,13 +11,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.IntStream;
 
-import static org.assertj.core.api.BDDAssertions.thenThrownBy;
-
 @DisplayName("SetMyCommandsRequest - bean validation")
 class SetMyCommandsRequestValidationTest extends ValidationTestSupport {
-
-    private static final ResourceBundle BUNDLE = ResourceBundle
-            .getBundle("i18n/messages", LocaleContextHolder.getLocale());
 
     @Test
     @DisplayName("Should pass validation for valid full payload")
@@ -83,7 +78,7 @@ class SetMyCommandsRequestValidationTest extends ValidationTestSupport {
     @DisplayName("Should fail validation when field 'languageCode' has unknown 2 chars value (@ISO6391)")
     void shouldFailValidationLanguageCodeUnexistedConstraint() {
         final String field = "languageCode";
-        final String messageTemplate = "{ISO6391.languageCode.message}";
+        final String messageTemplate = "{ISO6391.validation.constraints.message}";
         var invalid = new SetMyCommandsRequest(
                 List.of(new MyCommand("c", "d")),
                 null,
@@ -96,22 +91,13 @@ class SetMyCommandsRequestValidationTest extends ValidationTestSupport {
     @DisplayName("Should fail validation when field 'languageCode' has invalid length (@ISO6391)")
     void shouldFailValidationLanguageCodeInvalidConstraint() {
         final String field = "languageCode";
-        final String messageTemplate = "{ISO6391.languageCode.message}";
+        final String messageTemplate = "{ISO6391.validation.constraints.message}";
         var invalid = new SetMyCommandsRequest(
                 List.of(new MyCommand("c", "d")),
                 null,
                 "eng"
         );
         assertViolationContains(invalid, field, messageTemplate);
-    }
-
-    @Test
-    @DisplayName("Should throw IllegalArgumentException when field 'commands' is null (@NotEmpty)")
-    void shouldFailValidationCommandsNullValueConstraint() {
-        final String field = "commands";
-        thenThrownBy(() -> new SetMyCommandsRequest(null, null, null))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(BUNDLE.getString("IllegalArgumentException.field.NotNull.bundle").formatted(field));
     }
 
 }

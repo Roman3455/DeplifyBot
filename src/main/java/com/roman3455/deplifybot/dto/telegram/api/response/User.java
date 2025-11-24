@@ -34,7 +34,7 @@ public record User(
         String username,
 
         @Nullable
-        @ISO6391(message = "{ISO6391.languageCode.message}")
+        @ISO6391
         String languageCode
 
 ) {
