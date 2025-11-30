@@ -29,7 +29,7 @@ public @interface ISO6391 {
      *
      * @return the error message template.
      */
-    String message() default "Invalid ISO 639-1 language code";
+    String message() default "{ISO6391.validation.constraints.message}";
 
     /**
      * Allows specification of validation groups, to which this constraint belongs.
