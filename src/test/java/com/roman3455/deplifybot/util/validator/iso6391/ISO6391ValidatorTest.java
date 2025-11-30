@@ -33,7 +33,7 @@ class ISO6391ValidatorTest extends ValidationTestSupport {
     @DisplayName("Should reject invalid language codes")
     void shouldRejectInvalidLanguageCodes() {
         final String field = "languageCode";
-        final String messagePart = "Invalid ISO 639-1 language code";
+        final String messagePart = "{ISO6391.validation.constraints.message}";
         assertViolationContains(new TestDto("x"), field, messagePart);
         assertViolationContains(new TestDto("eng"), field, messagePart);
         assertViolationContains(new TestDto("zz"), field, messagePart);
