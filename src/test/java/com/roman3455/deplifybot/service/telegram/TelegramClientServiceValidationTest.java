@@ -90,7 +90,7 @@ class TelegramClientServiceValidationTest {
     @Test
     @DisplayName("Should throw CVE for setMyDescription() when @ISO6391 is violated; Client is not called")
     void shouldThrowCVEWhenSetMyDescriptionHasInvalidLanguageCode() {
-        var expected = "{ISO6391.languageCode.message}";
+        var expected = "{ISO6391.validation.constraints.message}";
         var invalid = new BotDescriptionRequest("desc", "eng");
         assertThatThrownBy(() -> service.setMyDescription(invalid))
                 .isInstanceOf(ConstraintViolationException.class)

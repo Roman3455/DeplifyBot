@@ -1,0 +1,16 @@
+{
+  "inline_keyboard": [
+    [
+      {
+        "text": "Button",
+        "url": "https://ok"
+      }
+    ],
+    [
+      {
+        "text": "Button",
+        "callback_data": "callback"
+      }
+    ]
+  ]
+}
