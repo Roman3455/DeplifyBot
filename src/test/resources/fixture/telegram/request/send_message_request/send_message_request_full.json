@@ -1,8 +1,11 @@
 {
-  "chat_id": "123",
+  "chat_id": 156789,
   "message_thread_id": -13435667,
-  "text": "message",
+  "text": "text",
   "parse_mode": "HTML",
   "disable_notification": true,
-  "protect_content": true
+  "protect_content": true,
+  "reply_markup": {
+    "remove_keyboard": true
+  }
 }

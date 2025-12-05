@@ -1,73 +1,46 @@
 package com.roman3455.deplifybot.dto.telegram.api.response;
 
 import com.roman3455.deplifybot.configuration.JacksonConfiguration;
-import com.roman3455.deplifybot.dto.telegram.api.enums.ChatMemberStatusType;
-import com.roman3455.deplifybot.dto.telegram.api.enums.ChatType;
-import org.junit.jupiter.api.BeforeEach;
+import com.roman3455.deplifybot.test_utils.DtoJsonMarshallingTestSupport;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.provider.Arguments;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.context.annotation.Import;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.time.Instant;
+import java.util.List;
+import java.util.stream.Stream;
 
-import static org.assertj.core.api.BDDAssertions.then;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validChatMemberUpdatedFullPayload;
 
 @ActiveProfiles("test")
 @JsonTest
 @Import(JacksonConfiguration.class)
 @DisplayName("ChatMemberUpdated — JSON serialization & deserialization")
-class ChatMemberUpdatedJsonTest {
+class ChatMemberUpdatedJsonTest extends DtoJsonMarshallingTestSupport<ChatMemberUpdated> {
+
+    private static final String PATH = "/fixture/telegram/response/chat_member_updated/chat_member_updated_";
 
     @Autowired
-    private JacksonTester<ChatMemberUpdated> json;
+    private JacksonTester<ChatMemberUpdated> jsonTester;
 
-    private static final String SOURCE = "/fixture/telegram/response/chat_member_updated/";
-    private static final String FULL_JSON = SOURCE + "chat_member_updated_full.json";
-
-    private ChatMemberUpdated fullPayload;
-
-    @BeforeEach
-    void setUp() {
-        final Instant dateTime = Instant.ofEpochSecond(1710248593);
-        final long chatId = 123L;
-        final long userId = 456L;
-        var chat = new Chat(chatId, ChatType.SUPERGROUP, null, null, null, null);
-        var user = new User(userId, false, "John", null, null);
-        var oldChatMember = new ChatMember(ChatMemberStatusType.ADMINISTRATOR, user);
-        var newChatMember = new ChatMember(ChatMemberStatusType.MEMBER, user);
-        fullPayload = new ChatMemberUpdated(chat, user, dateTime, oldChatMember, newChatMember);
+    @Override
+    protected JacksonTester<ChatMemberUpdated> tester() {
+        return jsonTester;
     }
 
-    @Test
-    @DisplayName("Should serialize full payload object into expected JSON fixture")
-    void shouldSerializeFullPayload() throws Exception {
-        var serialized = json.write(fullPayload);
-        then(serialized).isNotNull()
-                .isEqualToJson(new ClassPathResource(FULL_JSON))
-                .doesNotHaveJsonPath("$.oldChatMember")
-                .doesNotHaveJsonPath("$.newChatMember");
-    }
-
-    @Test
-    @DisplayName("Should deserialize full payload JSON fixture into expected object")
-    void shouldDeserializeFullPayload() throws Exception {
-        var deserialized = json.readObject(new ClassPathResource(FULL_JSON));
-        then(deserialized).isNotNull()
-                .isEqualTo(fullPayload);
-    }
-
-    @Test
-    @DisplayName("Should round-trip full payload JSON fixture")
-    void shouldRoundTripFullPayload() throws Exception {
-        var deserialized = json.readObject(new ClassPathResource(FULL_JSON));
-        var serialized = json.write(deserialized);
-        then(serialized).isNotNull()
-                .isEqualToJson(new ClassPathResource(FULL_JSON));
+    @Override
+    protected Stream<Arguments> provideArguments() {
+        return Stream.of(
+                Arguments.of(
+                        CASE_NAME_FULL_PAYLOAD,
+                        validChatMemberUpdatedFullPayload(),
+                        PATH + "full.json",
+                        List.of("$.oldChatMember", "$.newChatMember")
+                )
+        );
     }
 
 }

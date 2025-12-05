@@ -1,92 +1,53 @@
 package com.roman3455.deplifybot.dto.telegram.api.request;
 
 import com.roman3455.deplifybot.configuration.JacksonConfiguration;
-import com.roman3455.deplifybot.dto.telegram.api.enums.BotCommandScopeType;
-import org.junit.jupiter.api.BeforeEach;
+import com.roman3455.deplifybot.test_utils.DtoJsonMarshallingTestSupport;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.provider.Arguments;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.context.annotation.Import;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ActiveProfiles;
 
-import static org.assertj.core.api.BDDAssertions.then;
+import java.util.List;
+import java.util.stream.Stream;
+
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validBotCommandScopeFullPayload;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validBotCommandScopeRequiredPayload;
 
 @ActiveProfiles("test")
 @JsonTest
 @Import(JacksonConfiguration.class)
 @DisplayName("BotCommandScope — JSON serialization & deserialization")
-class BotCommandScopeJsonTest {
+class BotCommandScopeJsonTest extends DtoJsonMarshallingTestSupport<BotCommandScope> {
+
+    private static final String PATH = "/fixture/telegram/request/bot_command_scope/bot_command_scope_";
 
     @Autowired
-    private JacksonTester<BotCommandScope> json;
+    private JacksonTester<BotCommandScope> jsonTester;
 
-    private static final String SOURCE = "/fixture/telegram/request/bot_command_scope/";
-    private static final String FULL_JSON = SOURCE + "bot_command_scope_full.json";
-    private static final String TYPE_ONLY_JSON = SOURCE + "bot_command_scope_type_only.json";
-
-    private BotCommandScope fullPayload;
-    private BotCommandScope typeOnlyPayload;
-
-    @BeforeEach
-    void setUp() {
-        final long chatId = 123L;
-        fullPayload = new BotCommandScope(BotCommandScopeType.CHAT, chatId);
-        typeOnlyPayload = new BotCommandScope(BotCommandScopeType.ALL_GROUP_CHATS, null);
+    @Override
+    protected JacksonTester<BotCommandScope> tester() {
+        return jsonTester;
     }
 
-    @Test
-    @DisplayName("Should serialize full payload object into expected JSON fixture")
-    void shouldSerializeFullPayload() throws Exception {
-        var serialized = json.write(fullPayload);
-        then(serialized).isNotNull()
-                .isEqualToJson(new ClassPathResource(FULL_JSON))
-                .doesNotHaveJsonPath("$.chatId");
-    }
-
-    @Test
-    @DisplayName("Should deserialize full payload JSON fixture into expected object")
-    void shouldDeserializeFullPayload() throws Exception {
-        var deserialized = json.readObject(new ClassPathResource(FULL_JSON));
-        then(deserialized).isNotNull()
-                .isEqualTo(fullPayload);
-    }
-
-    @Test
-    @DisplayName("Should round-trip full payload JSON fixture")
-    void shouldRoundTripFullPayload() throws Exception {
-        var deserialized = json.readObject(new ClassPathResource(FULL_JSON));
-        var serialized = json.write(deserialized);
-        then(serialized).isNotNull()
-                .isEqualToJson(new ClassPathResource(FULL_JSON));
-    }
-
-    @Test
-    @DisplayName("Should serialize 'type'-only payload object into expected JSON fixture")
-    void shouldSerializeTypeOnlyPayload() throws Exception {
-        var serialized = json.write(typeOnlyPayload);
-        then(serialized).isNotNull()
-                .isEqualToJson(new ClassPathResource(TYPE_ONLY_JSON))
-                .doesNotHaveJsonPath("$.chat_id");
-    }
-
-    @Test
-    @DisplayName("Should deserialize 'type'-only payload JSON fixture into expected object")
-    void shouldDeserializeTypeOnlyPayload() throws Exception {
-        var deserialized = json.readObject(new ClassPathResource(TYPE_ONLY_JSON));
-        then(deserialized).isNotNull()
-                .isEqualTo(typeOnlyPayload);
-    }
-
-    @Test
-    @DisplayName("Should round-trip 'type'-only payload object")
-    void shouldRoundTripTypeOnlyPayload() throws Exception {
-        var serialized = json.write(typeOnlyPayload);
-        var deserialized = json.parseObject(serialized.getJson());
-        then(deserialized).isNotNull()
-                .isEqualTo(typeOnlyPayload);
+    @Override
+    protected Stream<Arguments> provideArguments() {
+        return Stream.of(
+                Arguments.of(
+                        CASE_NAME_FULL_PAYLOAD,
+                        validBotCommandScopeFullPayload(),
+                        PATH + "full.json",
+                        List.of("$.chatId")
+                ),
+                Arguments.of(
+                        CASE_NAME_REQUIRED_PAYLOAD,
+                        validBotCommandScopeRequiredPayload(),
+                        PATH + "required.json",
+                        List.of("$.chat_id")
+                )
+        );
     }
 
 }

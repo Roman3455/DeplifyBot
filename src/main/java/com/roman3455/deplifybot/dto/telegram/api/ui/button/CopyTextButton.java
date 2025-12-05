@@ -1,6 +1,6 @@
 package com.roman3455.deplifybot.dto.telegram.api.ui.button;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 /**
@@ -12,7 +12,7 @@ import jakarta.validation.constraints.Size;
  */
 public record CopyTextButton(
 
-        @NotNull
+        @NotBlank
         @Size(max = MAX_TEXT_LENGTH, message = "{Size.max.message}")
         String text
 

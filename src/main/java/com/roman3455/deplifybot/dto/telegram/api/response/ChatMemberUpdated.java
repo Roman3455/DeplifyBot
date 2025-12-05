@@ -23,19 +23,23 @@ import java.time.Instant;
 public record ChatMemberUpdated(
 
         @NotNull
-        @Valid Chat chat,
+        @Valid
+        Chat chat,
 
         @NotNull
-        @Valid User from,
+        @Valid
+        User from,
 
         @NotNull
         Instant date,
 
         @NotNull
-        @Valid ChatMember oldChatMember,
+        @Valid
+        ChatMember oldChatMember,
 
         @NotNull
-        @Valid ChatMember newChatMember
+        @Valid
+        ChatMember newChatMember
 
 ) {
 }

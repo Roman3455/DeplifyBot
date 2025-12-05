@@ -1,4 +1,4 @@
 {
-  "command": "start",
-  "description": "init command"
+  "command": "command",
+  "description": "description"
 }

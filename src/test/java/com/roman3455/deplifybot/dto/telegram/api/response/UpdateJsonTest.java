@@ -1,142 +1,99 @@
 package com.roman3455.deplifybot.dto.telegram.api.response;
 
 import com.roman3455.deplifybot.configuration.JacksonConfiguration;
-import com.roman3455.deplifybot.dto.telegram.api.enums.ChatMemberStatusType;
-import com.roman3455.deplifybot.dto.telegram.api.enums.ChatType;
-import org.junit.jupiter.api.BeforeEach;
+import com.roman3455.deplifybot.test_utils.DtoJsonMarshallingTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.provider.Arguments;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.context.annotation.Import;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.time.Instant;
+import java.util.List;
+import java.util.stream.Stream;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.BDDAssertions.then;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validUpdateMessagePayload;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validUpdateCallbackQueryPayload;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validUpdateMyChatMemberPayload;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ActiveProfiles("test")
 @JsonTest
 @Import(JacksonConfiguration.class)
 @DisplayName("Update — JSON serialization & deserialization")
-class UpdateJsonTest {
+class UpdateJsonTest extends DtoJsonMarshallingTestSupport<Update> {
+
+    private static final String PATH = "/fixture/telegram/response/update/update_";
 
     @Autowired
-    private JacksonTester<Update> json;
+    private JacksonTester<Update> jsonTester;
 
-    private static final String SOURCE = "/fixture/telegram/response/update/";
-    private static final String MESSAGE_ONLY_JSON = SOURCE + "update_message_only.json";
-    private static final String CALLBACK_QUERY_ONLY_JSON = SOURCE + "update_callback_query_only.json";
-    private static final String MY_CHAT_MEMBER_JSON = SOURCE + "update_my_chat_member_only.json";
+    @Override
+    protected JacksonTester<Update> tester() {
+        return jsonTester;
+    }
 
-    private Update messageOnlyPayload;
-    private Update callbackQueryOnlyPayload;
-    private Update myChatMemberOnlyPayload;
-
-    @BeforeEach
-    void setUp() {
-        final long updateId = 123L;
-        final Instant dateTime = Instant.ofEpochSecond(1710248593);
-        Chat chat = new Chat(2L, ChatType.SUPERGROUP, null, null, null, null);
-        Message message = new Message(1L, null, null, dateTime, chat, null, null, null, null);
-        messageOnlyPayload = new Update(updateId, message, null, null);
-        final long userId = 456L;
-        User user = new User(userId, true, "awesome bot", null, null);
-        CallbackQuery callbackQuery = new CallbackQuery("123", user, null, null);
-        callbackQueryOnlyPayload = new Update(updateId, null, callbackQuery, null);
-        ChatMember oldChatMember = new ChatMember(ChatMemberStatusType.ADMINISTRATOR, user);
-        ChatMember newChatMember = new ChatMember(ChatMemberStatusType.MEMBER, user);
-        ChatMemberUpdated myChatMember = new ChatMemberUpdated(chat, user, dateTime, oldChatMember, newChatMember);
-        myChatMemberOnlyPayload = new Update(updateId, null, null, myChatMember);
+    @Override
+    protected Stream<Arguments> provideArguments() {
+        return Stream.of(
+                Arguments.of(
+                        "message payload",
+                        validUpdateMessagePayload(),
+                        PATH + "message.json",
+                        List.of("$.updateId", "$.callback_query", "$.my_chat_member")
+                ),
+                Arguments.of(
+                        "callback query payload",
+                        validUpdateCallbackQueryPayload(),
+                        PATH + "callback_query.json",
+                        List.of("$.updateId", "$.message", "$.callbackQuery", "$.my_chat_member")
+                ),
+                Arguments.of(
+                        "my chat member payload",
+                        validUpdateMyChatMemberPayload(),
+                        PATH + "my_chat_member.json",
+                        List.of("$.updateId", "$.message", "$.callback_query", "$.myChatMember")
+                )
+        );
     }
 
     @Test
-    @DisplayName("Should serialize message only payload object into expected JSON fixture")
-    void shouldSerializeMessageOnlyPayload() throws Exception {
-        var serialized = json.write(messageOnlyPayload);
-        then(serialized).isNotNull()
-                .isEqualToJson(new ClassPathResource(MESSAGE_ONLY_JSON))
-                .doesNotHaveJsonPath("$.updateId");
+    @DisplayName("Should return true when payload has field 'message'")
+    void shouldReturnTrueWhenPayloadHasFieldMessage() {
+        assertTrue(validUpdateMessagePayload().hasMessage());
     }
 
     @Test
-    @DisplayName("Should deserialize message only payload JSON fixture into expected object")
-    void shouldDeserializeMessageOnlyPayload() throws Exception {
-        var deserialized = json.readObject(new ClassPathResource(MESSAGE_ONLY_JSON));
-        then(deserialized).isNotNull()
-                .isEqualTo(messageOnlyPayload);
-        assertThat(deserialized.hasMessage()).isTrue();
-        assertThat(deserialized.hasCallbackQuery()).isFalse();
-        assertThat(deserialized.hasMyChatMember()).isFalse();
+    @DisplayName("Should return false when payload has not field 'message'")
+    void shouldReturnFalseWhenPayloadHasNoFieldMessage() {
+        assertFalse(validUpdateCallbackQueryPayload().hasMessage());
     }
 
     @Test
-    @DisplayName("Should round-trip message only payload object")
-    void shouldRoundTripMessageOnlyPayload() throws Exception {
-        var serialized = json.write(messageOnlyPayload);
-        var deserialized = json.parseObject(serialized.getJson());
-        then(deserialized).isNotNull()
-                .isEqualTo(messageOnlyPayload);
+    @DisplayName("Should return true when payload has field 'callbackQuery'")
+    void shouldReturnTrueWhenPayloadHasFieldCallbackQuery() {
+        assertTrue(validUpdateCallbackQueryPayload().hasCallbackQuery());
     }
 
     @Test
-    @DisplayName("Should serialize callback query only payload object into expected JSON fixture")
-    void shouldSerializeCallbackQueryOnlyPayload() throws Exception {
-        var serialized = json.write(callbackQueryOnlyPayload);
-        then(serialized).isNotNull()
-                .isEqualToJson(new ClassPathResource(CALLBACK_QUERY_ONLY_JSON))
-                .doesNotHaveJsonPath("$.callbackQuery");
+    @DisplayName("Should return false when payload has not field 'callbackQuery'")
+    void shouldReturnFalseWhenPayloadHasNoFieldCallbackQuery() {
+        assertFalse(validUpdateMessagePayload().hasCallbackQuery());
     }
 
     @Test
-    @DisplayName("Should deserialize callback query only payload JSON fixture into expected object")
-    void shouldDeserializeCallbackQueryOnlyPayload() throws Exception {
-        var deserialized = json.readObject(new ClassPathResource(CALLBACK_QUERY_ONLY_JSON));
-        then(deserialized).isNotNull()
-                .isEqualTo(callbackQueryOnlyPayload);
-        assertThat(deserialized.hasMessage()).isFalse();
-        assertThat(deserialized.hasCallbackQuery()).isTrue();
-        assertThat(deserialized.hasMyChatMember()).isFalse();
+    @DisplayName("Should return true when payload has field 'myChatMember'")
+    void shouldReturnTrueWhenPayloadHasFieldMyChatMember() {
+        assertTrue(validUpdateMyChatMemberPayload().hasMyChatMember());
     }
 
     @Test
-    @DisplayName("Should round-trip callback query only payload object")
-    void shouldRoundTripCallbackQueryOnlyPayload() throws Exception {
-        var serialized = json.write(callbackQueryOnlyPayload);
-        var deserialized = json.parseObject(serialized.getJson());
-        then(deserialized).isNotNull()
-                .isEqualTo(callbackQueryOnlyPayload);
+    @DisplayName("Should return false when payload has not field 'myChatMember'")
+    void shouldReturnFalseWhenPayloadHasNoFieldMyChatMember() {
+        assertFalse(validUpdateMessagePayload().hasMyChatMember());
     }
 
-    @Test
-    @DisplayName("Should serialize my chat member only payload object into expected JSON fixture")
-    void shouldSerializeMyChatMemberOnlyPayload() throws Exception {
-        var serialized = json.write(myChatMemberOnlyPayload);
-        then(serialized).isNotNull()
-                .isEqualToJson(new ClassPathResource(MY_CHAT_MEMBER_JSON))
-                .doesNotHaveJsonPath("$.myChatMember");
-    }
-
-    @Test
-    @DisplayName("Should deserialize my chat member only payload JSON fixture into expected object")
-    void shouldDeserializeMyChatMemberOnlyPayload() throws Exception {
-        var deserialized = json.readObject(new ClassPathResource(MY_CHAT_MEMBER_JSON));
-        then(deserialized).isNotNull()
-                .isEqualTo(myChatMemberOnlyPayload);
-        assertThat(deserialized.hasMessage()).isFalse();
-        assertThat(deserialized.hasCallbackQuery()).isFalse();
-        assertThat(deserialized.hasMyChatMember()).isTrue();
-    }
-
-    @Test
-    @DisplayName("Should round-trip my chat member only payload object")
-    void shouldRoundTripMyChatMemberOnlyPayload() throws Exception {
-        var serialized = json.write(myChatMemberOnlyPayload);
-        var deserialized = json.parseObject(serialized.getJson());
-        then(deserialized).isNotNull()
-                .isEqualTo(myChatMemberOnlyPayload);
-    }
 }

@@ -1,9 +1,9 @@
 {
   "commands": [
-    {"command": "start", "description": "Init command"}
+    {"command": "command", "description": "description"}
   ],
   "scope": {
-    "type": "default"
+    "type": "all_group_chats"
   },
   "language_code": "en"
 }

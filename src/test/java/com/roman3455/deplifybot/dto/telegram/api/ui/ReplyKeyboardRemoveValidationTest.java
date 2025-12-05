@@ -1,26 +1,34 @@
 package com.roman3455.deplifybot.dto.telegram.api.ui;
 
-import com.roman3455.deplifybot.util.ValidationTestSupport;
+import com.roman3455.deplifybot.test_utils.DtoValidationTestSupport;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-@DisplayName("ReplyKeyboardRemove - bean validation")
-class ReplyKeyboardRemoveValidationTest extends ValidationTestSupport {
+import java.util.stream.Stream;
 
-    @Test
-    @DisplayName("Should pass validation for valid full payload")
-    void shouldPassValidationFullPayload() {
-        var valid = new ReplyKeyboardRemove(true);
-        assertValid(valid);
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidReplyKeyboardRemoveWithFalseValue;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validReplyKeyboardRemoveFullPayload;
+
+@DisplayName("ReplyKeyboardRemove - DTO validation")
+class ReplyKeyboardRemoveValidationTest extends DtoValidationTestSupport<ReplyKeyboardRemove> {
+
+    @Override
+    protected Stream<Arguments> provideInvalidArguments() {
+        return Stream.of(
+                Arguments.of(
+                        "field 'removeKeyboard' is false (@AssertTrue)",
+                        invalidReplyKeyboardRemoveWithFalseValue(),
+                        "removeKeyboard",
+                        "{ReplyKeyboardRemove.removeKeyboardIsTrue.AssertTrue}"
+                )
+        );
     }
 
-    @Test
-    @DisplayName("Should fail validation when field 'removeKeyboard' is false (@AssertTrue)")
-    void shouldFailValidationWhenFieldRemoveKeyboardIsFalse() {
-        final String field = "removeKeyboard";
-        final String messageTemplate = "{ReplyKeyboardRemove.removeKeyboardIsTrue.AssertTrue}";
-        var invalid = new ReplyKeyboardRemove(false);
-        assertViolationContains(invalid, field, messageTemplate);
+    @Override
+    protected Stream<Arguments> provideValidArguments() {
+        return Stream.of(
+                Arguments.of(CASE_NAME_FULL_PAYLOAD, validReplyKeyboardRemoveFullPayload())
+        );
     }
 
 }

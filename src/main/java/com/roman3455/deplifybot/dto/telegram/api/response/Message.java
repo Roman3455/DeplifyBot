@@ -37,13 +37,15 @@ public record Message(
         Long messageThreadId,
 
         @Nullable
-        @Valid User from,
+        @Valid
+        User from,
 
         @NotNull
         Instant date,
 
         @NotNull
-        @Valid Chat chat,
+        @Valid
+        Chat chat,
 
         @Nullable
         String text,
@@ -55,7 +57,8 @@ public record Message(
         Long migrateFromChatId,
 
         @Nullable
-        @Valid ChatShared chatShared
+        @Valid
+        ChatShared chatShared
 
 ) {
 

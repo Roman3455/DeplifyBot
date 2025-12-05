@@ -2,14 +2,14 @@
   "inline_keyboard": [
     [
       {
-        "text": "Button",
+        "text": "title",
         "url": "https://ok"
       }
     ],
     [
       {
-        "text": "Button",
-        "callback_data": "callback"
+        "text": "title",
+        "callback_data": "command"
       }
     ]
   ]

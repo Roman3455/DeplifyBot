@@ -4,6 +4,7 @@ import com.roman3455.deplifybot.util.validator.bytes_length.BytesLength;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
@@ -26,7 +27,7 @@ import java.util.Objects;
  */
 public record InlineKeyboardButton(
 
-        @NotNull
+        @NotBlank
         String text,
 
         @Nullable
@@ -38,7 +39,8 @@ public record InlineKeyboardButton(
         String callbackData,
 
         @Nullable
-        @Valid CopyTextButton copyText
+        @Valid
+        CopyTextButton copyText
 
 ) {
 
@@ -55,6 +57,7 @@ public record InlineKeyboardButton(
      *
      * @return {@code true} if exactly one of the optional fields is non-null, otherwise {@code false}.
      */
+    @SuppressWarnings("unused")
     @AssertTrue(message = "{InlineKeyboardButton.isAnyProvided.AssertTrue}")
     private boolean isAnyProvided() {
         List<Object> optionalFields = Arrays.asList(url, callbackData, copyText);
@@ -69,10 +72,7 @@ public record InlineKeyboardButton(
      * @param url  required. The URL to open when the button is clicked (must be a valid HTTP or Telegram URL).
      * @return an {@code InlineKeyboardButton} with the specified {@code url}.
      */
-    public static InlineKeyboardButton ofUrl(
-            @NotNull final String text,
-            @NotNull final String url
-    ) {
+    public static InlineKeyboardButton ofUrl(@NotNull final String text, @NotNull final String url) {
         return new InlineKeyboardButton(text, url, null, null);
     }
 
@@ -83,10 +83,7 @@ public record InlineKeyboardButton(
      * @param callbackData required. The callback data to be sent when the button is pressed.
      * @return an {@code InlineKeyboardButton} with the specified {@code callbackData}.
      */
-    public static InlineKeyboardButton ofCallbackData(
-            @NotNull final String text,
-            @NotNull final String callbackData
-    ) {
+    public static InlineKeyboardButton ofCallbackData(@NotNull final String text, @NotNull final String callbackData) {
         return new InlineKeyboardButton(text, null, callbackData, null);
     }
 
@@ -97,10 +94,7 @@ public record InlineKeyboardButton(
      * @param copyText required. The text to be copied to the clipboard when the button is clicked.
      * @return an {@code InlineKeyboardButton} with the specified {@code copyText}.
      */
-    public static InlineKeyboardButton ofCopyText(
-            @NotNull final String text,
-            @NotNull final String copyText
-    ) {
+    public static InlineKeyboardButton ofCopyText(@NotNull final String text, @NotNull final String copyText) {
         return new InlineKeyboardButton(text, null, null, new CopyTextButton(copyText));
     }
 

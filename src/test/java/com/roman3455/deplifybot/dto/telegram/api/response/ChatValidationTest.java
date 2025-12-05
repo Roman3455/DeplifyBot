@@ -1,43 +1,43 @@
 package com.roman3455.deplifybot.dto.telegram.api.response;
 
-import com.roman3455.deplifybot.dto.telegram.api.enums.ChatType;
-import com.roman3455.deplifybot.util.ValidationTestSupport;
+import com.roman3455.deplifybot.test_utils.DtoValidationTestSupport;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-@DisplayName("Chat - bean validation")
-class ChatValidationTest extends ValidationTestSupport {
+import java.util.stream.Stream;
 
-    @Test
-    @DisplayName("Should pass validation for valid full payload")
-    void shouldPassValidationFullPayload() {
-        var valid = new Chat(1L, ChatType.PRIVATE, "Title", "@name", "John", false);
-        assertValid(valid);
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validChatFullPayload;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validChatRequiredPayload;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidChatWithNullId;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidChatWithNullType;
+
+@DisplayName("Chat - DTO validation")
+class ChatValidationTest extends DtoValidationTestSupport<Chat> {
+
+    @Override
+    protected Stream<Arguments> provideInvalidArguments() {
+        return Stream.of(
+                Arguments.of(
+                        "field 'id' is null (@NotNull)",
+                        invalidChatWithNullId(),
+                        "id",
+                        MESSAGE_TEMPLATE_NOT_NULL
+                ),
+                Arguments.of(
+                        "field 'type' is null (@NotNull)",
+                        invalidChatWithNullType(),
+                        "type",
+                        MESSAGE_TEMPLATE_NOT_NULL
+                )
+        );
     }
 
-    @Test
-    @DisplayName("Should pass validation for valid required payload")
-    void shouldPassValidationRequiredFieldsPayload() {
-        var valid = new Chat(1L, ChatType.PRIVATE, null, null, null, null);
-        assertValid(valid);
-    }
-
-    @Test
-    @DisplayName("Should fail validation when field 'id' is null (@NotNull)")
-    void shouldFailValidationIdNullConstraint() {
-        final String field = "id";
-        final String messageTemplate = "{jakarta.validation.constraints.NotNull.message}";
-        var invalid = new Chat(null, ChatType.PRIVATE, null, null, null, null);
-        assertViolationContains(invalid, field, messageTemplate);
-    }
-
-    @Test
-    @DisplayName("Should fail validation when field 'type' is null (@NotNull)")
-    void shouldFailValidationTypeNullConstraint() {
-        final String field = "type";
-        final String messageTemplate = "{jakarta.validation.constraints.NotNull.message}";
-        var invalid = new Chat(2L, null, null, null, null, null);
-        assertViolationContains(invalid, field, messageTemplate);
+    @Override
+    protected Stream<Arguments> provideValidArguments() {
+        return Stream.of(
+                Arguments.of(CASE_NAME_FULL_PAYLOAD, validChatFullPayload()),
+                Arguments.of(CASE_NAME_REQUIRED_PAYLOAD, validChatRequiredPayload())
+        );
     }
 
 }

@@ -54,7 +54,7 @@ public record ResponseBody<T>(
      * @return {@code true} if this response contains error information.
      */
     public boolean isError() {
-        return !ok;
+        return errorCode != null;
     }
 
     /**

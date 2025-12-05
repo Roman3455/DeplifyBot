@@ -1,54 +1,52 @@
 package com.roman3455.deplifybot.dto.telegram.api.ui;
 
-import com.roman3455.deplifybot.util.ValidationTestSupport;
+import com.roman3455.deplifybot.test_utils.DtoValidationTestSupport;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-@DisplayName("ForceReply - bean validation")
-class ForceReplyValidationTest extends ValidationTestSupport {
+import java.util.stream.Stream;
 
-    @Test
-    @DisplayName("Should pass validation for valid full payload")
-    void shouldPassValidationFullPayload() {
-        var valid = new ForceReply(true, "Input text");
-        assertValid(valid);
-        assertValid(ForceReply.withPlaceholder("Input text"));
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidForceReplyWithFalseForceReply;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidForceReplyWithSizeAboveMaxPlaceholder;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidForceReplyWithSizeBelowMinPlaceholder;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validForceReplyFullPayload;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validForceReplyRequiredPayload;
+
+@DisplayName("ForceReply - DTO validation")
+class ForceReplyValidationTest extends DtoValidationTestSupport<ForceReply> {
+
+    private static final String PLACEHOLDER_FIELD = "inputFieldPlaceholder";
+
+    @Override
+    protected Stream<Arguments> provideInvalidArguments() {
+        return Stream.of(
+                Arguments.of(
+                        "field 'forceReply' is false (@AssertTrue)",
+                        invalidForceReplyWithFalseForceReply(),
+                        "forceReply",
+                        "{ForceReply.forceReplyIsTrue.AssertTrue}"
+                ),
+                Arguments.of(
+                        "field 'inputFieldPlaceholder' has value below min (@Size)",
+                        invalidForceReplyWithSizeBelowMinPlaceholder(),
+                        PLACEHOLDER_FIELD,
+                        MESSAGE_TEMPLATE_SIZE
+                ),
+                Arguments.of(
+                        "field 'inputFieldPlaceholder' has value above max (@Size)",
+                        invalidForceReplyWithSizeAboveMaxPlaceholder(),
+                        PLACEHOLDER_FIELD,
+                        MESSAGE_TEMPLATE_SIZE
+                )
+        );
     }
 
-    @Test
-    @DisplayName("Should pass validation for valid required only payload")
-    void shouldPassValidationRequiredOnlyPayload() {
-        var valid = new ForceReply(true, null);
-        assertValid(valid);
-        assertValid(ForceReply.empty());
-    }
-
-    @Test
-    @DisplayName("Should fail validation when field 'forceReply' is false (@AssertTrue)")
-    void shouldFailValidationWhenFieldForceReplyIsFalse() {
-        final String field = "forceReply";
-        final String messageTemplate = "{ForceReply.forceReplyIsTrue.AssertTrue}";
-        var invalid = new ForceReply(false, null);
-        assertViolationContains(invalid, field, messageTemplate);
-    }
-
-    @Test
-    @DisplayName("Should fail validation when field 'inputFieldPlaceholder' has value above max (@Size)")
-    void shouldFailValidationInputFieldPlaceholderAboveMaxConstraint() {
-        final int outOfBoundLength = 65;
-        final String field = "inputFieldPlaceholder";
-        final String messageTemplate = "{jakarta.validation.constraints.Size.message}";
-        var invalid = new ForceReply(true, "x".repeat(outOfBoundLength));
-        assertViolationContains(invalid, field, messageTemplate);
-    }
-
-    @Test
-    @DisplayName("Should fail validation when field 'inputFieldPlaceholder' has value below min (@Size)")
-    void shouldFailValidationInputFieldPlaceholderBelowMinConstraint() {
-        final String field = "inputFieldPlaceholder";
-        final String messageTemplate = "{jakarta.validation.constraints.Size.message}";
-        var invalid = new ForceReply(true, "");
-        assertViolationContains(invalid, field, messageTemplate);
+    @Override
+    protected Stream<Arguments> provideValidArguments() {
+        return Stream.of(
+                Arguments.of(CASE_NAME_FULL_PAYLOAD, validForceReplyFullPayload()),
+                Arguments.of(CASE_NAME_REQUIRED_PAYLOAD, validForceReplyRequiredPayload())
+        );
     }
 
 }

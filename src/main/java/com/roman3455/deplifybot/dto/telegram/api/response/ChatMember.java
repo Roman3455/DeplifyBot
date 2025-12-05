@@ -23,7 +23,8 @@ public record ChatMember(
         ChatMemberStatusType status,
 
         @NotNull
-        @Valid User user
+        @Valid
+        User user
 
 ) {
 }

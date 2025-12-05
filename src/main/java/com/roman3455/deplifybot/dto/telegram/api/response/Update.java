@@ -31,13 +31,16 @@ public record Update(
         Long updateId,
 
         @Nullable
-        @Valid Message message,
+        @Valid
+        Message message,
 
         @Nullable
-        @Valid CallbackQuery callbackQuery,
+        @Valid
+        CallbackQuery callbackQuery,
 
         @Nullable
-        @Valid ChatMemberUpdated myChatMember
+        @Valid
+        ChatMemberUpdated myChatMember
 
 ) {
 
@@ -69,12 +72,11 @@ public record Update(
     }
 
     /**
-     * Cross-field constraint: require at most one of the optional field to be provided.
-     *
-     * <p>Violation will be reported on the synthetic property named after this method.</p>
+     * Assert that exactly one optional field must be present.
      *
      * @return {@code true} if only one of the optional is not {@code null}.
      */
+    @SuppressWarnings("unused")
     @AssertTrue(message = "{Update.isAnyProvided.AssertTrue}")
     private boolean isAnyProvided() {
         List<Object> optionalFields = Arrays.asList(message, callbackQuery, myChatMember);

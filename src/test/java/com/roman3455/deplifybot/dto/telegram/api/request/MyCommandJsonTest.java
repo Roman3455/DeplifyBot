@@ -1,60 +1,46 @@
 package com.roman3455.deplifybot.dto.telegram.api.request;
 
 import com.roman3455.deplifybot.configuration.JacksonConfiguration;
-import org.junit.jupiter.api.BeforeEach;
+import com.roman3455.deplifybot.test_utils.DtoJsonMarshallingTestSupport;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.provider.Arguments;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.context.annotation.Import;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ActiveProfiles;
 
-import static org.assertj.core.api.BDDAssertions.then;
+import java.util.List;
+import java.util.stream.Stream;
+
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validMyCommandFullPayload;
 
 @ActiveProfiles("test")
 @JsonTest
 @Import(JacksonConfiguration.class)
 @DisplayName("MyCommand — JSON serialization & deserialization")
-class MyCommandJsonTest {
+class MyCommandJsonTest extends DtoJsonMarshallingTestSupport<MyCommand> {
+
+    private static final String PATH = "/fixture/telegram/request/my_command/my_command_";
 
     @Autowired
-    private JacksonTester<MyCommand> json;
+    private JacksonTester<MyCommand> jsonTester;
 
-    private static final String SOURCE = "/fixture/telegram/request/my_command/";
-    private static final String FULL_JSON = SOURCE + "my_command_full.json";
-
-    private MyCommand fullPayload;
-
-    @BeforeEach
-    void setUp() {
-        fullPayload = new MyCommand("start", "init command");
+    @Override
+    protected JacksonTester<MyCommand> tester() {
+        return jsonTester;
     }
 
-    @Test
-    @DisplayName("Should serialize full payload object into expected JSON fixture")
-    void shouldSerializeFullPayload() throws Exception {
-        var serialized = json.write(fullPayload);
-        then(serialized).isNotNull()
-                .isEqualToJson(new ClassPathResource(FULL_JSON));
-    }
-
-    @Test
-    @DisplayName("Should deserialize full payload JSON fixture into expected object")
-    void shouldDeserializeFullPayload() throws Exception {
-        var deserialized = json.readObject(new ClassPathResource(FULL_JSON));
-        then(deserialized).isNotNull()
-                .isEqualTo(fullPayload);
-    }
-
-    @Test
-    @DisplayName("Should round-trip full payload JSON fixture")
-    void shouldRoundTripFullPayload() throws Exception {
-        var deserialized = json.readObject(new ClassPathResource(FULL_JSON));
-        var serialized = json.write(deserialized);
-        then(serialized).isNotNull()
-                .isEqualToJson(new ClassPathResource(FULL_JSON));
+    @Override
+    protected Stream<Arguments> provideArguments() {
+        return Stream.of(
+                Arguments.of(
+                        CASE_NAME_FULL_PAYLOAD,
+                        validMyCommandFullPayload(),
+                        PATH + "full.json",
+                        List.of()
+                )
+        );
     }
 
 }

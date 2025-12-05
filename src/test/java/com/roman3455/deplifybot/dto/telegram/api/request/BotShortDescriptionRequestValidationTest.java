@@ -1,66 +1,68 @@
 package com.roman3455.deplifybot.dto.telegram.api.request;
 
-import com.roman3455.deplifybot.util.ValidationTestSupport;
+import com.roman3455.deplifybot.test_utils.DtoValidationTestSupport;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
-@DisplayName("BotShortDescriptionRequest - bean validation")
-class BotShortDescriptionRequestValidationTest extends ValidationTestSupport {
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validBotShortDescriptionRequestFullPayload;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+        .invalidBotShortDescriptionRequestWithDescriptionAboveMax;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+        .invalidBotShortDescriptionRequestWithUnknownLanguageCode;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+        .invalidBotShortDescriptionRequestWithLanguageCodeMoreThenTwoChars;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+        .invalidBotShortDescriptionRequestWithLanguageCodeLessThenTwoChars;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+        .invalidBotShortDescriptionRequestWithNullDescriptionAndLanguageCode;
 
-    @Test
-    @DisplayName("Should pass validation for valid full payload")
-    void shouldPassValidationFullPayload() {
-        var valid = new BotShortDescriptionRequest("Short description", "en");
-        assertValid(valid);
-    }
+@DisplayName("BotShortDescriptionRequest - DTO validation")
+class BotShortDescriptionRequestValidationTest extends DtoValidationTestSupport<BotShortDescriptionRequest> {
 
-    @Test
-    @DisplayName("Should fail validation when field 'shortDescription' has value above max (@Size)")
-    void shouldFailValidationShortDescriptionAboveMaxConstraint() {
-        final int outOfBoundLength = 121;
-        final String field = "shortDescription";
-        final String messageTemplate = "{Size.max.message}";
-        var invalid = new BotShortDescriptionRequest("x".repeat(outOfBoundLength), null);
-        assertViolationContains(invalid, field, messageTemplate);
-    }
+    private static final String LANGUAGE_CODE_FIELD = "languageCode";
 
-    @ParameterizedTest(name = "[{index}] {0}")
-    @MethodSource("invalidBotShortDescriptionCases")
-    @DisplayName("Should fail validation when")
-    void shouldFailValidationLanguageCodeAndShortDescriptionParameterized(
-            final String caseName,
-            final BotShortDescriptionRequest invalid,
-            final String field,
-            final String messageTemplate
-    ) {
-        assertViolationContains(invalid, field, messageTemplate);
-    }
-
-    static Stream<Arguments> invalidBotShortDescriptionCases() {
+    @Override
+    protected Stream<Arguments> provideInvalidArguments() {
         return Stream.of(
                 Arguments.of(
-                        "field 'languageCode' has unknown 2 chars value (@ISO6391)",
-                        new BotShortDescriptionRequest(null, "xx"),
-                        "languageCode",
-                        "{ISO6391.validation.constraints.message}"
+                        "field 'shortDescription' has value above max (@Size)",
+                        invalidBotShortDescriptionRequestWithDescriptionAboveMax(),
+                        "shortDescription",
+                        MESSAGE_TEMPLATE_MAX_SIZE
                 ),
                 Arguments.of(
-                        "field 'languageCode' has invalid length (@ISO6391)",
-                        new BotShortDescriptionRequest(null, "eng"),
-                        "languageCode",
-                        "{ISO6391.validation.constraints.message}"
+                        "field 'languageCode' has unknown 2 chars value (@ISO6391)",
+                        invalidBotShortDescriptionRequestWithUnknownLanguageCode(),
+                        LANGUAGE_CODE_FIELD,
+                        MESSAGE_TEMPLATE_ISO6391
+                ),
+                Arguments.of(
+                        "field 'languageCode' has more then 2 chars (@ISO6391)",
+                        invalidBotShortDescriptionRequestWithLanguageCodeMoreThenTwoChars(),
+                        LANGUAGE_CODE_FIELD,
+                        MESSAGE_TEMPLATE_ISO6391
+                ),
+                Arguments.of(
+                        "field 'languageCode' has less then 2 chars (@ISO6391)",
+                        invalidBotShortDescriptionRequestWithLanguageCodeLessThenTwoChars(),
+                        LANGUAGE_CODE_FIELD,
+                        MESSAGE_TEMPLATE_ISO6391
                 ),
                 Arguments.of(
                         "both fields 'shortDescription' and 'languageCode' are null (@AssertTrue)",
-                        new BotShortDescriptionRequest(null, null),
+                        invalidBotShortDescriptionRequestWithNullDescriptionAndLanguageCode(),
                         "anyProvided",
                         "{BotShortDescriptionRequest.isAnyProvided.AssertTrue}"
                 )
+        );
+    }
+
+    @Override
+    protected Stream<Arguments> provideValidArguments() {
+        return Stream.of(
+                Arguments.of(CASE_NAME_FULL_PAYLOAD, validBotShortDescriptionRequestFullPayload())
         );
     }
 
