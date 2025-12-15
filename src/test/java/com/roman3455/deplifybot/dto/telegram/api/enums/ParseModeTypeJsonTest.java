@@ -3,6 +3,7 @@ package com.roman3455.deplifybot.dto.telegram.api.enums;
 import com.roman3455.deplifybot.configuration.JacksonConfiguration;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -18,6 +19,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.BDDAssertions.then;
 
 @ActiveProfiles("test")
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @JsonTest
 @Import(JacksonConfiguration.class)
 @DisplayName("ParseModeType — JSON serialization & deserialization")
@@ -38,6 +40,7 @@ class ParseModeTypeJsonTest {
     @ParameterizedTest(name = "[{index}] {0}")
     @MethodSource("enumSerializableAndDeserializableValues")
     @DisplayName("Should serialize enum to string value using @JsonValue")
+    @SuppressWarnings("unused")
     void shouldSerializeEnumAsStringValue(
             final String caseName,
             final ParseModeType parseMode,
@@ -55,6 +58,7 @@ class ParseModeTypeJsonTest {
     @ParameterizedTest(name = "[{index}] {0}")
     @MethodSource("enumSerializableAndDeserializableValues")
     @DisplayName("Should deserialize string value to enum using @JsonCreator")
+    @SuppressWarnings("unused")
     void shouldDeserializeStringToEnum(
             final String caseName,
             final ParseModeType parseMode,

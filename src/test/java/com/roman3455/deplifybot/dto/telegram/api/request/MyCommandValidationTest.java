@@ -1,85 +1,65 @@
 package com.roman3455.deplifybot.dto.telegram.api.request;
 
-import com.roman3455.deplifybot.util.ValidationTestSupport;
+import com.roman3455.deplifybot.test_utils.DtoValidationTestSupport;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-@DisplayName("MyCommand - bean validation")
-class MyCommandValidationTest extends ValidationTestSupport {
+import java.util.stream.Stream;
 
-    private static final String COMMAND = "start";
-    private static final String DESCRIPTION = "init command";
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validMyCommandFullPayload;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidMyCommandWithBlankCommand;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidMyCommandWithSizeAboveMaxCommand;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidMyCommandWithMismatchCommandPattern;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidMyCommandWithBlankDescription;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidMyCommandWithSizeAboveMaxDescription;
 
-    @Test
-    @DisplayName("Should pass validation for valid full payload")
-    void shouldPassValidationFullPayload() {
-        var valid = new MyCommand(COMMAND, DESCRIPTION);
-        assertValid(valid);
+@DisplayName("MyCommand - DTO validation")
+class MyCommandValidationTest extends DtoValidationTestSupport<MyCommand> {
+
+    private static final String COMMAND_FIELD = "command";
+    private static final String DESCRIPTION_FIELD = "description";
+
+    @Override
+    protected Stream<Arguments> provideInvalidArguments() {
+        return Stream.of(
+                Arguments.of(
+                        "field 'command' is blank (@NotBlank)",
+                        invalidMyCommandWithBlankCommand(),
+                        COMMAND_FIELD,
+                        MESSAGE_TEMPLATE_NOT_BLANK
+                ),
+                Arguments.of(
+                        "field 'command' has value above max (@Size)",
+                        invalidMyCommandWithSizeAboveMaxCommand(),
+                        COMMAND_FIELD,
+                        MESSAGE_TEMPLATE_MAX_SIZE
+                ),
+                Arguments.of(
+                        "field 'command' mismatch pattern (@Pattern)",
+                        invalidMyCommandWithMismatchCommandPattern(),
+                        COMMAND_FIELD,
+                        "{MyCommand.command.Pattern.message}"
+                ),
+                Arguments.of(
+                        "field 'description' is blank (@NotBlank)",
+                        invalidMyCommandWithBlankDescription(),
+                        DESCRIPTION_FIELD,
+                        MESSAGE_TEMPLATE_NOT_BLANK
+                ),
+                Arguments.of(
+                        "field 'description' has value above max (@Size)",
+                        invalidMyCommandWithSizeAboveMaxDescription(),
+                        DESCRIPTION_FIELD,
+                        MESSAGE_TEMPLATE_MAX_SIZE
+                )
+        );
     }
 
-    @Test
-    @DisplayName("Should fail validation when field 'command' is null (@NotBlank)")
-    void shouldFailValidationCommandNullConstraint() {
-        final String field = "command";
-        final String messageTemplate = "{jakarta.validation.constraints.NotBlank.message}";
-        var invalid = new MyCommand(null, DESCRIPTION);
-        assertViolationContains(invalid, field, messageTemplate);
-    }
-
-    @Test
-    @DisplayName("Should fail validation when field 'command' is blank (@NotBlank)")
-    void shouldFailValidationCommandBlankConstraint() {
-        final String field = "command";
-        final String messageTemplate = "{jakarta.validation.constraints.NotBlank.message}";
-        var invalid = new MyCommand("", DESCRIPTION);
-        assertViolationContains(invalid, field, messageTemplate);
-    }
-
-    @Test
-    @DisplayName("Should fail validation when field 'command' has value above max (@Size)")
-    void shouldFailValidationCommandAboveMaxConstraint() {
-        final int outOfBoundChars = 33;
-        final String field = "command";
-        final String messageTemplate = "{Size.max.message}";
-        var invalid = new MyCommand("x".repeat(outOfBoundChars), DESCRIPTION);
-        assertViolationContains(invalid, field, messageTemplate);
-    }
-
-    @Test
-    @DisplayName("Should fail validation when field 'command' mismatch pattern (@Pattern)")
-    void shouldFailValidationCommandMismatchPatternConstraint() {
-        final String field = "command";
-        final String messageTemplate = "{MyCommand.command.Pattern.message}";
-        var invalid = new MyCommand("/" + COMMAND, DESCRIPTION);
-        assertViolationContains(invalid, field, messageTemplate);
-    }
-
-    @Test
-    @DisplayName("Should fail validation when field 'description' is null (@NotBlank)")
-    void shouldFailValidationDescriptionNullConstraint() {
-        final String field = "description";
-        final String messageTemplate = "{jakarta.validation.constraints.NotBlank.message}";
-        var invalid = new MyCommand(COMMAND, null);
-        assertViolationContains(invalid, field, messageTemplate);
-    }
-
-    @Test
-    @DisplayName("Should fail validation when field 'description' is blank (@NotBlank)")
-    void shouldFailValidationDescriptionBlankConstraint() {
-        final String field = "description";
-        final String messageTemplate = "{jakarta.validation.constraints.NotBlank.message}";
-        var invalid = new MyCommand(COMMAND, "  ");
-        assertViolationContains(invalid, field, messageTemplate);
-    }
-
-    @Test
-    @DisplayName("Should fail validation when field 'description' has value above max (@Size)")
-    void shouldFailValidationDescriptionAboveMaxConstraint() {
-        final int outOfBoundChars = 257;
-        final String field = "description";
-        final String messageTemplate = "{Size.max.message}";
-        var invalid = new MyCommand(COMMAND, "x".repeat(outOfBoundChars));
-        assertViolationContains(invalid, field, messageTemplate);
+    @Override
+    protected Stream<Arguments> provideValidArguments() {
+        return Stream.of(
+                Arguments.of(CASE_NAME_FULL_PAYLOAD, validMyCommandFullPayload())
+        );
     }
 
 }

@@ -5,11 +5,23 @@ import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
+/**
+ * DTO representing the Telegram <i>ReplyKeyboardMarkup</i> reply markup.
+ *
+ * @param keyboard              required. Array of button rows, each represented by an Array of {@link KeyboardButton}.
+ * @param isPersistent          optional. The keyboard remains visible after use. Defaults to {@code false}, in which
+ *                              case the custom keyboard can be hidden and opened with a keyboard icon.
+ * @param resizeKeyboard        optional. Resize the keyboard for optimal fit. Defaults to {@code false}, in which case
+ *                              the custom keyboard is always of the same height as the app's standard keyboard.
+ * @param oneTimeKeyboard       optional. Hides the keyboard after first use.
+ * @param inputFieldPlaceholder optional. The placeholder to be shown in the input field when the keyboard is active.
+ * @see <a href="https://core.telegram.org/bots/api#replykeyboardmarkup">Telegram API — ReplyKeyboardMarkup</a>
+ */
 public record ReplyKeyboardMarkup(
 
         @NotEmpty
@@ -25,35 +37,30 @@ public record ReplyKeyboardMarkup(
         Boolean oneTimeKeyboard,
 
         @Nullable
-        String inputFieldPlaceholder,
-
-        @Nullable
-        Boolean selective
+        @Size(min = 1, max = MAX_PLACEHOLDER_LENGTH)
+        String inputFieldPlaceholder
 
 ) implements ReplyMarkup {
 
+    /**
+     * Maximum allowed length for {@code inputFieldPlaceholder}.
+     */
     public static final int MAX_PLACEHOLDER_LENGTH = 64;
 
-    public ReplyKeyboardMarkup {
-        Objects.requireNonNull(keyboard, "Field 'keyboard' cannot be null.");
-        if (inputFieldPlaceholder != null && (inputFieldPlaceholder.isEmpty()
-                || inputFieldPlaceholder.length() > MAX_PLACEHOLDER_LENGTH)) {
-            throw new IllegalArgumentException("Allowed 'inputFieldPlaceholder' length is 1 to 64 characters.");
-        }
-    }
-
-    @SafeVarargs
-    public static ReplyKeyboardMarkup ofResizedOneTimeKeyboard(@Nonnull final List<KeyboardButton>... keyboards) {
-        return ofRows(
-                null,
-                true,
-                true,
-                null,
-                null,
-                keyboards
-        );
-    }
-
+    /**
+     * Creates a persistent and resized keyboard with the given rows.
+     *
+     * <p>Equivalent to:</p>
+     * <pre>
+     * isPersistent      = true
+     * resizeKeyboard     = true
+     * oneTimeKeyboard    = false
+     * inputPlaceholder   = null
+     * </pre>
+     *
+     * @param keyboards rows of {@link KeyboardButton}.
+     * @return configured {@link ReplyKeyboardMarkup}
+     */
     @SafeVarargs
     public static ReplyKeyboardMarkup ofResizedPersistentKeyboard(@Nonnull final List<KeyboardButton>... keyboards) {
         return ofRows(
@@ -61,18 +68,21 @@ public record ReplyKeyboardMarkup(
                 true,
                 false,
                 null,
-                null,
                 keyboards
         );
     }
 
+    /**
+     * Creates a {@link ReplyKeyboardMarkup} with explicit configuration flags and rows.
+     *
+     * @return new {@link ReplyKeyboardMarkup}
+     */
     @SafeVarargs
     public static ReplyKeyboardMarkup ofRows(
             final Boolean isPersistent,
             final Boolean resizeKeyboard,
             final Boolean oneTimeKeyboard,
             final String inputFieldPlaceholder,
-            final Boolean selective,
             @Nonnull final List<KeyboardButton>... keyboards
     ) {
         List<List<KeyboardButton>> rows = Arrays.stream(keyboards)
@@ -83,9 +93,8 @@ public record ReplyKeyboardMarkup(
                 isPersistent,
                 resizeKeyboard,
                 oneTimeKeyboard,
-                inputFieldPlaceholder,
-                selective
+                inputFieldPlaceholder
         );
     }
-}
 
+}

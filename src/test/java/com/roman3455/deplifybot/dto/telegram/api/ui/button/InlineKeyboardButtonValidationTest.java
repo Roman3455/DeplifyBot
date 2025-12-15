@@ -1,122 +1,89 @@
 package com.roman3455.deplifybot.dto.telegram.api.ui.button;
 
-import com.roman3455.deplifybot.util.ValidationTestSupport;
+import com.roman3455.deplifybot.test_utils.DtoValidationTestSupport;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
-@DisplayName("InlineKeyboardButton - bean validation")
-class InlineKeyboardButtonValidationTest extends ValidationTestSupport {
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validInlineKeyboardButtonCallbackDataPayload;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validInlineKeyboardButtonCopyTextPayload;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validInlineKeyboardButtonUrlPayload;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidInlineKeyboardButtonWithBlankText;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidInlineKeyboardButtonWithMismatchUrl;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+        .invalidInlineKeyboardButtonWithBytesLengthBelowMinCallbackData;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+        .invalidInlineKeyboardButtonWithBytesLengthAboveMaxCallbackData;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+        .invalidInlineKeyboardButtonWithInvalidCopyTextButton;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+        .invalidInlineKeyboardButtonWithNullOptionalFields;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+        .invalidInlineKeyboardButtonWithAllOptionalFieldsPresent;
 
-    public static final int MAX_CALLBACK_DATA_LENGTH = 64;
-    private static final String BUTTON_LABEL = "Button";
-    private static final String URL = "https://example.com";
-    private static final String CALLBACK_DATA = "callback";
-    private static final CopyTextButton COPY_BUTTON = new CopyTextButton("Text to copy");
+@DisplayName("InlineKeyboardButton - DTO validation")
+class InlineKeyboardButtonValidationTest extends DtoValidationTestSupport<InlineKeyboardButton> {
 
-    @ParameterizedTest(name = "[{index}] {0}")
-    @MethodSource("validInlineKeyboardButtonCases")
-    @DisplayName("Should pass validation for valid")
-    void shouldPassValidationParametrized(
-            final String caseName,
-            final InlineKeyboardButton valid
-    ) {
-        assertValid(valid);
-    }
+    private static final String CALLBACK_DATA_FIELD = "callbackData";
+    private static final String ASSERT_TRUE_FIELD = "anyProvided";
+    private static final String MESSAGE_TEMPLATE_BYTES_LENGTH = "{BytesLength.validation.constraints.message}";
+    private static final String MESSAGE_TEMPLATE_ASSERT_TRUE = "{InlineKeyboardButton.isAnyProvided.AssertTrue}";
 
-    static Stream<Arguments> validInlineKeyboardButtonCases() {
+    @Override
+    protected Stream<Arguments> provideInvalidArguments() {
         return Stream.of(
                 Arguments.of(
-                        "'callbackData' payload",
-                        new InlineKeyboardButton(BUTTON_LABEL, null, CALLBACK_DATA, null)
+                        "field 'text' is blank (@NotBlank)",
+                        invalidInlineKeyboardButtonWithBlankText(),
+                        "text",
+                        MESSAGE_TEMPLATE_NOT_BLANK
                 ),
                 Arguments.of(
-                        "'callbackData' button fabric payload",
-                        InlineKeyboardButton.ofCallbackData(BUTTON_LABEL, CALLBACK_DATA)
+                        "field 'url' mismatch pattern (@Pattern)",
+                        invalidInlineKeyboardButtonWithMismatchUrl(),
+                        "url",
+                        "{InlineKeyboardButton.url.Pattern.message}"
                 ),
                 Arguments.of(
-                        "'copyText' payload",
-                        new InlineKeyboardButton(BUTTON_LABEL, null, null, COPY_BUTTON)
+                        "field 'callbackData' bytes length below min value (@BytesLength)",
+                        invalidInlineKeyboardButtonWithBytesLengthBelowMinCallbackData(),
+                        CALLBACK_DATA_FIELD,
+                        MESSAGE_TEMPLATE_BYTES_LENGTH
                 ),
                 Arguments.of(
-                        "'copyText' button fabric payload",
-                        InlineKeyboardButton.ofCopyText(BUTTON_LABEL, "Text to copy")
+                        "field 'callbackData' bytes length above max value (@BytesLength)",
+                        invalidInlineKeyboardButtonWithBytesLengthAboveMaxCallbackData(),
+                        CALLBACK_DATA_FIELD,
+                        MESSAGE_TEMPLATE_BYTES_LENGTH
                 ),
                 Arguments.of(
-                        "'url' payload",
-                        new InlineKeyboardButton(BUTTON_LABEL, URL, null, null)
+                        "field 'copyText' has invalid CopyTextButton (@Valid)",
+                        invalidInlineKeyboardButtonWithInvalidCopyTextButton(),
+                        "copyText.text",
+                        MESSAGE_TEMPLATE_NOT_BLANK
                 ),
                 Arguments.of(
-                        "'url' button fabric payload",
-                        InlineKeyboardButton.ofUrl(BUTTON_LABEL, URL)
+                        "optional fields not present (@AssertTrue)",
+                        invalidInlineKeyboardButtonWithNullOptionalFields(),
+                        ASSERT_TRUE_FIELD,
+                        MESSAGE_TEMPLATE_ASSERT_TRUE
+                ),
+                Arguments.of(
+                        "more then one optional fields are present (@AssertTrue)",
+                        invalidInlineKeyboardButtonWithAllOptionalFieldsPresent(),
+                        ASSERT_TRUE_FIELD,
+                        MESSAGE_TEMPLATE_ASSERT_TRUE
                 )
         );
     }
 
-    @ParameterizedTest(name = "[{index}] {0}")
-    @MethodSource("invalidInlineKeyboardButtonCases")
-    @DisplayName("Should fail validation when field")
-    void shouldFailValidationParametrized(
-            final String caseName,
-            final String field,
-            final String messageTemplate,
-            final InlineKeyboardButton invalid
-    ) {
-        assertViolationContains(invalid, field, messageTemplate);
-    }
-
-    static Stream<Arguments> invalidInlineKeyboardButtonCases() {
+    @Override
+    protected Stream<Arguments> provideValidArguments() {
         return Stream.of(
-                Arguments.of(
-                        "'text' is null (@NotNull)",
-                        "text",
-                        "{jakarta.validation.constraints.NotNull.message}",
-                        new InlineKeyboardButton(null, null, CALLBACK_DATA, null)
-                ),
-                Arguments.of(
-                        "'url' mismatch pattern (@Pattern)",
-                        "url",
-                        "{InlineKeyboardButton.url.Pattern.message}",
-                        new InlineKeyboardButton(BUTTON_LABEL, "ttp://example.com", null, null)
-                ),
-                Arguments.of(
-                        "'callbackData' bytes length below min value (@BytesLength)",
-                        "callbackData",
-                        "{BytesLength.validation.constraints.message}",
-                        new InlineKeyboardButton(BUTTON_LABEL, null, "", null)
-                ),
-                Arguments.of(
-                        "'callbackData' bytes length above max value (@BytesLength)",
-                        "callbackData",
-                        "{BytesLength.validation.constraints.message}",
-                        new InlineKeyboardButton(
-                                BUTTON_LABEL,
-                                null,
-                                "x".repeat(MAX_CALLBACK_DATA_LENGTH +  1),
-                                null
-                        )
-                ),
-                Arguments.of(
-                        "'copyText' has invalid CopyTextButton (@Valid)",
-                        "copyText.text",
-                        "{jakarta.validation.constraints.NotNull.message}",
-                        new InlineKeyboardButton(BUTTON_LABEL, null, null, new CopyTextButton(null))
-                ),
-                Arguments.of(
-                        "'url', 'callbackData', 'copyText' not present (@AssertTrue)",
-                        "anyProvided",
-                        "{InlineKeyboardButton.isAnyProvided.AssertTrue}",
-                        new InlineKeyboardButton(BUTTON_LABEL, null, null, null)
-                ),
-                Arguments.of(
-                        "'url', 'callbackData', 'copyText' present (@AssertTrue)",
-                        "anyProvided",
-                        "{InlineKeyboardButton.isAnyProvided.AssertTrue}",
-                        new InlineKeyboardButton(BUTTON_LABEL, URL, CALLBACK_DATA, COPY_BUTTON)
-                )
+                Arguments.of("callbackData payload", validInlineKeyboardButtonCallbackDataPayload()),
+                Arguments.of("copyText payload", validInlineKeyboardButtonCopyTextPayload()),
+                Arguments.of("url payload", validInlineKeyboardButtonUrlPayload())
         );
     }
 

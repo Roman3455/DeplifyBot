@@ -1,5 +1,5 @@
 {
-  "url": "https://example.com/webhook",
+  "url": "https://ok",
   "max_connections": 80,
   "allowed_updates": ["message", "callback_query"],
   "drop_pending_updates": true,

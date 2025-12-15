@@ -1,27 +1,27 @@
 {
   "chat": {
-    "id": 123,
+    "id": 156789,
     "type": "supergroup"
   },
   "from": {
-    "id": 456,
-    "is_bot": false,
+    "id": 156789,
+    "is_bot": true,
     "first_name": "John"
   },
   "date": "2024-03-12T13:03:13Z",
   "old_chat_member": {
     "status": "administrator",
     "user": {
-      "id": 456,
-      "is_bot": false,
+      "id": 156789,
+      "is_bot": true,
       "first_name": "John"
     }
   },
   "new_chat_member": {
-    "status": "member",
+    "status": "administrator",
     "user": {
-      "id": 456,
-      "is_bot": false,
+      "id": 156789,
+      "is_bot": true,
       "first_name": "John"
     }
   }

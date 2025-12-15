@@ -1,21 +1,21 @@
 {
-  "message_id": 1,
-  "message_thread_id": 2,
+  "message_id": 156789,
+  "message_thread_id": -13435667,
   "from": {
-    "id": 1,
-    "is_bot": false,
+    "id": 156789,
+    "is_bot": true,
     "first_name": "John"
   },
   "date": "2024-03-12T13:03:13Z",
   "chat": {
-    "id": 2,
+    "id": 156789,
     "type": "supergroup"
   },
-  "text": "message",
-  "migrate_to_chat_id": 2,
-  "migrate_from_chat_id": 1,
+  "text": "text",
+  "migrate_to_chat_id": 156789,
+  "migrate_from_chat_id": 156789,
   "chat_shared": {
-    "request_id": 1,
-    "chat_id": 1
+    "request_id": 156789,
+    "chat_id": 156789
   }
 }

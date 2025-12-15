@@ -25,10 +25,12 @@ public record CallbackQuery(
         String id,
 
         @NotNull
-        @Valid User from,
+        @Valid
+        User from,
 
         @Nullable
-        @Valid Message message,
+        @Valid
+        Message message,
 
         @Nullable
         String data

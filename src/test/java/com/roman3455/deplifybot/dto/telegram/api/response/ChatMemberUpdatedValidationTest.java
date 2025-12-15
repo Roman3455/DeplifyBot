@@ -1,78 +1,92 @@
 package com.roman3455.deplifybot.dto.telegram.api.response;
 
-import com.roman3455.deplifybot.dto.telegram.api.enums.ChatMemberStatusType;
-import com.roman3455.deplifybot.dto.telegram.api.enums.ChatType;
-import com.roman3455.deplifybot.util.ValidationTestSupport;
-import org.junit.jupiter.api.BeforeEach;
+import com.roman3455.deplifybot.test_utils.DtoValidationTestSupport;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-import java.time.Instant;
+import java.util.stream.Stream;
 
-@DisplayName("ChatMemberUpdated - bean validation")
-class ChatMemberUpdatedValidationTest extends ValidationTestSupport {
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validChatMemberUpdatedFullPayload;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidChatMemberUpdatedWithNullChat;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidChatMemberUpdatedWithInvalidChat;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidChatMemberUpdatedWithNullFrom;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidChatMemberUpdatedWithInvalidFrom;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidChatMemberUpdatedWithNullDate;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidChatMemberUpdatedWithNullOldChatMember;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+        .invalidChatMemberUpdatedWithInvalidOldChatMember;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidChatMemberUpdatedWithNullNewChatMember;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+        .invalidChatMemberUpdatedWithInvalidNewChatMember;
 
-    private static final String MESSAGE_TEMPLATE = "{jakarta.validation.constraints.NotNull.message}";
-    private static final Instant DATE = Instant.ofEpochSecond(1710248593);
+@DisplayName("ChatMemberUpdated - DTO validation")
+class ChatMemberUpdatedValidationTest extends DtoValidationTestSupport<ChatMemberUpdated> {
 
-    private Chat chat;
-    private User from;
-    private ChatMember oldChatMember;
-    private ChatMember newChatMember;
-
-    @BeforeEach
-    void setUp() {
-        chat = new Chat(1L, ChatType.PRIVATE, null, null, null, null);
-        from = new User(2L, false, "John Doe", null, null);
-        oldChatMember = new ChatMember(ChatMemberStatusType.MEMBER, from);
-        newChatMember = new ChatMember(ChatMemberStatusType.LEFT, from);
+    @Override
+    protected Stream<Arguments> provideInvalidArguments() {
+        return Stream.of(
+                Arguments.of(
+                        "field 'chat' is null (@NotNull)",
+                        invalidChatMemberUpdatedWithNullChat(),
+                        "chat",
+                        MESSAGE_TEMPLATE_NOT_NULL
+                ),
+                Arguments.of(
+                        "field 'chat' has invalid value (@Valid)",
+                        invalidChatMemberUpdatedWithInvalidChat(),
+                        "chat.id",
+                        MESSAGE_TEMPLATE_NOT_NULL
+                ),
+                Arguments.of(
+                        "field 'from' is null (@NotNull)",
+                        invalidChatMemberUpdatedWithNullFrom(),
+                        "from",
+                        MESSAGE_TEMPLATE_NOT_NULL
+                ),
+                Arguments.of(
+                        "field 'from' has invalid value (@Valid)",
+                        invalidChatMemberUpdatedWithInvalidFrom(),
+                        "from.id",
+                        MESSAGE_TEMPLATE_NOT_NULL
+                ),
+                Arguments.of(
+                        "field 'date' is null (@NotNull)",
+                        invalidChatMemberUpdatedWithNullDate(),
+                        "date",
+                        MESSAGE_TEMPLATE_NOT_NULL
+                ),
+                Arguments.of(
+                        "field 'oldChatMember' is null (@NotNull)",
+                        invalidChatMemberUpdatedWithNullOldChatMember(),
+                        "oldChatMember",
+                        MESSAGE_TEMPLATE_NOT_NULL
+                ),
+                Arguments.of(
+                        "field 'oldChatMember' has invalid value (@Valid)",
+                        invalidChatMemberUpdatedWithInvalidOldChatMember(),
+                        "oldChatMember.user",
+                        MESSAGE_TEMPLATE_NOT_NULL
+                ),
+                Arguments.of(
+                        "field 'newChatMember' is null (@NotNull)",
+                        invalidChatMemberUpdatedWithNullNewChatMember(),
+                        "newChatMember",
+                        MESSAGE_TEMPLATE_NOT_NULL
+                ),
+                Arguments.of(
+                        "field 'newChatMember' has invalid value (@Valid)",
+                        invalidChatMemberUpdatedWithInvalidNewChatMember(),
+                        "newChatMember.user",
+                        MESSAGE_TEMPLATE_NOT_NULL
+                )
+        );
     }
 
-    @Test
-    @DisplayName("Should pass validation for valid full payload")
-    void shouldPassValidationFullPayload() {
-        var valid = new ChatMemberUpdated(chat, from, DATE, oldChatMember, newChatMember);
-        assertValid(valid);
-    }
-
-    @Test
-    @DisplayName("Should fail validation when field 'chat' is null (@NotNull)")
-    void shouldFailValidationChatNullConstraint() {
-        final String field = "chat";
-        var invalid = new ChatMemberUpdated(null, from, DATE, oldChatMember, newChatMember);
-        assertViolationContains(invalid, field, MESSAGE_TEMPLATE);
-    }
-
-    @Test
-    @DisplayName("Should fail validation when field 'from' is null (@NotNull)")
-    void shouldFailValidationFromNullConstraint() {
-        final String field = "from";
-        var invalid = new ChatMemberUpdated(chat, null, DATE, oldChatMember, newChatMember);
-        assertViolationContains(invalid, field, MESSAGE_TEMPLATE);
-    }
-
-    @Test
-    @DisplayName("Should fail validation when field 'date' is null (@NotNull)")
-    void shouldFailValidationDateNullConstraint() {
-        final String field = "date";
-        var invalid = new ChatMemberUpdated(chat, from, null, oldChatMember, newChatMember);
-        assertViolationContains(invalid, field, MESSAGE_TEMPLATE);
-    }
-
-    @Test
-    @DisplayName("Should fail validation when field 'oldChatMember' is null (@NotNull)")
-    void shouldFailValidationOldChatMemberNullConstraint() {
-        final String field = "oldChatMember";
-        var invalid = new ChatMemberUpdated(chat, from, DATE, null, newChatMember);
-        assertViolationContains(invalid, field, MESSAGE_TEMPLATE);
-    }
-
-    @Test
-    @DisplayName("Should fail validation when field 'newChatMember' is null (@NotNull)")
-    void shouldFailValidationNewChatMemberNullConstraint() {
-        final String field = "newChatMember";
-        var invalid = new ChatMemberUpdated(chat, from, DATE, oldChatMember, null);
-        assertViolationContains(invalid, field, MESSAGE_TEMPLATE);
+    @Override
+    protected Stream<Arguments> provideValidArguments() {
+        return Stream.of(
+                Arguments.of(CASE_NAME_FULL_PAYLOAD, validChatMemberUpdatedFullPayload())
+        );
     }
 
 }

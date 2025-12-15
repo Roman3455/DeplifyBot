@@ -1,140 +1,77 @@
 package com.roman3455.deplifybot.dto.telegram.api.response;
 
 import com.roman3455.deplifybot.configuration.JacksonConfiguration;
-import org.junit.jupiter.api.BeforeAll;
+import com.roman3455.deplifybot.test_utils.DtoJsonMarshallingTestSupport;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.params.provider.Arguments;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.context.annotation.Import;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ActiveProfiles;
 
-import static org.assertj.core.api.BDDAssertions.then;
+import java.util.List;
+import java.util.stream.Stream;
+
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validChatAdministratorRightsFullPayload;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validChatAdministratorRightsRequiredPayload;
 
 @ActiveProfiles("test")
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @JsonTest
 @Import(JacksonConfiguration.class)
 @DisplayName("ChatAdministratorRights — JSON serialization & deserialization")
-class ChatAdministratorRightsJsonTest {
+class ChatAdministratorRightsJsonTest extends DtoJsonMarshallingTestSupport<ChatAdministratorRights> {
+
+    private static final String PATH =
+            "/fixture/telegram/response/chat_administrator_rights/chat_administrator_rights_";
 
     @Autowired
-    private JacksonTester<ChatAdministratorRights> json;
+    private JacksonTester<ChatAdministratorRights> jsonTester;
 
-    private static final String SOURCE = "/fixture/telegram/response/chat_administrator_rights/";
-    private static final String FULL_JSON = SOURCE + "chat_administrator_rights_full.json";
-    private static final String REQUIRED_ONLY_JSON = SOURCE + "chat_administrator_rights_required_only.json";
+    @Override
+    protected JacksonTester<ChatAdministratorRights> tester() {
+        return jsonTester;
+    }
 
-    private ChatAdministratorRights fullPayload;
-    private ChatAdministratorRights requiredOnlyPayload;
-
-    @BeforeAll
-    void setUp() {
-        fullPayload = new ChatAdministratorRights(
-                true,
-                true,
-                true,
-                false,
-                false,
-                false,
-                false,
-                false,
-                true,
-                true,
-                true,
-                true,
-                true,
-                true,
-                false,
-                false
+    @Override
+    protected Stream<Arguments> provideArguments() {
+        return Stream.of(
+                Arguments.of(
+                        CASE_NAME_FULL_PAYLOAD,
+                        validChatAdministratorRightsFullPayload(),
+                        PATH + "full.json",
+                        List.of(
+                                "$.isAnonymous",
+                                "$.canManageChat",
+                                "$.canDeleteMessages",
+                                "$.canManageVideoChats",
+                                "$.canRestrictMembers",
+                                "$.canPromoteMembers",
+                                "$.canChangeInfo",
+                                "$.canInviteUsers",
+                                "$.canPostStories",
+                                "$.canEditStories",
+                                "$.canDeleteStories",
+                                "$.canPostMessages",
+                                "$.canEditMessages",
+                                "$.canPinMessages",
+                                "$.canManageTopics",
+                                "$.canManageDirectMessages"
+                        )
+                ),
+                Arguments.of(
+                        CASE_NAME_REQUIRED_PAYLOAD,
+                        validChatAdministratorRightsRequiredPayload(),
+                        PATH + "required.json",
+                        List.of(
+                                "$.can_post_messages",
+                                "$.can_edit_messages",
+                                "$.can_pin_messages",
+                                "$.can_manage_topics",
+                                "$.can_manage_direct_messages"
+                        )
+                )
         );
-        requiredOnlyPayload = new ChatAdministratorRights(
-                true,
-                true,
-                true,
-                false,
-                false,
-                false,
-                false,
-                false,
-                true,
-                true,
-                true,
-                null,
-                null,
-                null,
-                null,
-                null
-        );
-    }
-
-    @Test
-    @DisplayName("Should serialize full payload object into expected JSON fixture")
-    void shouldSerializeFullPayload() throws Exception {
-        var serialized = json.write(fullPayload);
-        then(serialized).isNotNull()
-                .isEqualToJson(new ClassPathResource(FULL_JSON))
-                .doesNotHaveJsonPath("$.isAnonymous")
-                .doesNotHaveJsonPath("$.canManageChat")
-                .doesNotHaveJsonPath("$.canDeleteMessages")
-                .doesNotHaveJsonPath("$.canManageVideoChats")
-                .doesNotHaveJsonPath("$.canRestrictMembers")
-                .doesNotHaveJsonPath("$.canPromoteMembers")
-                .doesNotHaveJsonPath("$.canChangeInfo")
-                .doesNotHaveJsonPath("$.canInviteUsers")
-                .doesNotHaveJsonPath("$.canPostStories")
-                .doesNotHaveJsonPath("$.canEditStories")
-                .doesNotHaveJsonPath("$.canDeleteStories")
-                .doesNotHaveJsonPath("$.canPostMessages")
-                .doesNotHaveJsonPath("$.canEditMessages")
-                .doesNotHaveJsonPath("$.canPinMessages")
-                .doesNotHaveJsonPath("$.canManageTopics")
-                .doesNotHaveJsonPath("$.canManageDirectMessages");
-    }
-
-    @Test
-    @DisplayName("Should deserialize full payload JSON fixture into expected object")
-    void shouldDeserializeFullPayload() throws Exception {
-        var deserialized = json.readObject(new ClassPathResource(FULL_JSON));
-        then(deserialized).isNotNull()
-                .isEqualTo(fullPayload);
-    }
-
-    @Test
-    @DisplayName("Should round-trip full payload JSON fixture")
-    void shouldRoundTripFullPayload() throws Exception {
-        var deserialized = json.readObject(new ClassPathResource(FULL_JSON));
-        var serialized = json.write(deserialized);
-        then(serialized).isNotNull()
-                .isEqualToJson(new ClassPathResource(FULL_JSON));
-    }
-
-    @Test
-    @DisplayName("Should serialize required only payload object into expected JSON fixture")
-    void shouldSerializeRequiredOnlyPayload() throws Exception {
-        var serialized = json.write(requiredOnlyPayload);
-        then(serialized).isNotNull()
-                .isEqualToJson(new ClassPathResource(REQUIRED_ONLY_JSON));
-    }
-
-    @Test
-    @DisplayName("Should deserialize required only payload JSON fixture into expected object")
-    void shouldDeserializeRequiredOnlyPayload() throws Exception {
-        var deserialized = json.readObject(new ClassPathResource(REQUIRED_ONLY_JSON));
-        then(deserialized).isNotNull()
-                .isEqualTo(requiredOnlyPayload);
-    }
-
-    @Test
-    @DisplayName("Should round-trip required only payload object")
-    void shouldRoundTripRequiredOnlyPayload() throws Exception {
-        var serialized = json.write(requiredOnlyPayload);
-        var deserialized = json.parseObject(serialized.getJson());
-        then(deserialized).isNotNull()
-                .isEqualTo(requiredOnlyPayload);
     }
 
 }

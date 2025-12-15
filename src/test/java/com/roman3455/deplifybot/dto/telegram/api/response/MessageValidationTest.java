@@ -1,64 +1,71 @@
 package com.roman3455.deplifybot.dto.telegram.api.response;
 
-import com.roman3455.deplifybot.dto.telegram.api.enums.ChatType;
-import com.roman3455.deplifybot.util.ValidationTestSupport;
-import org.junit.jupiter.api.BeforeEach;
+import com.roman3455.deplifybot.test_utils.DtoValidationTestSupport;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-import java.time.Instant;
+import java.util.stream.Stream;
 
-@DisplayName("Message - bean validation")
-class MessageValidationTest extends ValidationTestSupport {
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validMessageFullPayload;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validMessageRequiredPayload;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidMessageWithNullMessageId;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidMessageWithInvalidUser;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidMessageWithNullDate;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidMessageWithNullChat;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidMessageWithInvalidChat;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidMessageWithInvalidChatShared;
 
-    private static final String MESSAGE_TEMPLATE = "{jakarta.validation.constraints.NotNull.message}";
-    private static final Instant DATE = Instant.ofEpochSecond(1710248593);
+@DisplayName("Message - DTO validation")
+class MessageValidationTest extends DtoValidationTestSupport<Message> {
 
-    private Chat chat;
-
-    @BeforeEach
-    void setUp() {
-        chat = new Chat(1L, ChatType.PRIVATE, null, null, null, null);
+    @Override
+    protected Stream<Arguments> provideInvalidArguments() {
+        return Stream.of(
+                Arguments.of(
+                        "field 'messageId' is null (@NotNull)",
+                        invalidMessageWithNullMessageId(),
+                        "messageId",
+                        MESSAGE_TEMPLATE_NOT_NULL
+                ),
+                Arguments.of(
+                        "field 'from' has invalid value (@Valid)",
+                        invalidMessageWithInvalidUser(),
+                        "from.id",
+                        MESSAGE_TEMPLATE_NOT_NULL
+                ),
+                Arguments.of(
+                        "field 'date' is null (@NotNull)",
+                        invalidMessageWithNullDate(),
+                        "date",
+                        MESSAGE_TEMPLATE_NOT_NULL
+                ),
+                Arguments.of(
+                        "field 'chat' is null (@NotNull)",
+                        invalidMessageWithNullChat(),
+                        "chat",
+                        MESSAGE_TEMPLATE_NOT_NULL
+                ),
+                Arguments.of(
+                        "field 'chat' has invalid value (@Valid)",
+                        invalidMessageWithInvalidChat(),
+                        "chat.id",
+                        MESSAGE_TEMPLATE_NOT_NULL
+                ),
+                Arguments.of(
+                        "field 'chatShared' has invalid value (@Valid)",
+                        invalidMessageWithInvalidChatShared(),
+                        "chatShared.chatId",
+                        MESSAGE_TEMPLATE_NOT_NULL
+                )
+        );
     }
 
-    @Test
-    @DisplayName("Should pass validation for valid full payload")
-    void shouldPassValidationFullPayload() {
-        User from = new User(1L, false, "John", null, null);
-        ChatShared chatShared = new ChatShared(1L, 2L, null, null);
-        var valid = new Message(1L, 2L, from, DATE, chat, "Text", 1L, 2L, chatShared);
-        assertValid(valid);
-    }
-
-    @Test
-    @DisplayName("Should pass validation for valid required payload")
-    void shouldPassValidationRequiredFieldsPayload() {
-        var valid = new Message(1L, null, null, DATE, chat, null, null, null, null);
-        assertValid(valid);
-    }
-
-    @Test
-    @DisplayName("Should fail validation when field 'messageId' is null (@NotNull)")
-    void shouldFailValidationMessageIdNullConstraint() {
-        final String field = "messageId";
-        var invalid = new Message(null, null, null, DATE, chat, null, null, null, null);
-        assertViolationContains(invalid, field, MESSAGE_TEMPLATE);
-    }
-
-    @Test
-    @DisplayName("Should fail validation when field 'date' is null (@NotNull)")
-    void shouldFailValidationDateNullConstraint() {
-        final String field = "date";
-        var invalid = new Message(1L, null, null, null, chat, null, null, null, null);
-        assertViolationContains(invalid, field, MESSAGE_TEMPLATE);
-    }
-
-    @Test
-    @DisplayName("Should fail validation when field 'chat' is null (@NotNull)")
-    void shouldFailValidationChatNullConstraint() {
-        final String field = "chat";
-        var invalid = new Message(1L, null, null, DATE, null, null, null, null, null);
-        assertViolationContains(invalid, field, MESSAGE_TEMPLATE);
+    @Override
+    protected Stream<Arguments> provideValidArguments() {
+        return Stream.of(
+                Arguments.of(CASE_NAME_FULL_PAYLOAD, validMessageFullPayload()),
+                Arguments.of(CASE_NAME_REQUIRED_PAYLOAD, validMessageRequiredPayload())
+        );
     }
 
 }

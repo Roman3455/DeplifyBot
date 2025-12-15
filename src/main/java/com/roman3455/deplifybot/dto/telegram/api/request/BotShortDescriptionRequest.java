@@ -8,9 +8,6 @@ import org.springframework.lang.Nullable;
 /**
  * DTO represents a Telegram bot's short description.
  *
- * <p>Either {@code shortDescription} or {@code languageCode} must be provided (non-null and non-blank).
- * If not, violation will be reported by {@link #isAnyProvided()}.</p>
- *
  * @param shortDescription optional. New short description for the bot; 0-120 characters
  *                         {@value #SHORT_DESCRIPTION_MAX_LENGTH}. Pass an empty string to remove the dedicated short
  *                         description for the given language.
@@ -38,12 +35,11 @@ public record BotShortDescriptionRequest(
     private static final int SHORT_DESCRIPTION_MAX_LENGTH = 120;
 
     /**
-     * Cross-field constraint: require at least one field to be provided.
-     *
-     * <p>Violation will be reported on the synthetic property named after this method.</p>
+     * Assert that at least one field {@code shortDescription} or field {@code languageCode} is present.
      *
      * @return {@code true} if {@code shortDescription} or {@code languageCode} is not {@code null}.
      */
+    @SuppressWarnings("unused")
     @AssertTrue(message = "{BotShortDescriptionRequest.isAnyProvided.AssertTrue}")
     private boolean isAnyProvided() {
         return shortDescription != null || languageCode != null;

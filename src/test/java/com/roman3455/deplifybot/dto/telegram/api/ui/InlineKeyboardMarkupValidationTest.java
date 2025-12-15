@@ -1,39 +1,48 @@
 package com.roman3455.deplifybot.dto.telegram.api.ui;
 
-import com.roman3455.deplifybot.dto.telegram.api.ui.button.InlineKeyboardButton;
-import com.roman3455.deplifybot.util.ValidationTestSupport;
+import com.roman3455.deplifybot.test_utils.DtoValidationTestSupport;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-import java.util.List;
+import java.util.stream.Stream;
 
-@DisplayName("InlineKeyboardMarkup - bean validation")
-class InlineKeyboardMarkupValidationTest extends ValidationTestSupport {
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidInlineKeyboardMarkupWithEmptyInlineKeyboard;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidInlineKeyboardMarkupWithNestedEmptyInlineKeyboard;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validInlineKeyboardMarkupFullPayload;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validInlineKeyboardMarkupWithInvalidInlineKeyboardButton;
 
-    @Test
-    @DisplayName("Should pass validation for valid full payload")
-    void shouldPassValidationFullPayload() {
-        var urlButton = InlineKeyboardButton.ofUrl("Button", "https://ok");
-        var callbackDataButton = InlineKeyboardButton.ofCallbackData("Button", "callback");
-        var valid = InlineKeyboardMarkup.ofRows(List.of(urlButton), List.of(callbackDataButton));
-        assertValid(valid);
+@DisplayName("InlineKeyboardMarkup - DTO validation")
+class InlineKeyboardMarkupValidationTest extends DtoValidationTestSupport<InlineKeyboardMarkup> {
+
+    @Override
+    protected Stream<Arguments> provideInvalidArguments() {
+        return Stream.of(
+                Arguments.of(
+                        "field 'inlineKeyboard' has empty <List> (@NotEmpty)",
+                        invalidInlineKeyboardMarkupWithEmptyInlineKeyboard(),
+                        "inlineKeyboard",
+                        MESSAGE_TEMPLATE_NOT_EMPTY
+                ),
+                Arguments.of(
+                        "field 'inlineKeyboard' has nested empty <List> (@NotEmpty)",
+                        invalidInlineKeyboardMarkupWithNestedEmptyInlineKeyboard(),
+                        "inlineKeyboard[0].<list element>",
+                        MESSAGE_TEMPLATE_NOT_EMPTY
+                ),
+                Arguments.of(
+                        "field 'inlineKeyboard' has invalid value (@Valid)",
+                        validInlineKeyboardMarkupWithInvalidInlineKeyboardButton(),
+                        "inlineKeyboard[0].<list element>[0].text",
+                        MESSAGE_TEMPLATE_NOT_BLANK
+                )
+        );
     }
 
-    @Test
-    @DisplayName("Should fail validation when field 'inlineKeyboard' has empty <List> (@NotEmpty)")
-    void shouldFailValidationCommandsEmptyConstraint() {
-        final String field = "inlineKeyboard";
-        final String messageTemplate = "{jakarta.validation.constraints.NotEmpty.message}";
-        var invalid = new InlineKeyboardMarkup(List.of());
-        assertViolationContains(invalid, field, messageTemplate);
+    @Override
+    protected Stream<Arguments> provideValidArguments() {
+        return Stream.of(
+                Arguments.of(CASE_NAME_FULL_PAYLOAD, validInlineKeyboardMarkupFullPayload())
+        );
     }
 
-    @Test
-    @DisplayName("Should fail validation when field 'inlineKeyboard' has nested empty <List> (@NotEmpty)")
-    void shouldFailValidationCommandsNestedEmptyConstraint() {
-        final String field = "inlineKeyboard[0].<list element>";
-        final String messageTemplate = "{jakarta.validation.constraints.NotEmpty.message}";
-        var invalid = new InlineKeyboardMarkup(List.of(List.of()));
-        assertViolationContains(invalid, field, messageTemplate);
-    }
 }

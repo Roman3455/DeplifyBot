@@ -1,0 +1,31 @@
+{
+  "update_id": 156789,
+  "my_chat_member": {
+    "chat": {
+      "id": 156789,
+      "type": "supergroup"
+    },
+    "from": {
+      "id": 156789,
+      "is_bot": true,
+      "first_name": "John"
+    },
+    "date": "2024-03-12T13:03:13Z",
+    "old_chat_member": {
+      "status": "administrator",
+      "user": {
+        "id": 156789,
+        "is_bot": true,
+        "first_name": "John"
+      }
+    },
+    "new_chat_member": {
+      "status": "administrator",
+      "user": {
+        "id": 156789,
+        "is_bot": true,
+        "first_name": "John"
+      }
+    }
+  }
+}

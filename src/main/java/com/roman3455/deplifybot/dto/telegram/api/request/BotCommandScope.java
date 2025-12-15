@@ -9,8 +9,8 @@ import org.springframework.lang.Nullable;
  * DTO represents the scope to which bot commands are applied.
  *
  * @param type   required. Scope type {@link BotCommandScopeType}.
- * @param chatId optional. UID for the target chat. Must be provided only if {@code type} is {@code CHAT}. If not,
- *               violation will be reported by {@link #isChatIdConsistentWithType()}.
+ * @param chatId optional. UID for the target chat. Must be provided only if {@code type} is {@code CHAT}.
+ *               If not, violation will be reported by {@link #isChatIdConsistentWithType()}.
  * @see <a href="https://core.telegram.org/bots/api#botcommandscope">Telegram API — BotCommandScope</a>
  */
 public record BotCommandScope(
@@ -24,12 +24,12 @@ public record BotCommandScope(
 ) {
 
     /**
-     * Cross-field constraint: require a {@code chatId} field only if {@code type} is {@code CHAT}.
+     * Assert that a {@code chatId} field only required if {@code type} is {@code CHAT}.
      *
-     * <p>Violation will be reported on the synthetic property named after this method.</p>
-     *
-     * @return {@code true} if {@code type} is {@code CHAT} and {@code chatId} is not {@code null}.
+     * @return {@code true} if {@code type} is {@code CHAT} and {@code chatId} is not {@code null}
+     * or if {@code type} is not {@code CHAT} and {@code chatId} is {@code null}.
      */
+    @SuppressWarnings("unused")
     @AssertTrue(message = "{BotCommandScope.isChatIdConsistentWithType.AssertTrue}")
     private boolean isChatIdConsistentWithType() {
         return (chatId != null && type == BotCommandScopeType.CHAT)

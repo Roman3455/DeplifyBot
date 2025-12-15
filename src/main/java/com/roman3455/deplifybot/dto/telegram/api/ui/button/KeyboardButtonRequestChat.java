@@ -31,10 +31,12 @@ public record KeyboardButtonRequestChat(
         boolean chatIsChannel,
 
         @Nullable
-        @Valid ChatAdministratorRights userAdministratorRights,
+        @Valid
+        ChatAdministratorRights userAdministratorRights,
 
         @Nullable
-        @Valid ChatAdministratorRights botAdministratorRights,
+        @Valid
+        ChatAdministratorRights botAdministratorRights,
 
         @Nullable
         Boolean botIsMember,

@@ -1,7 +1,10 @@
 package com.roman3455.deplifybot.dto.telegram.api.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.roman3455.deplifybot.dto.telegram.api.enums.ParseModeType;
+import com.roman3455.deplifybot.dto.telegram.api.ui.ReplyMarkup;
 import jakarta.annotation.Nullable;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -25,12 +28,14 @@ import jakarta.validation.constraints.Size;
  *                            a notification without sound.
  * @param protectContent      optional. When {@code true}, prevents the message content from being
  *                            forwarded or saved by the user (content protection).
+ * @param replyMarkup         optional. An inline keyboard, custom reply keyboard, instructions to remove a reply
+ *                            keyboard or to force a reply from the user.
  * @see <a href="https://core.telegram.org/bots/api#sendmessage">Telegram API — sendMessage</a>.
  */
 public record SendMessageRequest(
 
         @NotNull
-        Object chatId,
+        Long chatId,
 
         @Nullable
         Long messageThreadId,
@@ -46,7 +51,12 @@ public record SendMessageRequest(
         Boolean disableNotification,
 
         @Nullable
-        Boolean protectContent
+        Boolean protectContent,
+
+        @Nullable
+        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+        @Valid
+        ReplyMarkup replyMarkup
 
 ) {
 

@@ -1,5 +1,8 @@
 package com.roman3455.deplifybot.dto.telegram.api.response;
 
+import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.NotNull;
+
 /**
  * DTO representing the rights and permissions of a chat administrator in a Telegram chat.
  *
@@ -32,21 +35,52 @@ package com.roman3455.deplifybot.dto.telegram.api.response;
  */
 public record ChatAdministratorRights(
 
-        boolean isAnonymous,
-        boolean canManageChat,
-        boolean canDeleteMessages,
-        boolean canManageVideoChats,
-        boolean canRestrictMembers,
-        boolean canPromoteMembers,
-        boolean canChangeInfo,
-        boolean canInviteUsers,
-        boolean canPostStories,
-        boolean canEditStories,
-        boolean canDeleteStories,
+        @NotNull
+        Boolean isAnonymous,
+
+        @NotNull
+        Boolean canManageChat,
+
+        @NotNull
+        Boolean canDeleteMessages,
+
+        @NotNull
+        Boolean canManageVideoChats,
+
+        @NotNull
+        Boolean canRestrictMembers,
+
+        @NotNull
+        Boolean canPromoteMembers,
+
+        @NotNull
+        Boolean canChangeInfo,
+
+        @NotNull
+        Boolean canInviteUsers,
+
+        @NotNull
+        Boolean canPostStories,
+
+        @NotNull
+        Boolean canEditStories,
+
+        @NotNull
+        Boolean canDeleteStories,
+
+        @Nullable
         Boolean canPostMessages,
+
+        @Nullable
         Boolean canEditMessages,
+
+        @Nullable
         Boolean canPinMessages,
+
+        @Nullable
         Boolean canManageTopics,
+
+        @Nullable
         Boolean canManageDirectMessages
 
 ) {

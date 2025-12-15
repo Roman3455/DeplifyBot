@@ -1,42 +1,43 @@
 package com.roman3455.deplifybot.dto.telegram.api.response;
 
-import com.roman3455.deplifybot.util.ValidationTestSupport;
+import com.roman3455.deplifybot.test_utils.DtoValidationTestSupport;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-@DisplayName("ChatShared - bean validation")
-class ChatSharedValidationTest extends ValidationTestSupport {
+import java.util.stream.Stream;
 
-    @Test
-    @DisplayName("Should pass validation for valid full payload")
-    void shouldPassValidationFullPayload() {
-        var valid = new ChatShared(1L, 2L, "Title", "@username");
-        assertValid(valid);
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validChatSharedFullPayload;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validChatSharedRequiredPayload;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidChatSharedWithNullRequestId;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidChatSharedWithNullChatId;
+
+@DisplayName("ChatShared - DTO validation")
+class ChatSharedValidationTest extends DtoValidationTestSupport<ChatShared> {
+
+    @Override
+    protected Stream<Arguments> provideInvalidArguments() {
+        return Stream.of(
+                Arguments.of(
+                        "field 'requestId' is null (@NotNull)",
+                        invalidChatSharedWithNullRequestId(),
+                        "requestId",
+                        MESSAGE_TEMPLATE_NOT_NULL
+                ),
+                Arguments.of(
+                        "field 'chatId' is null (@NotNull)",
+                        invalidChatSharedWithNullChatId(),
+                        "chatId",
+                        MESSAGE_TEMPLATE_NOT_NULL
+                )
+        );
     }
 
-    @Test
-    @DisplayName("Should pass validation for valid required payload")
-    void shouldPassValidationRequiredFieldsPayload() {
-        var valid = new ChatShared(1L, 2L, null, null);
-        assertValid(valid);
-    }
-
-    @Test
-    @DisplayName("Should fail validation when field 'requestId' is null (@NotNull)")
-    void shouldFailValidationRequestIdNullConstraint() {
-        final String field = "requestId";
-        final String messageTemplate = "{jakarta.validation.constraints.NotNull.message}";
-        var invalid = new ChatShared(null, 2L, null, null);
-        assertViolationContains(invalid, field, messageTemplate);
-    }
-
-    @Test
-    @DisplayName("Should fail validation when field 'chatId' is null (@NotNull)")
-    void shouldFailValidationChatIdNullConstraint() {
-        final String field = "chatId";
-        final String messageTemplate = "{jakarta.validation.constraints.NotNull.message}";
-        var invalid = new ChatShared(1L, null, null, null);
-        assertViolationContains(invalid, field, messageTemplate);
+    @Override
+    protected Stream<Arguments> provideValidArguments() {
+        return Stream.of(
+                Arguments.of(CASE_NAME_FULL_PAYLOAD, validChatSharedFullPayload()),
+                Arguments.of(CASE_NAME_REQUIRED_PAYLOAD, validChatSharedRequiredPayload())
+        );
     }
 
 }

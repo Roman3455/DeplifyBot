@@ -1,7 +1,4 @@
 {
   "ok": true,
-  "result": {
-    "message_id": 1,
-    "text": "hello"
-  }
+  "result": true
 }

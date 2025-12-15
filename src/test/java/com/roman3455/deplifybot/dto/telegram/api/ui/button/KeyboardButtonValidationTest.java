@@ -1,41 +1,43 @@
 package com.roman3455.deplifybot.dto.telegram.api.ui.button;
 
-import com.roman3455.deplifybot.util.ValidationTestSupport;
+import com.roman3455.deplifybot.test_utils.DtoValidationTestSupport;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-@DisplayName("KeyboardButton - bean validation")
-class KeyboardButtonValidationTest extends ValidationTestSupport {
+import java.util.stream.Stream;
 
-    @Test
-    @DisplayName("Should pass validation for valid full payload")
-    void shouldPassValidationFullPayload() {
-        var requestChat = new KeyboardButtonRequestChat(
-                1L,
-                true,
-                null,
-                null,
-                null,
-                null
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidKeyboardButtonWithBlankText;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidKeyboardButtonWithInvalidRequestChat;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validKeyboardButtonFullPayload;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validKeyboardButtonRequiredPayload;
+
+@DisplayName("KeyboardButton - DTO validation")
+class KeyboardButtonValidationTest extends DtoValidationTestSupport<KeyboardButton> {
+
+    @Override
+    protected Stream<Arguments> provideInvalidArguments() {
+        return Stream.of(
+                Arguments.of(
+                        "field 'text' is blank (@NotBlank)",
+                        invalidKeyboardButtonWithBlankText(),
+                        "text",
+                        MESSAGE_TEMPLATE_NOT_BLANK
+                ),
+                Arguments.of(
+                        "field 'requestChat' has invalid value (@Valid)",
+                        invalidKeyboardButtonWithInvalidRequestChat(),
+                        "requestChat.requestId",
+                        MESSAGE_TEMPLATE_NOT_NULL
+                )
         );
-        var valid = new KeyboardButton("Label", requestChat);
-        assertValid(valid);
     }
 
-    @Test
-    @DisplayName("Should pass validation for valid required only payload")
-    void shouldPassValidationRequiredOnlyPayload() {
-        var valid = new KeyboardButton("Label", null);
-        assertValid(valid);
-    }
-
-    @Test
-    @DisplayName("Should fail validation when field 'text' is null (@NotNull)")
-    void shouldFailValidationWhenFieldTextIdIsNull() {
-        final String field = "text";
-        final String messageTemplate = "{jakarta.validation.constraints.NotNull.message}";
-        var invalid = new KeyboardButton(null, null);
-        assertViolationContains(invalid, field, messageTemplate);
+    @Override
+    protected Stream<Arguments> provideValidArguments() {
+        return Stream.of(
+                Arguments.of(CASE_NAME_FULL_PAYLOAD, validKeyboardButtonFullPayload()),
+                Arguments.of(CASE_NAME_REQUIRED_PAYLOAD, validKeyboardButtonRequiredPayload())
+        );
     }
 
 }

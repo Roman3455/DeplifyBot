@@ -1,44 +1,48 @@
 package com.roman3455.deplifybot.dto.telegram.api.response;
 
-import com.roman3455.deplifybot.dto.telegram.api.enums.ChatMemberStatusType;
-import com.roman3455.deplifybot.util.ValidationTestSupport;
-import org.junit.jupiter.api.BeforeEach;
+import com.roman3455.deplifybot.test_utils.DtoValidationTestSupport;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-@DisplayName("ChatMember - bean validation")
-class ChatMemberValidationTest extends ValidationTestSupport {
+import java.util.stream.Stream;
 
-    private User user;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validChatMemberFullPayload;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidChatMemberWithNullStatus;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidChatMemberWithNullUser;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidChatMemberWithInvalidUser;
 
-    @BeforeEach
-    void setUp() {
-        user = new User(1L, false, "John", null, null);
+@DisplayName("ChatMember - DTO validation")
+class ChatMemberValidationTest extends DtoValidationTestSupport<ChatMember> {
+
+    @Override
+    protected Stream<Arguments> provideInvalidArguments() {
+        return Stream.of(
+                Arguments.of(
+                        "field 'status' is null (@NotNull)",
+                        invalidChatMemberWithNullStatus(),
+                        "status",
+                        MESSAGE_TEMPLATE_NOT_NULL
+                ),
+                Arguments.of(
+                        "field 'user' is null (@NotNull)",
+                        invalidChatMemberWithNullUser(),
+                        "user",
+                        MESSAGE_TEMPLATE_NOT_NULL
+                ),
+                Arguments.of(
+                        "field 'user' has invalid value (@Valid)",
+                        invalidChatMemberWithInvalidUser(),
+                        "user.id",
+                        MESSAGE_TEMPLATE_NOT_NULL
+                )
+        );
     }
 
-    @Test
-    @DisplayName("Should pass validation for valid full payload")
-    void shouldPassValidationFullPayload() {
-        var valid = new ChatMember(ChatMemberStatusType.LEFT, user);
-        assertValid(valid);
-    }
-
-    @Test
-    @DisplayName("Should fail validation when field 'status' is null (@NotNull)")
-    void shouldFailValidationStatusNullConstraint() {
-        final String field = "status";
-        final String messageTemplate = "{jakarta.validation.constraints.NotNull.message}";
-        var invalid = new ChatMember(null, user);
-        assertViolationContains(invalid, field, messageTemplate);
-    }
-
-    @Test
-    @DisplayName("Should fail validation when field 'user' is null (@NotNull)")
-    void shouldFailValidationUserNullConstraint() {
-        final String field = "user";
-        final String messageTemplate = "{jakarta.validation.constraints.NotNull.message}";
-        var invalid = new ChatMember(ChatMemberStatusType.MEMBER, null);
-        assertViolationContains(invalid, field, messageTemplate);
+    @Override
+    protected Stream<Arguments> provideValidArguments() {
+        return Stream.of(
+                Arguments.of(CASE_NAME_FULL_PAYLOAD, validChatMemberFullPayload())
+        );
     }
 
 }

@@ -1,0 +1,11 @@
+{
+  "update_id": 156789,
+  "callback_query": {
+    "id": "156789",
+    "from": {
+      "id": 156789,
+      "is_bot": true,
+      "first_name": "John"
+    }
+  }
+}

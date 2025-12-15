@@ -1,90 +1,84 @@
 package com.roman3455.deplifybot.dto.telegram.api.response;
 
-import com.roman3455.deplifybot.dto.telegram.api.enums.ChatMemberStatusType;
-import com.roman3455.deplifybot.dto.telegram.api.enums.ChatType;
-import com.roman3455.deplifybot.util.ValidationTestSupport;
-import org.junit.jupiter.api.BeforeEach;
+import com.roman3455.deplifybot.test_utils.DtoValidationTestSupport;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-import java.time.Instant;
+import java.util.stream.Stream;
 
-@DisplayName("Update - bean validation")
-class UpdateValidationTest extends ValidationTestSupport {
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validUpdateMessagePayload;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validUpdateCallbackQueryPayload;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validUpdateMyChatMemberPayload;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidUpdateWithNullUpdateId;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidUpdateWithNegativeUpdateId;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidUpdateWithInvalidMessage;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidUpdateWithInvalidCallbackQuery;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidUpdateWithInvalidMyChatMember;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidUpdateWithNullOptionalFields;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidUpdateWithAllOptionalFieldsPresent;
 
-    private static final long UPDATE_ID = 123L;
-    private static final Instant DATE_TIME = Instant.ofEpochSecond(1710248593);
+@DisplayName("Update - DTO validation")
+class UpdateValidationTest extends DtoValidationTestSupport<Update> {
 
-    private Message message;
-    private CallbackQuery callbackQuery;
-    private ChatMemberUpdated myChatMember;
+    private static final String UPDATE_ID_FIELD = "updateId";
+    private static final String ANY_PROVIDED_FIELD = "anyProvided";
+    private static final String MESSAGE_TEMPLATE_ASSERT_TRUE = "{Update.isAnyProvided.AssertTrue}";
 
-    @BeforeEach
-    void setUp() {
-        Chat chat = new Chat(2L, ChatType.SUPERGROUP, null, null, null, null);
-        User user = new User(1L, true, "awesome bot", null, null);
-        ChatMember oldChatMember = new ChatMember(ChatMemberStatusType.ADMINISTRATOR, user);
-        ChatMember newChatMember = new ChatMember(ChatMemberStatusType.MEMBER, user);
-        message = new Message(1L, null, null, DATE_TIME, chat, null, null, null, null);
-        callbackQuery = new CallbackQuery("123", user, null, null);
-        myChatMember = new ChatMemberUpdated(chat, user, DATE_TIME, oldChatMember, newChatMember);
+    @Override
+    protected Stream<Arguments> provideInvalidArguments() {
+        return Stream.of(
+                Arguments.of(
+                        "field 'updateId' is null (@NotNull)",
+                        invalidUpdateWithNullUpdateId(),
+                        UPDATE_ID_FIELD,
+                        MESSAGE_TEMPLATE_NOT_NULL
+                ),
+                Arguments.of(
+                        "field 'updateId' has negative value (@Positive)",
+                        invalidUpdateWithNegativeUpdateId(),
+                        UPDATE_ID_FIELD,
+                        MESSAGE_TEMPLATE_POSITIVE
+                ),
+                Arguments.of(
+                        "field 'message' has invalid value (@Valid)",
+                        invalidUpdateWithInvalidMessage(),
+                        "message.messageId",
+                        MESSAGE_TEMPLATE_NOT_NULL
+                ),
+                Arguments.of(
+                        "field 'callbackQuery' has invalid value (@Valid)",
+                        invalidUpdateWithInvalidCallbackQuery(),
+                        "callbackQuery.id",
+                        MESSAGE_TEMPLATE_NOT_NULL
+                ),
+                Arguments.of(
+                        "field 'myChatMember' has invalid value (@Valid)",
+                        invalidUpdateWithInvalidMyChatMember(),
+                        "myChatMember.date",
+                        MESSAGE_TEMPLATE_NOT_NULL
+                ),
+                Arguments.of(
+                        "optional fields not present (@AssertTrue)",
+                        invalidUpdateWithNullOptionalFields(),
+                        ANY_PROVIDED_FIELD,
+                        MESSAGE_TEMPLATE_ASSERT_TRUE
+                ),
+                Arguments.of(
+                        "more then one optional field present (@AssertTrue)",
+                        invalidUpdateWithAllOptionalFieldsPresent(),
+                        ANY_PROVIDED_FIELD,
+                        MESSAGE_TEMPLATE_ASSERT_TRUE
+                )
+        );
     }
 
-    @Test
-    @DisplayName("Should pass validation for valid Message payload")
-    void shouldPassValidationMessagePayload() {
-        var valid = new Update(UPDATE_ID, message, null, null);
-        assertValid(valid);
-    }
-
-    @Test
-    @DisplayName("Should pass validation for valid CallbackQuery payload")
-    void shouldPassValidationCallbackQueryPayload() {
-        var valid = new Update(UPDATE_ID, null, callbackQuery, null);
-        assertValid(valid);
-    }
-
-    @Test
-    @DisplayName("Should pass validation for valid ChatMemberUpdated payload")
-    void shouldPassValidationChatMemberUpdatedPayload() {
-        var valid = new Update(UPDATE_ID, null, null, myChatMember);
-        assertValid(valid);
-    }
-
-    @Test
-    @DisplayName("Should fail validation when field 'updateId' is null (@NotNull)")
-    void shouldFailValidationUpdateIdNullConstraint() {
-        final String field = "updateId";
-        final String messageTemplate = "{jakarta.validation.constraints.NotNull.message}";
-        var invalid = new Update(null, message, null, null);
-        assertViolationContains(invalid, field, messageTemplate);
-    }
-
-    @Test
-    @DisplayName("Should fail validation when field 'updateId' has negative value (@Positive)")
-    void shouldFailValidationUpdateIdNegativeConstraint() {
-        final String field = "updateId";
-        final String messageTemplate = "{jakarta.validation.constraints.Positive.message}";
-        var invalid = new Update(-1L, null, callbackQuery, null);
-        assertViolationContains(invalid, field, messageTemplate);
-    }
-
-    @Test
-    @DisplayName("Should fail validation when optional fields not present (@AssertTrue)")
-    void shouldFailValidationOptionalFieldsNotPresentAssertConstraint() {
-        final String field = "anyProvided";
-        final String messageTemplate = "{Update.isAnyProvided.AssertTrue}";
-        var invalid = new Update(UPDATE_ID, null, null, null);
-        assertViolationContains(invalid, field, messageTemplate);
-    }
-
-    @Test
-    @DisplayName("Should fail validation when present more then one optional field (@AssertTrue)")
-    void shouldFailValidationOptionalFieldsMoreThenOneAssertConstraint() {
-        final String field = "anyProvided";
-        final String messageTemplate = "{Update.isAnyProvided.AssertTrue}";
-        var invalid = new Update(UPDATE_ID, message, null, myChatMember);
-        assertViolationContains(invalid, field, messageTemplate);
+    @Override
+    protected Stream<Arguments> provideValidArguments() {
+        return Stream.of(
+                Arguments.of("message payload", validUpdateMessagePayload()),
+                Arguments.of("callbackQuery payload", validUpdateCallbackQueryPayload()),
+                Arguments.of("myChatMember payload", validUpdateMyChatMemberPayload())
+        );
     }
 
 }

@@ -30,7 +30,8 @@ public record SetMyCommandsRequest(
         List<@Valid MyCommand> commands,
 
         @Nullable
-        @Valid BotCommandScope scope,
+        @Valid
+        BotCommandScope scope,
 
         @Nullable
         @ISO6391
@@ -52,11 +53,9 @@ public record SetMyCommandsRequest(
     }
 
     /**
-     * Cross-field constraint: require not null field to be provided.
+     * Assert that field {@code commands} not {@code null} and not {@code empty}.
      *
-     * <p>Violation will be reported on the synthetic property named after this method.</p>
-     *
-     * @return {@code true} if {@code commands} is not {@code null}.
+     * @return {@code true} if {@code commands} is not {@code null} and not {@code empty}.
      */
     @AssertTrue(message = "{SetMyCommandsRequest.isProvided.AssertTrue}")
     public boolean isProvided() {

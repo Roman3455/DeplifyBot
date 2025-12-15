@@ -1,49 +1,63 @@
 package com.roman3455.deplifybot.dto.telegram.api.request;
 
-import com.roman3455.deplifybot.dto.telegram.api.enums.BotCommandScopeType;
-import com.roman3455.deplifybot.util.ValidationTestSupport;
+import com.roman3455.deplifybot.test_utils.DtoValidationTestSupport;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-@DisplayName("BotCommandScope - bean validation")
-class BotCommandScopeValidationTest extends ValidationTestSupport {
+import java.util.stream.Stream;
 
-    private static final long CHAT_ID = 123L;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validBotCommandScopeFullPayload;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validBotCommandScopeRequiredPayload;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidBotCommandScopeWithNullType;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidBotCommandScopeWithNullTypeAndChatId;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+        .invalidBotCommandScopeWithChatIdNotPresentAndTypeIsChat;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+        .invalidBotCommandScopeWithChatIdPresentAndTypeNotChat;
 
-    @Test
-    @DisplayName("Should pass validation for valid full payload")
-    void shouldPassValidationFullPayload() {
-        var valid = new BotCommandScope(BotCommandScopeType.CHAT, CHAT_ID);
-        assertValid(valid);
+@DisplayName("BotCommandScope - DTO validation")
+class BotCommandScopeValidationTest extends DtoValidationTestSupport<BotCommandScope> {
+
+    private static final String TYPE_FIELD = "type";
+    private static final String ASSERT_FIELD = "chatIdConsistentWithType";
+    private static final String ASSERT_TRUE_MESSAGE = "{BotCommandScope.isChatIdConsistentWithType.AssertTrue}";
+
+    @Override
+    protected Stream<Arguments> provideInvalidArguments() {
+        return Stream.of(
+                Arguments.of(
+                        "field 'type' is null (@NotNull)",
+                        invalidBotCommandScopeWithNullType(),
+                        TYPE_FIELD,
+                        MESSAGE_TEMPLATE_NOT_NULL
+                ),
+                Arguments.of(
+                        "field 'type' and 'chatId' is null (@NotNull)",
+                        invalidBotCommandScopeWithNullTypeAndChatId(),
+                        TYPE_FIELD,
+                        MESSAGE_TEMPLATE_NOT_NULL
+                ),
+                Arguments.of(
+                        "field 'chatId' is not present when 'type' is 'CHAT' (@AssertTrue)'",
+                        invalidBotCommandScopeWithChatIdNotPresentAndTypeIsChat(),
+                        ASSERT_FIELD,
+                        ASSERT_TRUE_MESSAGE
+                ),
+                Arguments.of(
+                        "field 'chatId' is present when 'type' is not 'CHAT' (@AssertTrue)'",
+                        invalidBotCommandScopeWithChatIdPresentAndTypeNotChat(),
+                        ASSERT_FIELD,
+                        ASSERT_TRUE_MESSAGE
+                )
+        );
     }
 
-    @Test
-    @DisplayName("Should pass validation for valid required payload")
-    void shouldPassValidationRequiredFieldsPayload() {
-        var valid = new BotCommandScope(BotCommandScopeType.DEFAULT, null);
-        assertValid(valid);
-    }
-
-    @Test
-    @DisplayName("Should fail validation when field 'type' is null (@NotNull)")
-    void shouldFailValidationTypeNullConstraint() {
-        final String field = "type";
-        final String messageTemplate = "{jakarta.validation.constraints.NotNull.message}";
-        var invalidWithAllNullFields = new BotCommandScope(null, null);
-        assertViolationContains(invalidWithAllNullFields, field, messageTemplate);
-        var invalidWithNonNullChatId = new BotCommandScope(null, CHAT_ID);
-        assertViolationContains(invalidWithNonNullChatId, field, messageTemplate);
-    }
-
-    @Test
-    @DisplayName("Should fail validation when field 'type' and 'chatId' has invalid values (@AssertTrue)")
-    void shouldFailValidationTypeAndChatIdAssertConstraint() {
-        final String field = "chatIdConsistentWithType";
-        final String messageTemplate = "{BotCommandScope.isChatIdConsistentWithType.AssertTrue}";
-        var invalidChatTypeWithNullChatId = new BotCommandScope(BotCommandScopeType.CHAT, null);
-        assertViolationContains(invalidChatTypeWithNullChatId, field, messageTemplate);
-        var invalidDefaultTypeWithChatId = new BotCommandScope(BotCommandScopeType.DEFAULT, CHAT_ID);
-        assertViolationContains(invalidDefaultTypeWithChatId, field, messageTemplate);
+    @Override
+    protected Stream<Arguments> provideValidArguments() {
+        return Stream.of(
+                Arguments.of(CASE_NAME_FULL_PAYLOAD, validBotCommandScopeFullPayload()),
+                Arguments.of(CASE_NAME_REQUIRED_PAYLOAD, validBotCommandScopeRequiredPayload())
+        );
     }
 
 }

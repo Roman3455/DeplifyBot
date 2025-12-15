@@ -1,57 +1,57 @@
 package com.roman3455.deplifybot.dto.telegram.api.response;
 
-import com.roman3455.deplifybot.dto.telegram.api.enums.ChatType;
-import com.roman3455.deplifybot.util.ValidationTestSupport;
-import org.junit.jupiter.api.BeforeEach;
+import com.roman3455.deplifybot.test_utils.DtoValidationTestSupport;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-import java.time.Instant;
+import java.util.stream.Stream;
 
-@DisplayName("CallbackQuery - bean validation")
-class CallbackQueryValidationTest extends ValidationTestSupport {
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validCallbackQueryFullPayload;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validCallbackQueryRequiredPayload;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidCallbackQueryWithNullId;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidCallbackQueryWithNullUser;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidCallbackQueryWithInvalidUser;
+import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidCallbackQueryWithInvalidMessage;
 
-    private User user;
+@DisplayName("CallbackQuery - DTO validation")
+class CallbackQueryValidationTest extends DtoValidationTestSupport<CallbackQuery> {
 
-    @BeforeEach
-    void setUp() {
-        final long userId = 456L;
-        user = new User(userId, true, "awesome bot", null, null);
+    @Override
+    protected Stream<Arguments> provideInvalidArguments() {
+        return Stream.of(
+                Arguments.of(
+                        "field 'id' is null (@NotNull)",
+                        invalidCallbackQueryWithNullId(),
+                        "id",
+                        MESSAGE_TEMPLATE_NOT_NULL
+                ),
+                Arguments.of(
+                        "field 'from' is null (@NotNull)",
+                        invalidCallbackQueryWithNullUser(),
+                        "from",
+                        MESSAGE_TEMPLATE_NOT_NULL
+                ),
+                Arguments.of(
+                        "field 'from' has invalid value (@Valid)",
+                        invalidCallbackQueryWithInvalidUser(),
+                        "from.id",
+                        MESSAGE_TEMPLATE_NOT_NULL
+                ),
+                Arguments.of(
+                        "field 'message' has invalid value (@Valid)",
+                        invalidCallbackQueryWithInvalidMessage(),
+                        "message.messageId",
+                        MESSAGE_TEMPLATE_NOT_NULL
+                )
+        );
     }
 
-    @Test
-    @DisplayName("Should pass validation for valid full payload")
-    void shouldPassValidationFullPayload() {
-        final Instant messageDateTime = Instant.ofEpochSecond(1710248593);
-        Chat chat = new Chat(2L, ChatType.SUPERGROUP, null, null, null, null);
-        Message message = new Message(1L, null, null, messageDateTime, chat, null, null, null, null);
-        var valid = new CallbackQuery("123", user, message, "callback");
-        assertValid(valid);
-    }
-
-    @Test
-    @DisplayName("Should pass validation for valid required payload")
-    void shouldPassValidationRequiredFieldsPayload() {
-        var valid = new CallbackQuery("123", user, null, null);
-        assertValid(valid);
-    }
-
-    @Test
-    @DisplayName("Should fail validation when field 'id' is null (@NotNull)")
-    void shouldFailValidationIdNullConstraint() {
-        final String field = "id";
-        final String messageTemplate = "{jakarta.validation.constraints.NotNull.message}";
-        var invalid = new CallbackQuery(null, user, null, null);
-        assertViolationContains(invalid, field, messageTemplate);
-    }
-
-    @Test
-    @DisplayName("Should fail validation when field 'from' is null (@NotNull)")
-    void shouldFailValidationFromNullConstraint() {
-        final String field = "from";
-        final String messageTemplate = "{jakarta.validation.constraints.NotNull.message}";
-        var invalid = new CallbackQuery("23", null, null, null);
-        assertViolationContains(invalid, field, messageTemplate);
+    @Override
+    protected Stream<Arguments> provideValidArguments() {
+        return Stream.of(
+                Arguments.of(CASE_NAME_FULL_PAYLOAD, validCallbackQueryFullPayload()),
+                Arguments.of(CASE_NAME_REQUIRED_PAYLOAD, validCallbackQueryRequiredPayload())
+        );
     }
 
 }
