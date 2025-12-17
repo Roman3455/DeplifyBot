@@ -1,10 +1,8 @@
-package com.roman3455.deplifybot.service.telegram.impl;
+package com.roman3455.deplifybot.configuration;
 
-import com.roman3455.deplifybot.configuration.TelegramBotProperties;
-import com.roman3455.deplifybot.service.telegram.TelegramApiTokenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -12,16 +10,16 @@ import java.security.SecureRandom;
 import java.util.Base64;
 
 /**
- * Default implementation of {@link TelegramApiTokenService} that generates a cryptographically secure
- * Telegram Bot API secret token at application startup.
+ * Provides access to a cryptographically secure Telegram Bot API secret token used for webhook authentication.
  *
- * <p>The token is created using random bytes, encoded in URL-safe Base64 format without padding. It is
- * intended for use in webhook authentication via the {@code "X-Telegram-Bot-Api-Secret-Token"} header.</p>
+ * <p>The token is generated once during application startup and used to verify that incoming webhook requests
+ * originate from Telegram via the {@code "X-Telegram-Bot-Api-Secret-Token"} header. The token is created using
+ * random bytes, encoded in URL-safe Base64 format without padding.</p>
  */
-@Service
-public class TelegramApiTokenServiceImpl implements TelegramApiTokenService {
+@Component
+public class TelegramApiTokenConfiguration {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TelegramApiTokenServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TelegramApiTokenConfiguration.class);
 
     private final TelegramBotProperties botProperties;
 
@@ -33,23 +31,28 @@ public class TelegramApiTokenServiceImpl implements TelegramApiTokenService {
      * <p>The token is generated once per application startup and logged for verification
      * purposes (without exposing the actual value).</p>
      */
-    public TelegramApiTokenServiceImpl(final TelegramBotProperties botProperties) {
+    public TelegramApiTokenConfiguration(final TelegramBotProperties botProperties) {
         this.botProperties = botProperties;
         generateToken();
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the currently active Telegram Bot API secret token.
+     *
+     * @return the secret token string used for webhook validation.
      */
-    @Override
     public String getToken() {
         return token;
     }
 
     /**
-     * {@inheritDoc}
+     * Compares the provided candidate token against the stored secret token using a constant-time
+     * comparison to prevent timing attacks.
+     *
+     * @param candidate the token received from the incoming request header
+     *                  {@code "X-Telegram-Bot-Api-Secret-Token"}.
+     * @return {@code true} if the tokens match; {@code false} otherwise.
      */
-    @Override
     public boolean matches(final String candidate) {
         if (candidate == null) {
             LOG.warn("Received null Telegram API token");
@@ -61,8 +64,7 @@ public class TelegramApiTokenServiceImpl implements TelegramApiTokenService {
     }
 
     private void generateToken() {
-        int bytesSize = botProperties.token().bytesSize();
-        byte[] randomBytes = new byte[bytesSize];
+        byte[] randomBytes = new byte[botProperties.secretTokenBytesSize()];
         new SecureRandom().nextBytes(randomBytes);
         this.token = Base64.getUrlEncoder().withoutPadding().encodeToString(randomBytes);
         LOG.info("Telegram bot API token successfully generated");

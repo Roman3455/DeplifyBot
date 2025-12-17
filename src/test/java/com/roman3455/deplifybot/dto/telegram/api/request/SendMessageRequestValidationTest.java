@@ -6,12 +6,12 @@ import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.stream.Stream;
 
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validSendMessageRequestFullPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validSendMessageRequestRequiredPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidSendMessageRequestWithNullChatId;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidSendMessageRequestWithBlankText;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidSendMessageRequestWithSizeAboveMaxText;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidSendMessageRequestWithInvalidReplyMarkup;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validSendMessageRequestFullPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validSendMessageRequestRequiredPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidSendMessageRequestWithNullChatId;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidSendMessageRequestWithBlankText;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidSendMessageRequestWithSizeAboveMaxText;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidSendMessageRequestWithInvalidReplyMarkup;
 
 @DisplayName("SendMessageRequest - DTO validation")
 class SendMessageRequestValidationTest extends DtoValidationTestSupport<SendMessageRequest> {

@@ -6,10 +6,10 @@ import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.stream.Stream;
 
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidKeyboardButtonWithBlankText;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidKeyboardButtonWithInvalidRequestChat;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validKeyboardButtonFullPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validKeyboardButtonRequiredPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidKeyboardButtonWithBlankText;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidKeyboardButtonWithInvalidRequestChat;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validKeyboardButtonFullPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validKeyboardButtonRequiredPayload;
 
 @DisplayName("KeyboardButton - DTO validation")
 class KeyboardButtonValidationTest extends DtoValidationTestSupport<KeyboardButton> {

@@ -6,14 +6,14 @@ import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.stream.Stream;
 
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validMessageFullPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validMessageRequiredPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidMessageWithNullMessageId;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidMessageWithInvalidUser;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidMessageWithNullDate;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidMessageWithNullChat;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidMessageWithInvalidChat;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidMessageWithInvalidChatShared;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validMessageFullPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validMessageRequiredPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidMessageWithNullMessageId;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidMessageWithInvalidUser;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidMessageWithNullDate;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidMessageWithNullChat;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidMessageWithInvalidChat;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidMessageWithInvalidChatShared;
 
 @DisplayName("Message - DTO validation")
 class MessageValidationTest extends DtoValidationTestSupport<Message> {

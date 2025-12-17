@@ -6,10 +6,10 @@ import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.stream.Stream;
 
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidInlineKeyboardMarkupWithEmptyInlineKeyboard;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidInlineKeyboardMarkupWithNestedEmptyInlineKeyboard;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validInlineKeyboardMarkupFullPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validInlineKeyboardMarkupWithInvalidInlineKeyboardButton;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidInlineKeyboardMarkupWithEmptyInlineKeyboard;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidInlineKeyboardMarkupWithNestedEmptyInlineKeyboard;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validInlineKeyboardMarkupFullPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validInlineKeyboardMarkupWithInvalidInlineKeyboardButton;
 
 @DisplayName("InlineKeyboardMarkup - DTO validation")
 class InlineKeyboardMarkupValidationTest extends DtoValidationTestSupport<InlineKeyboardMarkup> {

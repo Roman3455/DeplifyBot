@@ -6,10 +6,10 @@ import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.stream.Stream;
 
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validChatSharedFullPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validChatSharedRequiredPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidChatSharedWithNullRequestId;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidChatSharedWithNullChatId;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validChatSharedFullPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validChatSharedRequiredPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidChatSharedWithNullRequestId;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidChatSharedWithNullChatId;
 
 @DisplayName("ChatShared - DTO validation")
 class ChatSharedValidationTest extends DtoValidationTestSupport<ChatShared> {

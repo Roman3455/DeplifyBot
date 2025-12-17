@@ -6,13 +6,13 @@ import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.stream.Stream;
 
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidReplyKeyboardMarkupWithEmptyKeyboard;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidReplyKeyboardMarkupWithInvalidKeyboard;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidReplyKeyboardMarkupWithNestedEmptyKeyboard;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidReplyKeyboardMarkupWithSizeAboveMaxPlaceholder;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidReplyKeyboardMarkupWithSizeBelowMinPlaceholder;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validReplyKeyboardMarkupFullPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validReplyKeyboardMarkupRequiredPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidReplyKeyboardMarkupWithEmptyKeyboard;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidReplyKeyboardMarkupWithInvalidKeyboard;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidReplyKeyboardMarkupWithNestedEmptyKeyboard;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidReplyKeyboardMarkupWithSizeAboveMaxPlaceholder;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidReplyKeyboardMarkupWithSizeBelowMinPlaceholder;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validReplyKeyboardMarkupFullPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validReplyKeyboardMarkupRequiredPayload;
 
 @DisplayName("ReplyKeyboardMarkup - DTO validation")
 class ReplyKeyboardMarkupValidationTest extends DtoValidationTestSupport<ReplyKeyboardMarkup> {

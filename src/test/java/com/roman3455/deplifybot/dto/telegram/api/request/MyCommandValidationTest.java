@@ -6,12 +6,12 @@ import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.stream.Stream;
 
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validMyCommandFullPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidMyCommandWithBlankCommand;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidMyCommandWithSizeAboveMaxCommand;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidMyCommandWithMismatchCommandPattern;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidMyCommandWithBlankDescription;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidMyCommandWithSizeAboveMaxDescription;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validMyCommandFullPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidMyCommandWithBlankCommand;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidMyCommandWithSizeAboveMaxCommand;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidMyCommandWithMismatchCommandPattern;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidMyCommandWithBlankDescription;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidMyCommandWithSizeAboveMaxDescription;
 
 @DisplayName("MyCommand - DTO validation")
 class MyCommandValidationTest extends DtoValidationTestSupport<MyCommand> {

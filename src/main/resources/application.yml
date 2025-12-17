@@ -25,16 +25,25 @@ spring:
 
 telegram:
   bot:
-    allowed-update-types:
-      - message
-      - callback_query
-      - my_chat_member
-    connections:
-      value: 40
-    webhook:
-      path: /telegram/webhook
-    token:
-      bytes-size: 32
+    settings:
+      webhook-path: ${TELEGRAM_WEBHOOK_PATH}
+      allowed-http-connections: 40
+      allowed-update-types:
+        - message
+        - callback_query
+        - my_chat_member
+      set-user-command-menu: all_private_chats
+      secret-token-bytes-size: 32
+      language-specs:
+        - locale-tag: "und"
+          language-code: null
+          country-code: "DEFAULT"
+        - locale-tag: "en"
+          language-code: "en"
+          country-code: "EN"
+        - locale-tag: "ru"
+          language-code: "ru"
+          country-code: "RU"
 
 server:
   port: ${PORT:8080}

@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.BDDAssertions.then;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validSendMessageRequestFullPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validSendMessageRequestRequiredPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validSendMessageRequestFullPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validSendMessageRequestRequiredPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder
         .validSendMessageRequestPayloadWithoutReplyMarkup;
 
 @ActiveProfiles("test")

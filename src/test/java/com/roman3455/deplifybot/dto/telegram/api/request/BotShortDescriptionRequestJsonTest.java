@@ -13,10 +13,10 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validBotShortDescriptionRequestFullPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validBotShortDescriptionRequestFullPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder
         .validBotShortDescriptionRequestDescriptionPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder
         .validBotShortDescriptionRequestLanguageCodePayload;
 
 @ActiveProfiles("test")

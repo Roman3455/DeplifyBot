@@ -2,7 +2,6 @@ package com.roman3455.deplifybot.dto.telegram.api.enums;
 
 import com.roman3455.deplifybot.configuration.JacksonConfiguration;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -14,7 +13,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.io.IOException;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.BDDAssertions.then;
@@ -24,7 +22,7 @@ import static org.assertj.core.api.BDDAssertions.then;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @JsonTest
 @Import(JacksonConfiguration.class)
-@DisplayName("UpdateType — JSON serialization & deserialization")
+@DisplayName("UpdateType — JSON serialization")
 class UpdateTypeJsonTest {
 
     @Autowired
@@ -35,13 +33,12 @@ class UpdateTypeJsonTest {
     private static final String EDITED_MESSAGE_JSON = SOURCE + "edited_message.json";
     private static final String CALLBACK_QUERY_JSON = SOURCE + "callback_query.json";
     private static final String MY_CHAT_MEMBER_JSON = SOURCE + "my_chat_member.json";
-    private static final String UNKNOWN_JSON = SOURCE + "unknown.json";
 
     private record Envelope(UpdateType type) {
     }
 
     @ParameterizedTest(name = "[{index}] {0}")
-    @MethodSource("enumSerializableAndDeserializableValues")
+    @MethodSource("enumSerializableValues")
     @DisplayName("Should serialize enum to string value using @JsonValue")
     @SuppressWarnings("unused")
     void shouldSerializeEnumAsStringValue(
@@ -57,21 +54,7 @@ class UpdateTypeJsonTest {
                 .isEqualTo(type.getValue());
     }
 
-    @ParameterizedTest(name = "[{index}] {0}")
-    @MethodSource("enumSerializableAndDeserializableValues")
-    @DisplayName("Should deserialize string value to enum using @JsonCreator")
-    @SuppressWarnings("unused")
-    void shouldDeserializeStringToEnum(
-            final String caseName,
-            final UpdateType type,
-            final String fixturePath
-    ) throws IOException {
-        var deserialized = envelopeJson.readObject(new ClassPathResource(fixturePath));
-        then(deserialized).isNotNull();
-        then(deserialized.type()).isEqualTo(type);
-    }
-
-    static Stream<Arguments> enumSerializableAndDeserializableValues() {
+    static Stream<Arguments> enumSerializableValues() {
         return Stream.of(
                 Arguments.of(
                         "message",
@@ -94,17 +77,6 @@ class UpdateTypeJsonTest {
                         MY_CHAT_MEMBER_JSON
                 )
         );
-    }
-
-    @Test
-    @DisplayName("Should deserialize unknown value and serialize it back as 'unknown'")
-    void shouldRoundTripUnknownValue() throws Exception {
-        var deserialized = envelopeJson.readObject(new ClassPathResource(UNKNOWN_JSON));
-        then(deserialized).isNotNull();
-        then(deserialized.type()).isEqualTo(UpdateType.UNKNOWN);
-        var serialized = envelopeJson.write(deserialized);
-        then(serialized).extractingJsonPathStringValue("$.type")
-                .isEqualTo(UpdateType.UNKNOWN.getValue());
     }
 
 }

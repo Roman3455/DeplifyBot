@@ -6,14 +6,14 @@ import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.stream.Stream;
 
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder
         .invalidKeyboardButtonRequestChatWithInvalidBotAdministratorRights;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder
         .invalidKeyboardButtonRequestChatWithInvalidUserAdministratorRights;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder
         .invalidKeyboardButtonRequestChatWithNullRequestId;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validKeyboardButtonRequestChatFullPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validKeyboardButtonRequestChatRequiredPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validKeyboardButtonRequestChatFullPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validKeyboardButtonRequestChatRequiredPayload;
 
 @DisplayName("KeyboardButtonRequestChat - bean validation")
 class KeyboardButtonRequestChatValidationTest extends DtoValidationTestSupport<KeyboardButtonRequestChat> {

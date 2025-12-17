@@ -6,13 +6,13 @@ import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.stream.Stream;
 
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validBotCommandScopeFullPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validBotCommandScopeRequiredPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidBotCommandScopeWithNullType;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidBotCommandScopeWithNullTypeAndChatId;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validBotCommandScopeFullPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validBotCommandScopeRequiredPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidBotCommandScopeWithNullType;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidBotCommandScopeWithNullTypeAndChatId;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder
         .invalidBotCommandScopeWithChatIdNotPresentAndTypeIsChat;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder
         .invalidBotCommandScopeWithChatIdPresentAndTypeNotChat;
 
 @DisplayName("BotCommandScope - DTO validation")

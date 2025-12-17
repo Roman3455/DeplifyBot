@@ -6,16 +6,16 @@ import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.stream.Stream;
 
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validBotShortDescriptionRequestFullPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validBotShortDescriptionRequestFullPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder
         .invalidBotShortDescriptionRequestWithDescriptionAboveMax;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder
         .invalidBotShortDescriptionRequestWithUnknownLanguageCode;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder
         .invalidBotShortDescriptionRequestWithLanguageCodeMoreThenTwoChars;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder
         .invalidBotShortDescriptionRequestWithLanguageCodeLessThenTwoChars;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder
         .invalidBotShortDescriptionRequestWithNullDescriptionAndLanguageCode;
 
 @DisplayName("BotShortDescriptionRequest - DTO validation")

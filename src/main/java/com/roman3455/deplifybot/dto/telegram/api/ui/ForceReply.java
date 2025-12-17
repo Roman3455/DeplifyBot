@@ -6,18 +6,12 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 /**
- * DTO representing the Telegram <i>ForceReply</i> reply markup.
+ * {@inheritDoc}
  *
- * <p>When a message is sent with {@code ForceReply}, the Telegram client forces the user
- * to respond — the input field is automatically focused, and the reply is explicitly linked
- * to the original message.</p>
+ * <p>Forces the user to reply to a specific message.</p>
  *
- * <p>The {@code forceReply} flag must always be {@code true}. If set to {@code false},
- * an {@link IllegalArgumentException} will be thrown during construction.</p>
- *
- * @param forceReply            required. Must always be {@code true}; required by the Telegram API.
- * @param inputFieldPlaceholder optional. Placeholder text for the Telegram client's input field;
- *                              1–{@value #MAX_PLACEHOLDER_LENGTH} characters.
+ * @param forceReply            required. Must always be {@code true}.
+ * @param inputFieldPlaceholder optional. Placeholder for the input field.
  * @see <a href="https://core.telegram.org/bots/api#forcereply">Telegram API — ForceReply</a>
  */
 public record ForceReply(

@@ -21,11 +21,11 @@ class TelegramFeignConfigTest {
     @DisplayName("Should provide TelegramErrorDecoder bean when ObjectMapper is present")
     void shouldProvideTelegramErrorDecoderBean() {
         contextRunner.run(ctx -> {
+            assertThat(ctx).hasSingleBean(TelegramErrorDecoder.class);
             assertThat(ctx).hasSingleBean(ErrorDecoder.class);
-            ErrorDecoder decoder = ctx.getBean(ErrorDecoder.class);
-            assertThat(decoder).isInstanceOf(TelegramErrorDecoder.class);
-            ErrorDecoder decoder2 = ctx.getBean(ErrorDecoder.class);
-            assertThat(decoder2).isSameAs(decoder);
+            ErrorDecoder asInterface = ctx.getBean(ErrorDecoder.class);
+            TelegramErrorDecoder asImpl = ctx.getBean(TelegramErrorDecoder.class);
+            assertThat(asInterface).isSameAs(asImpl);
         });
     }
 
@@ -36,7 +36,7 @@ class TelegramFeignConfigTest {
                 .withUserConfiguration(TelegramFeignConfig.class)
                 .run(ctx -> {
                     assertThat(ctx).hasFailed();
-                    assertThat(ctx).getFailure()
+                    assertThat(ctx.getStartupFailure())
                             .hasRootCauseInstanceOf(NoSuchBeanDefinitionException.class);
                 });
     }

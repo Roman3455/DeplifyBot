@@ -6,12 +6,12 @@ import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.stream.Stream;
 
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validCallbackQueryFullPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validCallbackQueryRequiredPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidCallbackQueryWithNullId;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidCallbackQueryWithNullUser;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidCallbackQueryWithInvalidUser;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidCallbackQueryWithInvalidMessage;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validCallbackQueryFullPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validCallbackQueryRequiredPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidCallbackQueryWithNullId;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidCallbackQueryWithNullUser;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidCallbackQueryWithInvalidUser;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidCallbackQueryWithInvalidMessage;
 
 @DisplayName("CallbackQuery - DTO validation")
 class CallbackQueryValidationTest extends DtoValidationTestSupport<CallbackQuery> {

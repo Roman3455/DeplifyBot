@@ -1,4 +1,4 @@
-package com.roman3455.deplifybot.test_utils;
+package com.roman3455.deplifybot.dto.telegram.api;
 
 import com.roman3455.deplifybot.dto.telegram.api.enums.BotCommandScopeType;
 import com.roman3455.deplifybot.dto.telegram.api.enums.ChatMemberStatusType;

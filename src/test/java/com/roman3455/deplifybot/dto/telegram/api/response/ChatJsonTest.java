@@ -13,8 +13,8 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validChatFullPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validChatRequiredPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validChatFullPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validChatRequiredPayload;
 
 @ActiveProfiles("test")
 @JsonTest

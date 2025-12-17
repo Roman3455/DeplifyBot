@@ -39,7 +39,8 @@ spring:
 
 telegram:
   bot:
-    webhook:
-      url: ${TELEGRAM_WEBHOOK_URL}
     init:
       enabled: true
+    settings:
+      webhook-url: ${TELEGRAM_WEBHOOK_URL}
+      drop-pending-updates: false

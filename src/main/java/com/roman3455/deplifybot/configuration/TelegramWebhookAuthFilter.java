@@ -1,6 +1,5 @@
 package com.roman3455.deplifybot.configuration;
 
-import com.roman3455.deplifybot.service.telegram.TelegramApiTokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,7 +23,7 @@ import java.io.IOException;
  * <p>For matching requests:
  * <ul>
  *     <li>Extracts the secret header sent by Telegram.</li>
- *     <li>Validates it using {@link TelegramApiTokenService#matches(String)}.</li>
+ *     <li>Validates it using {@link TelegramApiTokenConfiguration#matches(String)}.</li>
  *     <li>If validation fails, returns {@code 401 Unauthorized} and logs the event.</li>
  *     <li>If valid, passes the request down the filter chain.</li>
  * </ul>
@@ -38,20 +37,16 @@ public final class TelegramWebhookAuthFilter extends OncePerRequestFilter {
     private static final Logger LOG = LoggerFactory.getLogger(TelegramWebhookAuthFilter.class);
     private static final String HEADER = "X-Telegram-Bot-Api-Secret-Token";
 
-    private final TelegramApiTokenService tokenService;
+    private final TelegramApiTokenConfiguration tokenConfiguration;
 
     private final String webhookPath;
 
     public TelegramWebhookAuthFilter(
-            final TelegramApiTokenService tokenService,
+            final TelegramApiTokenConfiguration tokenConfiguration,
             final TelegramBotProperties botProperties
     ) {
-        this.tokenService = tokenService;
-        String rawPath = botProperties.webhook().path();
-        if (!rawPath.startsWith("/")) {
-            rawPath = "/" + rawPath;
-        }
-        this.webhookPath = rawPath;
+        this.tokenConfiguration = tokenConfiguration;
+        this.webhookPath = botProperties.webhookPath();
     }
 
     /**
@@ -74,10 +69,13 @@ public final class TelegramWebhookAuthFilter extends OncePerRequestFilter {
             @NotNull final HttpServletResponse response,
             @NotNull final FilterChain filterChain
     ) throws ServletException, IOException {
-        String token = request.getHeader(HEADER);
-        if (!tokenService.matches(token)) {
-            LOG.warn("Rejected Telegram webhook request due to invalid API token. uri='{}', remote='{}'",
-                    request.getRequestURI(), request.getRemoteAddr());
+        String tokenFromHeader = request.getHeader(HEADER);
+        if (!tokenConfiguration.matches(tokenFromHeader)) {
+            LOG.warn(
+                    "Rejected Telegram webhook request due to invalid API token. uri='{}', remote='{}'",
+                    request.getRequestURI(),
+                    request.getRemoteAddr()
+            );
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }

@@ -1,14 +1,9 @@
 package com.roman3455.deplifybot.dto.telegram.api.enums;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.roman3455.deplifybot.util.enums.JsonEnum;
-import com.roman3455.deplifybot.util.enums.JsonEnumUtil;
 
 /**
  * Represents the supported command scope types for Telegram bot commands.
- *
- * <p>Each constant corresponds to a scope type defined in the Telegram Bot API. {@link #UNKNOWN} is used as a
- * fallback for unrecognized values.<p/>
  *
  * @see <a href="https://core.telegram.org/bots/api#botcommandscope">Telegram Bot API — BotCommandScope</a>
  */
@@ -37,12 +32,7 @@ public enum BotCommandScopeType implements JsonEnum {
     /**
      * Commands are available to a specific chat.
      */
-    CHAT("chat"),
-
-    /**
-     * Fallback for unrecognized or new scope types.
-     */
-    UNKNOWN("unknown");
+    CHAT("chat");
 
     private final String value;
 
@@ -56,17 +46,6 @@ public enum BotCommandScopeType implements JsonEnum {
     @Override
     public String getValue() {
         return value;
-    }
-
-    /**
-     * Resolves a {@code BotCommandScopeType} from its string value.
-     *
-     * @param value the string value from the incoming JSON payload
-     * @return the corresponding {@code BotCommandScopeType}, or {@link #UNKNOWN} if no match is found
-     */
-    @JsonCreator
-    public static BotCommandScopeType fromValue(final String value) {
-        return JsonEnumUtil.fromValue(BotCommandScopeType.class, value, UNKNOWN);
     }
 
 }

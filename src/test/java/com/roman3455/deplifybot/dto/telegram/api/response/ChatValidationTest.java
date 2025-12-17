@@ -6,10 +6,10 @@ import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.stream.Stream;
 
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validChatFullPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validChatRequiredPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidChatWithNullId;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidChatWithNullType;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validChatFullPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validChatRequiredPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidChatWithNullId;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidChatWithNullType;
 
 @DisplayName("Chat - DTO validation")
 class ChatValidationTest extends DtoValidationTestSupport<Chat> {

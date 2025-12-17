@@ -6,9 +6,9 @@ import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.stream.Stream;
 
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validCopyTextButtonFullPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidCopyTextButtonWithBlankText;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidCopyTextButtonWithSizeAboveMaxText;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validCopyTextButtonFullPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidCopyTextButtonWithBlankText;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidCopyTextButtonWithSizeAboveMaxText;
 
 @DisplayName("CopyTextButton - DTO validation")
 class CopyTextButtonValidationTest extends DtoValidationTestSupport<CopyTextButton> {
