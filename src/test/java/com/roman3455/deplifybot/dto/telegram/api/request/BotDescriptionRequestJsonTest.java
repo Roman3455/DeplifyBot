@@ -13,9 +13,9 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validBotDescriptionRequestFullPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validBotDescriptionRequestDescriptionPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validBotDescriptionRequestLanguageCodePayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validBotDescriptionRequestFullPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validBotDescriptionRequestDescriptionPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validBotDescriptionRequestLanguageCodePayload;
 
 @ActiveProfiles("test")
 @JsonTest

@@ -1,123 +1,301 @@
 package com.roman3455.deplifybot.configuration;
 
-import com.roman3455.deplifybot.util.ValidationTestSupport;
-import org.junit.jupiter.api.BeforeAll;
+import com.roman3455.deplifybot.dto.telegram.api.enums.BotCommandScopeType;
+import com.roman3455.deplifybot.dto.telegram.api.enums.UpdateType;
+import com.roman3455.deplifybot.test_utils.DtoValidationTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
-@DisplayName("TelegramBotProperties - bean validation")
-class TelegramBotPropertiesValidationTest extends ValidationTestSupport {
+import static org.assertj.core.api.Assertions.assertThat;
 
-    private static final int MAX_CONNECTIONS = 40;
-    private static final int BYTES_SIZE = 32;
-    private static List<String> allowedUpdateTypes;
-    private static TelegramBotProperties.Connections connections;
-    private static TelegramBotProperties.Webhook webhook;
-    private static TelegramBotProperties.Token token;
+@SuppressWarnings("DataFlowIssue")
+@DisplayName("TelegramBotProperties - properties validation")
+class TelegramBotPropertiesValidationTest extends DtoValidationTestSupport<TelegramBotProperties> {
 
-    @BeforeAll
-    static void setup() {
-        allowedUpdateTypes = List.of("message", "callback_query");
-        connections = new TelegramBotProperties.Connections(MAX_CONNECTIONS);
-        webhook = new TelegramBotProperties.Webhook("https://example.com", "/telegram/webhook");
-        token = new TelegramBotProperties.Token(BYTES_SIZE);
+    private static final int MAX_CONNECTIONS = 100;
+    private static final int MAX_BYTES_SIZE = 64;
+    private static final String EN_CODE = "en";
+    private static final String RU_CODE = "en";
+
+    private static TelegramBotProperties createValidProperties() {
+        final int allowedHttpConnections = 40;
+        final int tokenByteSize = 32;
+        return new TelegramBotProperties(
+                "https://example.com",
+                "/telegram/webhook",
+                allowedHttpConnections,
+                List.of(UpdateType.MESSAGE, UpdateType.CALLBACK_QUERY),
+                true,
+                BotCommandScopeType.ALL_PRIVATE_CHATS,
+                tokenByteSize,
+                List.of(
+                        new TelegramBotProperties.LanguageSpec("und", null, "DEFAULT"),
+                        new TelegramBotProperties.LanguageSpec(EN_CODE, EN_CODE, EN_CODE.toUpperCase()),
+                        new TelegramBotProperties.LanguageSpec(RU_CODE, RU_CODE, RU_CODE.toUpperCase())
+                )
+        );
+    }
+
+    @Override
+    protected Stream<Arguments> provideInvalidArguments() {
+        return Stream.of(
+                invalidWebhookUrl(),
+                invalidWebhookPath(),
+                invalidAllowedHttpConnections(),
+                invalidSetUserCommandMenu(),
+                invalidSecretTokenBytesSize(),
+                invalidLanguageSpecs()
+        ).flatMap(Function.identity());
+    }
+
+    @Override
+    protected Stream<Arguments> provideValidArguments() {
+        return Stream.of(
+                Arguments.of(CASE_NAME_FULL_PAYLOAD, createValidProperties())
+        );
     }
 
     @Test
-    @DisplayName("Should pass validation for valid payload")
-    void shouldPassValidationPayload() {
-        var valid = new TelegramBotProperties(allowedUpdateTypes, connections, webhook, token);
-        assertValid(valid);
+    @DisplayName("Should return valid Locale from TelegramBotProperties.LanguageSpec getLocaleTag()")
+    void shouldReturnValidLocaleFromTelegramBotProperties() {
+        List<TelegramBotProperties.LanguageSpec> languageSpec = createValidProperties().languageSpecs();
+        Locale given = languageSpec.getFirst().getLocale();
+        assertThat(given.toLanguageTag()).isEqualTo("und");
     }
 
-    @Test
-    @DisplayName("Should fail validation when field 'allowedUpdateTypes' is empty (@NotEmpty)")
-    void shouldFailValidationAllowedUpdateTypesEmptyConstraint() {
-        final String field = "allowedUpdateTypes";
-        final String messageTemplate = "{jakarta.validation.constraints.NotEmpty.message}";
-        List<String> emptyAllowedUpdateTypes = List.of();
-        var invalid = new TelegramBotProperties(emptyAllowedUpdateTypes, connections, webhook, token);
-        assertViolationContains(invalid, field, messageTemplate);
+    private static Stream<Arguments> invalidWebhookUrl() {
+        return Stream.of(
+                Arguments.of(
+                        "field 'webhookUrl' is blank (@NotBlank)",
+                        new TelegramBotProperties(
+                                " ",
+                                createValidProperties().webhookPath(),
+                                null,
+                                null,
+                                null,
+                                createValidProperties().setUserCommandMenu(),
+                                createValidProperties().secretTokenBytesSize(),
+                                createValidProperties().languageSpecs()
+                        ),
+                        "webhookUrl",
+                        MESSAGE_TEMPLATE_NOT_BLANK
+                ),
+                Arguments.of(
+                        "field 'webhookUrl' mismatch pattern (@Pattern)",
+                        new TelegramBotProperties(
+                                "htps://example.com",
+                                createValidProperties().webhookPath(),
+                                null,
+                                null,
+                                null,
+                                createValidProperties().setUserCommandMenu(),
+                                createValidProperties().secretTokenBytesSize(),
+                                createValidProperties().languageSpecs()
+                        ),
+                        "webhookUrl",
+                        "{SetWebhookRequest.url.Pattern.message}"
+                )
+        );
     }
 
-    @Test
-    @DisplayName("Should fail validation when element of 'allowedUpdateTypes' is blank (@NotBlank)")
-    void shouldFailValidationAllowedUpdateTypesElementBlank() {
-        final String field = "allowedUpdateTypes[0].<list element>";
-        final String messageTemplate = "{jakarta.validation.constraints.NotBlank.message}";
-        List<String> invalidAllowedUpdateTypes = List.of("  ");
-        var invalid = new TelegramBotProperties(invalidAllowedUpdateTypes, connections, webhook, token);
-        assertViolationContains(invalid, field, messageTemplate);
+    private static Stream<Arguments> invalidWebhookPath() {
+        return Stream.of(
+                Arguments.of(
+                        "field 'webhookPath' is blank (@NotBlank)",
+                        new TelegramBotProperties(
+                                createValidProperties().webhookUrl(),
+                                " ",
+                                null,
+                                null,
+                                null,
+                                createValidProperties().setUserCommandMenu(),
+                                createValidProperties().secretTokenBytesSize(),
+                                createValidProperties().languageSpecs()
+                        ),
+                        "webhookPath",
+                        MESSAGE_TEMPLATE_NOT_BLANK
+                ),
+                Arguments.of(
+                        "field 'webhookPath' mismatch pattern (@Pattern)",
+                        new TelegramBotProperties(
+                                createValidProperties().webhookUrl(),
+                                "telegram/webhook",
+                                null,
+                                null,
+                                null,
+                                createValidProperties().setUserCommandMenu(),
+                                createValidProperties().secretTokenBytesSize(),
+                                createValidProperties().languageSpecs()
+                        ),
+                        "webhookPath",
+                        "{SetWebhookRequest.path.Pattern.message}"
+                )
+        );
     }
 
-    @Test
-    @DisplayName("Should fail validation when field 'connections' is null (@NotNull)")
-    void shouldFailValidationConnectionsNullConstraint() {
-        final String field = "connections";
-        final String messageTemplate = "{jakarta.validation.constraints.NotNull.message}";
-        var invalid = new TelegramBotProperties(allowedUpdateTypes, null, webhook, token);
-        assertViolationContains(invalid, field, messageTemplate);
+    private static Stream<Arguments> invalidAllowedHttpConnections() {
+        return Stream.of(
+                Arguments.of(
+                        "field 'allowedHttpConnections' has value below min (@Min)",
+                        new TelegramBotProperties(
+                                createValidProperties().webhookUrl(),
+                                createValidProperties().webhookPath(),
+                                0,
+                                null,
+                                null,
+                                createValidProperties().setUserCommandMenu(),
+                                createValidProperties().secretTokenBytesSize(),
+                                createValidProperties().languageSpecs()
+                        ),
+                        "allowedHttpConnections",
+                        MESSAGE_TEMPLATE_MIN_VALUE
+                ),
+                Arguments.of(
+                        "field 'allowedHttpConnections' has value above max (@Max)",
+                        new TelegramBotProperties(
+                                createValidProperties().webhookUrl(),
+                                createValidProperties().webhookPath(),
+                                MAX_CONNECTIONS + 1,
+                                null,
+                                null,
+                                createValidProperties().setUserCommandMenu(),
+                                createValidProperties().secretTokenBytesSize(),
+                                createValidProperties().languageSpecs()
+                        ),
+                        "allowedHttpConnections",
+                        MESSAGE_TEMPLATE_MAX_VALUE
+                )
+        );
     }
 
-    @Test
-    @DisplayName("Should fail validation when field 'webhook' is null (@NotNull)")
-    void shouldFailValidationWebhookNullConstraint() {
-        final String field = "webhook";
-        final String messageTemplate = "{jakarta.validation.constraints.NotNull.message}";
-        var invalid = new TelegramBotProperties(allowedUpdateTypes, connections, null, token);
-        assertViolationContains(invalid, field, messageTemplate);
+    private static Stream<Arguments> invalidSetUserCommandMenu() {
+        return Stream.of(
+                Arguments.of(
+                        "field 'setUserCommandMenu' is null (@NotNull)",
+                        new TelegramBotProperties(
+                                createValidProperties().webhookUrl(),
+                                createValidProperties().webhookPath(),
+                                null,
+                                null,
+                                null,
+                                null,
+                                createValidProperties().secretTokenBytesSize(),
+                                createValidProperties().languageSpecs()
+                        ),
+                        "setUserCommandMenu",
+                        MESSAGE_TEMPLATE_NOT_NULL
+                )
+        );
     }
 
-    @Test
-    @DisplayName("Should fail validation when field 'token' is null (@NotNull)")
-    void shouldFailValidationTokenNullConstraint() {
-        final String field = "token";
-        final String messageTemplate = "{jakarta.validation.constraints.NotNull.message}";
-        var invalid = new TelegramBotProperties(allowedUpdateTypes, connections, webhook, null);
-        assertViolationContains(invalid, field, messageTemplate);
+    private static Stream<Arguments> invalidSecretTokenBytesSize() {
+        return Stream.of(
+                Arguments.of(
+                        "field 'secretTokenBytesSize' has value below min (@Min)",
+                        new TelegramBotProperties(
+                                createValidProperties().webhookUrl(),
+                                createValidProperties().webhookPath(),
+                                null,
+                                null,
+                                null,
+                                createValidProperties().setUserCommandMenu(),
+                                1,
+                                createValidProperties().languageSpecs()
+                        ),
+                        "secretTokenBytesSize",
+                        MESSAGE_TEMPLATE_MIN_VALUE
+                ),
+                Arguments.of(
+                        "secretTokenBytesSize' has value above max (@Max)",
+                        new TelegramBotProperties(
+                                createValidProperties().webhookUrl(),
+                                createValidProperties().webhookPath(),
+                                null,
+                                null,
+                                null,
+                                createValidProperties().setUserCommandMenu(),
+                                MAX_BYTES_SIZE + 1,
+                                createValidProperties().languageSpecs()
+                        ),
+                        "secretTokenBytesSize",
+                        MESSAGE_TEMPLATE_MAX_VALUE
+                )
+        );
     }
 
-    @Test
-    @DisplayName("Should fail validation when 'connections.value' is out of range (@Min/@Max)")
-    void shouldFailValidationConnectionsValueRange() {
-        final String field = "connections.value";
-        final String messageTemplate = "{jakarta.validation.constraints.Min.message}";
-        var invalidConnections = new TelegramBotProperties.Connections(0);
-        var invalid = new TelegramBotProperties(allowedUpdateTypes, invalidConnections, webhook, token);
-        assertViolationContains(invalid, field, messageTemplate);
-    }
-
-    @Test
-    @DisplayName("Should fail validation when 'webhook.url' is not HTTPS (@Pattern)")
-    void shouldFailValidationWebhookUrlPattern() {
-        final String field = "webhook.url";
-        final String messageTemplate = "{SetWebhookRequest.url.Pattern.message}";
-        var invalidWebhook = new TelegramBotProperties.Webhook("http://insecure.example.com", "/telegram/webhook");
-        var invalid = new TelegramBotProperties(allowedUpdateTypes, connections, invalidWebhook, token);
-        assertViolationContains(invalid, field, messageTemplate);
-    }
-
-    @Test
-    @DisplayName("Should fail validation when 'webhook.path' is blank (@NotBlank)")
-    void shouldFailValidationWebhookPathBlank() {
-        final String field = "webhook.path";
-        final String messageTemplate = "{jakarta.validation.constraints.NotBlank.message}";
-        var invalidWebhook = new TelegramBotProperties.Webhook("https://example.com", "   ");
-        var invalid = new TelegramBotProperties(allowedUpdateTypes, connections, invalidWebhook, token);
-        assertViolationContains(invalid, field, messageTemplate);
-    }
-
-    @Test
-    @DisplayName("Should fail validation when 'token.bytesSize' is below minimum (@Min)")
-    void shouldFailValidationTokenBytesSizeTooSmall() {
-        final int outOfBoundBytesSize = 8;
-        final String field = "token.bytesSize";
-        final String messageTemplate = "{jakarta.validation.constraints.Min.message}";
-        var invalidToken = new TelegramBotProperties.Token(outOfBoundBytesSize);
-        var invalid = new TelegramBotProperties(allowedUpdateTypes, connections, webhook, invalidToken);
-        assertViolationContains(invalid, field, messageTemplate);
+    private static Stream<Arguments> invalidLanguageSpecs() {
+        return Stream.of(
+                Arguments.of(
+                        "field 'languageSpecs' has empty list (@NotEmpty)",
+                        new TelegramBotProperties(
+                                createValidProperties().webhookUrl(),
+                                createValidProperties().webhookPath(),
+                                null,
+                                null,
+                                null,
+                                createValidProperties().setUserCommandMenu(),
+                                createValidProperties().secretTokenBytesSize(),
+                                List.of()
+                        ),
+                        "languageSpecs",
+                        MESSAGE_TEMPLATE_NOT_EMPTY
+                ),
+                Arguments.of(
+                        "field 'languageSpecs.localeTag' is blank (@NotBlank)",
+                        new TelegramBotProperties(
+                                createValidProperties().webhookUrl(),
+                                createValidProperties().webhookPath(),
+                                null,
+                                null,
+                                null,
+                                createValidProperties().setUserCommandMenu(),
+                                createValidProperties().secretTokenBytesSize(),
+                                List.of(new TelegramBotProperties
+                                        .LanguageSpec(" ", EN_CODE, EN_CODE.toUpperCase())
+                                )
+                        ),
+                        "languageSpecs[0].localeTag",
+                        MESSAGE_TEMPLATE_NOT_BLANK
+                ),
+                Arguments.of(
+                        "field 'languageSpecs.languageCode' is not match ISO639-1 (@ISO6391)",
+                        new TelegramBotProperties(
+                                createValidProperties().webhookUrl(),
+                                createValidProperties().webhookPath(),
+                                null,
+                                null,
+                                null,
+                                createValidProperties().setUserCommandMenu(),
+                                createValidProperties().secretTokenBytesSize(),
+                                List.of(new TelegramBotProperties
+                                        .LanguageSpec(EN_CODE, "xx", EN_CODE.toUpperCase())
+                                )
+                        ),
+                        "languageSpecs[0].languageCode",
+                        MESSAGE_TEMPLATE_ISO6391
+                ),
+                Arguments.of(
+                        "field 'languageSpecs.countryCode' is blank (@NotBlank)",
+                        new TelegramBotProperties(
+                                createValidProperties().webhookUrl(),
+                                createValidProperties().webhookPath(),
+                                null,
+                                null,
+                                null,
+                                createValidProperties().setUserCommandMenu(),
+                                createValidProperties().secretTokenBytesSize(),
+                                List.of(new TelegramBotProperties.LanguageSpec(RU_CODE, RU_CODE, " "))
+                        ),
+                        "languageSpecs[0].countryCode",
+                        MESSAGE_TEMPLATE_NOT_BLANK
+                )
+        );
     }
 
 }

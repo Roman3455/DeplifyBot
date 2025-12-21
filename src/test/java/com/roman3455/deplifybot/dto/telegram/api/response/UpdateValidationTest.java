@@ -6,16 +6,16 @@ import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.stream.Stream;
 
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validUpdateMessagePayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validUpdateCallbackQueryPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validUpdateMyChatMemberPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidUpdateWithNullUpdateId;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidUpdateWithNegativeUpdateId;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidUpdateWithInvalidMessage;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidUpdateWithInvalidCallbackQuery;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidUpdateWithInvalidMyChatMember;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidUpdateWithNullOptionalFields;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidUpdateWithAllOptionalFieldsPresent;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validUpdateMessagePayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validUpdateCallbackQueryPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validUpdateMyChatMemberPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidUpdateWithNullUpdateId;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidUpdateWithNegativeUpdateId;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidUpdateWithInvalidMessage;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidUpdateWithInvalidCallbackQuery;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidUpdateWithInvalidMyChatMember;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidUpdateWithNullOptionalFields;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidUpdateWithAllOptionalFieldsPresent;
 
 @DisplayName("Update - DTO validation")
 class UpdateValidationTest extends DtoValidationTestSupport<Update> {

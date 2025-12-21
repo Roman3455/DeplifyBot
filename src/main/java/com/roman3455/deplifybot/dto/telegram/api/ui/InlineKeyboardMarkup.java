@@ -8,11 +8,9 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * DTO representing an inline keyboard markup for a Telegram bot interface.
+ * {@inheritDoc}
  *
- * <p>The {@code InlineKeyboardMarkup} class defines an inline keyboard that can be displayed in a Telegram bot message.
- * The keyboard consists of a list of rows, where each row contains a list of {@link InlineKeyboardButton} objects.
- * When a user clicks a button, a callback or action is triggered, based on the configuration of the buttons.</p>
+ * <p>Defines an inline keyboard displayed directly inside a message.</p>
  *
  * @param inlineKeyboard required. A list of rows, where each row is a list of inline keyboard buttons.
  * @see <a href="https://core.telegram.org/bots/api#inlinekeyboardmarkup">Telegram API — InlineKeyboardMarkup</a>

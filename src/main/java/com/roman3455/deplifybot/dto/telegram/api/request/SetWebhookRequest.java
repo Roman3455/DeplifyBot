@@ -34,8 +34,8 @@ public record SetWebhookRequest(
         String url,
 
         @Nullable
-        @Min(value = 1, message = "{Size.min.message}")
-        @Max(value = MAX_HTTP_CONNECTIONS, message = "{Size.max.message}")
+        @Min(value = 1)
+        @Max(value = MAX_HTTP_CONNECTIONS)
         Integer maxConnections,
 
         @Nullable

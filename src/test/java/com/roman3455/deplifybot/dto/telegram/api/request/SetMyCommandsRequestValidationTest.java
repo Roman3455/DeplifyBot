@@ -6,20 +6,20 @@ import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.stream.Stream;
 
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validSetMyCommandsRequestFullPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validSetMyCommandsRequestRequiredPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validSetMyCommandsRequestFullPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validSetMyCommandsRequestRequiredPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder
         .invalidSetMyCommandsRequestWithEmptyCommandsList;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder
         .invalidSetMyCommandsRequestWithSizeAboveMaxCommandsList;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder
         .invalidSetMyCommandsRequestWithInvalidMyCommands;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidSetMyCommandsRequestWithInvalidScope;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidSetMyCommandsRequestWithInvalidScope;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder
         .invalidSetMyCommandsRequestWithUnknownLanguageCode;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder
         .invalidSetMyCommandsRequestWithLanguageCodeMoreThenTwoChars;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder
         .invalidSetMyCommandsRequestWithLanguageCodeLessThenTwoChars;
 
 @DisplayName("SetMyCommandsRequest - DTO validation")

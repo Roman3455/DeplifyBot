@@ -1,8 +1,6 @@
 package com.roman3455.deplifybot.dto.telegram.api.enums;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.roman3455.deplifybot.util.enums.JsonEnum;
-import com.roman3455.deplifybot.util.enums.JsonEnumUtil;
 
 /**
  * Represents the supported Telegram message parse modes for the {@code sendMessage} endpoint.
@@ -35,12 +33,7 @@ public enum ParseModeType implements JsonEnum {
      * <p>Represents messages without any formatting. Mapped to an empty string because Telegram interprets
      * absence of {@code parse_mode} as plain text rendering.
      */
-    PLAIN(""),
-
-    /**
-     * Fallback for unrecognized or new parse mode types.
-     */
-    UNKNOWN("unknown");
+    PLAIN("");
 
     private final String value;
 
@@ -54,17 +47,6 @@ public enum ParseModeType implements JsonEnum {
     @Override
     public String getValue() {
         return value;
-    }
-
-    /**
-     * Resolves a {@code ParseModeType} from its string value.
-     *
-     * @param value the string value from the incoming JSON payload.
-     * @return the corresponding {@code ParseModeType}, or {@link #UNKNOWN} if no match is found.
-     */
-    @JsonCreator
-    public static ParseModeType fromValue(final String value) {
-        return JsonEnumUtil.fromValue(ParseModeType.class, value, UNKNOWN);
     }
 
 }

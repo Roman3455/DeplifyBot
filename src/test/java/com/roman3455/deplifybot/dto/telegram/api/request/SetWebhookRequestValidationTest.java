@@ -6,19 +6,19 @@ import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.stream.Stream;
 
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validSetWebhookRequestFullPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validSetWebhookRequestRequiredPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidSetWebhookRequestWithEmptyUrl;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidSetWebhookRequestWithInvalidUrl;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validSetWebhookRequestFullPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validSetWebhookRequestRequiredPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidSetWebhookRequestWithEmptyUrl;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidSetWebhookRequestWithInvalidUrl;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder
         .invalidSetWebhookRequestWithValueBelowMinConnection;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder
         .invalidSetWebhookRequestWithValueAboveMaxConnection;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder
         .invalidSetWebhookRequestWithSizeBelowMinSecretToken;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder
         .invalidSetWebhookRequestWithSizeAboveMaxSecretToken;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder
         .invalidSetWebhookRequestMismatchPatternSecretToken;
 
 @DisplayName("SetWebhookRequest - DTO validation")
@@ -47,13 +47,13 @@ class SetWebhookRequestValidationTest extends DtoValidationTestSupport<SetWebhoo
                         "field 'maxConnections' has value below min (@Min)",
                         invalidSetWebhookRequestWithValueBelowMinConnection(),
                         MAX_CONNECTIONS_FIELD,
-                        MESSAGE_TEMPLATE_MIN_SIZE
+                        MESSAGE_TEMPLATE_MIN_VALUE
                 ),
                 Arguments.of(
                         "field 'maxConnections' has value above max (@Max)",
                         invalidSetWebhookRequestWithValueAboveMaxConnection(),
                         MAX_CONNECTIONS_FIELD,
-                        MESSAGE_TEMPLATE_MAX_SIZE
+                        MESSAGE_TEMPLATE_MAX_VALUE
                 ),
                 Arguments.of(
                         "field 'secretToken' has value below min (@Size)",

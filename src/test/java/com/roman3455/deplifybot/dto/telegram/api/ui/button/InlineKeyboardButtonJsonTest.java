@@ -13,9 +13,9 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validInlineKeyboardButtonCallbackDataPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validInlineKeyboardButtonCopyTextPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validInlineKeyboardButtonUrlPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validInlineKeyboardButtonCallbackDataPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validInlineKeyboardButtonCopyTextPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validInlineKeyboardButtonUrlPayload;
 
 
 @ActiveProfiles("test")

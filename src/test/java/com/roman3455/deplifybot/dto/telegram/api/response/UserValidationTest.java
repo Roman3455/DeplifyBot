@@ -6,13 +6,13 @@ import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.stream.Stream;
 
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validUserFullPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validUserRequiredPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidUserWithNullId;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidUserWithNullFirstName;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidUserWithUnknownLanguageCode;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidUserLanguageCodeMoreThenTwoChars;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidUserWithLanguageCodeLessThenTwoChars;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validUserFullPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validUserRequiredPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidUserWithNullId;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidUserWithNullFirstName;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidUserWithUnknownLanguageCode;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidUserLanguageCodeMoreThenTwoChars;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidUserWithLanguageCodeLessThenTwoChars;
 
 @DisplayName("User - DTO validation")
 class UserValidationTest extends DtoValidationTestSupport<User> {

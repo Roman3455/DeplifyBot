@@ -11,7 +11,9 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * DTO representing the Telegram <i>ReplyKeyboardMarkup</i> reply markup.
+ * {@inheritDoc}
+ *
+ * <p>Defines a custom reply keyboard that replaces the system keyboard.</p>
  *
  * @param keyboard              required. Array of button rows, each represented by an Array of {@link KeyboardButton}.
  * @param isPersistent          optional. The keyboard remains visible after use. Defaults to {@code false}, in which

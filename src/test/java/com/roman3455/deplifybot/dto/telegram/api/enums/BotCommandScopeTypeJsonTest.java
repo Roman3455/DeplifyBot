@@ -2,7 +2,6 @@ package com.roman3455.deplifybot.dto.telegram.api.enums;
 
 import com.roman3455.deplifybot.configuration.JacksonConfiguration;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -14,7 +13,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.io.IOException;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.BDDAssertions.then;
@@ -23,7 +21,7 @@ import static org.assertj.core.api.BDDAssertions.then;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @JsonTest
 @Import(JacksonConfiguration.class)
-@DisplayName("BotCommandScopeType — JSON serialization & deserialization")
+@DisplayName("BotCommandScopeType — JSON serialization")
 class BotCommandScopeTypeJsonTest {
 
     @Autowired
@@ -35,13 +33,12 @@ class BotCommandScopeTypeJsonTest {
     private static final String ALL_GROUP_CHATS_JSON = SOURCE + "all_group_chats.json";
     private static final String ALL_CHAT_ADMINISTRATORS_JSON = SOURCE + "all_chat_administrators.json";
     private static final String CHAT_JSON = SOURCE + "chat.json";
-    private static final String UNKNOWN_JSON = SOURCE + "unknown.json";
 
     private record Envelope(BotCommandScopeType scope) {
     }
 
     @ParameterizedTest(name = "[{index}] {0}")
-    @MethodSource("enumSerializableAndDeserializableValues")
+    @MethodSource("enumSerializableValues")
     @DisplayName("Should serialize enum to string value using @JsonValue")
     @SuppressWarnings("unused")
     void shouldSerializeEnumAsStringValue(
@@ -57,21 +54,7 @@ class BotCommandScopeTypeJsonTest {
                 .isEqualTo(type.getValue());
     }
 
-    @ParameterizedTest(name = "[{index}] {0}")
-    @MethodSource("enumSerializableAndDeserializableValues")
-    @DisplayName("Should deserialize string value to enum using @JsonCreator")
-    @SuppressWarnings("unused")
-    void shouldDeserializeStringToEnum(
-            final String caseName,
-            final BotCommandScopeType type,
-            final String fixturePath
-    ) throws IOException {
-        var deserialized = envelopeJson.readObject(new ClassPathResource(fixturePath));
-        then(deserialized).isNotNull();
-        then(deserialized.scope()).isEqualTo(type);
-    }
-
-    static Stream<Arguments> enumSerializableAndDeserializableValues() {
+    static Stream<Arguments> enumSerializableValues() {
         return Stream.of(
                 Arguments.of(
                         "default",
@@ -99,17 +82,6 @@ class BotCommandScopeTypeJsonTest {
                         CHAT_JSON
                 )
         );
-    }
-
-    @Test
-    @DisplayName("Should deserialize unknown value and serialize it back as 'unknown'")
-    void shouldRoundTripUnknownValue() throws Exception {
-        var deserialized = envelopeJson.readObject(new ClassPathResource(UNKNOWN_JSON));
-        then(deserialized).isNotNull();
-        then(deserialized.scope()).isEqualTo(BotCommandScopeType.UNKNOWN);
-        var serialized = envelopeJson.write(deserialized);
-        then(serialized).extractingJsonPathStringValue("$.scope")
-                .isEqualTo(BotCommandScopeType.UNKNOWN.getValue());
     }
 
 }

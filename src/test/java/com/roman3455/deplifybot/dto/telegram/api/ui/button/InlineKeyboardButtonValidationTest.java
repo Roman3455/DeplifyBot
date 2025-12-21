@@ -6,20 +6,20 @@ import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.stream.Stream;
 
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validInlineKeyboardButtonCallbackDataPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validInlineKeyboardButtonCopyTextPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validInlineKeyboardButtonUrlPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidInlineKeyboardButtonWithBlankText;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidInlineKeyboardButtonWithMismatchUrl;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validInlineKeyboardButtonCallbackDataPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validInlineKeyboardButtonCopyTextPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validInlineKeyboardButtonUrlPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidInlineKeyboardButtonWithBlankText;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidInlineKeyboardButtonWithMismatchUrl;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder
         .invalidInlineKeyboardButtonWithBytesLengthBelowMinCallbackData;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder
         .invalidInlineKeyboardButtonWithBytesLengthAboveMaxCallbackData;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder
         .invalidInlineKeyboardButtonWithInvalidCopyTextButton;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder
         .invalidInlineKeyboardButtonWithNullOptionalFields;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder
         .invalidInlineKeyboardButtonWithAllOptionalFieldsPresent;
 
 @DisplayName("InlineKeyboardButton - DTO validation")

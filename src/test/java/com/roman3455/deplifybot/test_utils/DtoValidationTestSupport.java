@@ -49,7 +49,9 @@ public abstract class DtoValidationTestSupport<T> {
     protected static final String MESSAGE_TEMPLATE_NOT_EMPTY = "{jakarta.validation.constraints.NotEmpty.message}";
     protected static final String MESSAGE_TEMPLATE_ISO6391 = "{ISO6391.validation.constraints.message}";
     protected static final String MESSAGE_TEMPLATE_MAX_SIZE = "{Size.max.message}";
+    protected static final String MESSAGE_TEMPLATE_MAX_VALUE = "{jakarta.validation.constraints.Max.message}";
     protected static final String MESSAGE_TEMPLATE_MIN_SIZE = "{Size.min.message}";
+    protected static final String MESSAGE_TEMPLATE_MIN_VALUE = "{jakarta.validation.constraints.Min.message}";
     protected static final String MESSAGE_TEMPLATE_POSITIVE = "{jakarta.validation.constraints.Positive.message}";
     protected static final String MESSAGE_TEMPLATE_SIZE = "{jakarta.validation.constraints.Size.message}";
 

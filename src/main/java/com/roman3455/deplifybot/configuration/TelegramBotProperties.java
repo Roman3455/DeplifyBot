@@ -1,5 +1,9 @@
 package com.roman3455.deplifybot.configuration;
 
+import com.roman3455.deplifybot.dto.telegram.api.enums.BotCommandScopeType;
+import com.roman3455.deplifybot.dto.telegram.api.enums.UpdateType;
+import com.roman3455.deplifybot.util.validator.iso6391.ISO6391;
+import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -11,71 +15,85 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Configuration properties for Telegram bot integration.
- *
- * <p>Bound to the {@code telegram.bot.*} prefix.</p>
  */
 @Validated
-@ConfigurationProperties(prefix = "telegram.bot")
+@ConfigurationProperties(prefix = "telegram.bot.settings")
 public record TelegramBotProperties(
 
+        @NotBlank
+        @Pattern(regexp = "^https://.+$", message = "{SetWebhookRequest.url.Pattern.message}")
+        String webhookUrl,
+
+        @NotBlank
+        @Pattern(regexp = "^/.+$", message = "{SetWebhookRequest.path.Pattern.message}")
+        String webhookPath,
+
+        @Nullable
+        @Min(value = 1)
+        @Max(value = MAX_HTTP_CONNECTIONS)
+        Integer allowedHttpConnections,
+
+        @Nullable
+        List<UpdateType> allowedUpdateTypes,
+
+        @Nullable
+        Boolean dropPendingUpdates,
+
+        @NotNull
+        BotCommandScopeType setUserCommandMenu,
+
+        @Min(MIN_BYTES_SIZE)
+        @Max(MAX_BYTES_SIZE)
+        int secretTokenBytesSize,
+
         @NotEmpty
-        List<@NotBlank String> allowedUpdateTypes,
-
-        @NotNull
-        @Valid Connections connections,
-
-        @NotNull
-        @Valid Webhook webhook,
-
-        @NotNull
-        @Valid Token token
+        List<@Valid LanguageSpec> languageSpecs
 
 ) {
 
     /**
-     * Webhook connection limits.
+     * The min allowed bytes size for token generation.
      */
-    public record Connections(
-
-            @Min(MIN_CONNECTIONS)
-            @Max(MAX_CONNECTIONS)
-            int value
-
-    ) {
-        private static final int MAX_CONNECTIONS = 100;
-        private static final int MIN_CONNECTIONS = 1;
-    }
+    private static final int MIN_BYTES_SIZE = 16;
 
     /**
-     * Webhook URL and path used to register the bot endpoint in Telegram.
+     * The max allowed bytes size for token generation.
      */
-    public record Webhook(
-
-            @NotBlank
-            @Pattern(regexp = "^https://.+$", message = "{SetWebhookRequest.url.Pattern.message}")
-            String url,
-
-            @NotBlank
-            String path
-
-    ) {
-    }
+    private static final int MAX_BYTES_SIZE = 64;
 
     /**
-     * Parameters used to generate the Telegram API secret token.
+     * The max allowed http connections to the webhook for update delivery.
      */
-    public record Token(
+    private static final int MAX_HTTP_CONNECTIONS = 100;
 
-            @Min(MIN_BYTES)
-            @Max(MAX_BYTES)
-            int bytesSize
+    /**
+     * Parameters used to register i18n messages in Telegram.
+     */
+    public record LanguageSpec(
+
+            @NotBlank
+            String localeTag,
+
+            @Nullable
+            @ISO6391
+            String languageCode,
+
+            @NotBlank
+            String countryCode
 
     ) {
-        private static final int MAX_BYTES = 64;
-        private static final int MIN_BYTES = 16;
+
+        /**
+         * @return prepared Locale to use.
+         */
+        public Locale getLocale() {
+            return Locale.forLanguageTag(localeTag);
+        }
+
     }
 
 }

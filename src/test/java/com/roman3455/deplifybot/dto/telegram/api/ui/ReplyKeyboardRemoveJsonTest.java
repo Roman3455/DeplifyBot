@@ -13,7 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validReplyKeyboardRemoveFullPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validReplyKeyboardRemoveFullPayload;
 
 @ActiveProfiles("test")
 @JsonTest

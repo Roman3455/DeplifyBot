@@ -14,9 +14,9 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validResponseBodySuccessPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validResponseBodyTooManyRequestsPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validResponseBodyBadRequestPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validResponseBodySuccessPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validResponseBodyTooManyRequestsPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validResponseBodyBadRequestPayload;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

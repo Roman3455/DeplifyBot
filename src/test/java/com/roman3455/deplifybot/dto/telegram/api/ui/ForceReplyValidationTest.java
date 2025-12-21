@@ -6,11 +6,11 @@ import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.stream.Stream;
 
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidForceReplyWithFalseForceReply;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidForceReplyWithSizeAboveMaxPlaceholder;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.invalidForceReplyWithSizeBelowMinPlaceholder;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validForceReplyFullPayload;
-import static com.roman3455.deplifybot.test_utils.TelegramApiDtoBuilder.validForceReplyRequiredPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidForceReplyWithFalseForceReply;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidForceReplyWithSizeAboveMaxPlaceholder;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.invalidForceReplyWithSizeBelowMinPlaceholder;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validForceReplyFullPayload;
+import static com.roman3455.deplifybot.dto.telegram.api.TelegramApiDtoBuilder.validForceReplyRequiredPayload;
 
 @DisplayName("ForceReply - DTO validation")
 class ForceReplyValidationTest extends DtoValidationTestSupport<ForceReply> {

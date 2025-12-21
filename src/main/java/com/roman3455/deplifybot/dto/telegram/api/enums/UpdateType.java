@@ -1,15 +1,12 @@
 package com.roman3455.deplifybot.dto.telegram.api.enums;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.roman3455.deplifybot.util.enums.JsonEnum;
-import com.roman3455.deplifybot.util.enums.JsonEnumUtil;
 
 /**
  * Represents supported update types received from the Telegram Bot API.
  *
  * <p>Each constant is mapped to its corresponding lowercase string value, which aligns with the JSON payload
- * returned by the API. The {@link #UNKNOWN} value acts as a fallback for unrecognized types, ensuring forward
- * compatibility.</p>
+ * returned by the API.</p>
  *
  * @see <a href="https://core.telegram.org/bots/api#update">Telegram Bot API — Update</a>
  */
@@ -33,12 +30,7 @@ public enum UpdateType implements JsonEnum {
     /**
      * A change in the bot’s chat member status.
      */
-    MY_CHAT_MEMBER("my_chat_member"),
-
-    /**
-     * Fallback for unrecognized or new update types.
-     */
-    UNKNOWN("unknown");
+    MY_CHAT_MEMBER("my_chat_member");
 
     private final String value;
 
@@ -52,17 +44,6 @@ public enum UpdateType implements JsonEnum {
     @Override
     public String getValue() {
         return value;
-    }
-
-    /**
-     * Resolves an {@code UpdateType} from its string value.
-     *
-     * @param value the string value from the incoming JSON payload.
-     * @return the corresponding {@code UpdateType}, or {@link #UNKNOWN} if no match is found.
-     */
-    @JsonCreator
-    public static UpdateType fromValue(final String value) {
-        return JsonEnumUtil.fromValue(UpdateType.class, value, UNKNOWN);
     }
 
 }
