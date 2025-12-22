@@ -1,69 +1,63 @@
 package com.roman3455.deplifybot.util.validator.bytes_length;
 
-import com.roman3455.deplifybot.util.ValidationTestSupport;
+import com.roman3455.deplifybot.test_utils.DtoValidationTestSupport;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-@DisplayName("Bean Validation of BytesLengthValidator")
-class BytesLengthValidatorTest extends ValidationTestSupport {
+import java.util.stream.Stream;
+
+@DisplayName("BytesLengthValidator - behavior tests")
+class BytesLengthValidatorTest extends DtoValidationTestSupport<BytesLengthValidator> {
 
     private static final String FIELD = "text";
-    private static final String MESSAGE_PART = "{BytesLength.validation.constraints.message}";
+    private static final String MESSAGE_TEMPLATE = "{BytesLength.validation.constraints.message}";
     private static final int ALLOWED_MIN_LENGTH = 2;
     private static final int ALLOWED_MAX_LENGTH = 4;
 
-    private record DefaultTestDto(
-            @BytesLength
-            String text
-    ) {
+    private record DefaultTestDto(@BytesLength String text) {
     }
 
-    private record TestDto(
-            @BytesLength(min = ALLOWED_MIN_LENGTH, max = ALLOWED_MAX_LENGTH)
-            String text
-    ) {
+    private record TestDto(@BytesLength(min = ALLOWED_MIN_LENGTH, max = ALLOWED_MAX_LENGTH) String text) {
     }
 
-    @Test
-    @DisplayName("Should allow null string value")
-    void shouldAllowNullString() {
-        var valid = new DefaultTestDto(null);
-        assertValid(valid);
+    @Override
+    protected Stream<Arguments> provideInvalidArguments() {
+        return Stream.of(
+                Arguments.of(
+                        "rejects bytes length below allowed min value",
+                        new TestDto("x".repeat(ALLOWED_MIN_LENGTH - 1)),
+                        FIELD,
+                        MESSAGE_TEMPLATE
+                ),
+                Arguments.of(
+                        "rejects bytes length above allowed max value",
+                        new TestDto("x".repeat(ALLOWED_MAX_LENGTH + 1)),
+                        FIELD,
+                        MESSAGE_TEMPLATE
+                )
+        );
     }
 
-    @Test
-    @DisplayName("Should allow empty string value")
-    void shouldAllowEmptyString() {
-        var valid = new DefaultTestDto("");
-        assertValid(valid);
-    }
-
-    @Test
-    @DisplayName("Should accept bytes length equals allowed min value")
-    void shouldAcceptMinValue() {
-        var valid = new TestDto("x".repeat(ALLOWED_MIN_LENGTH));
-        assertValid(valid);
-    }
-
-    @Test
-    @DisplayName("Should accept bytes length equals allowed max value")
-    void shouldAcceptMaxValue() {
-        var valid = new TestDto("x".repeat(ALLOWED_MAX_LENGTH));
-        assertValid(valid);
-    }
-
-    @Test
-    @DisplayName("Should reject bytes length below allowed min value")
-    void shouldRejectValueBelowMin() {
-        var invalid = new TestDto("x".repeat(ALLOWED_MIN_LENGTH - 1));
-        assertViolationContains(invalid, FIELD, MESSAGE_PART);
-    }
-
-    @Test
-    @DisplayName("Should reject bytes length above allowed max value")
-    void shouldRejectValueAboveMax() {
-        var invalid = new TestDto("x".repeat(ALLOWED_MAX_LENGTH + 1));
-        assertViolationContains(invalid, FIELD, MESSAGE_PART);
+    @Override
+    protected Stream<Arguments> provideValidArguments() {
+        return Stream.of(
+                Arguments.of(
+                        "allows null string value",
+                        new DefaultTestDto(null)
+                ),
+                Arguments.of(
+                        "allows empty string value",
+                        new DefaultTestDto("")
+                ),
+                Arguments.of(
+                        "accepts bytes length equals allowed min value",
+                        new TestDto("x".repeat(ALLOWED_MIN_LENGTH))
+                ),
+                Arguments.of(
+                        "accepts bytes length equals allowed max value",
+                        new TestDto("x".repeat(ALLOWED_MAX_LENGTH))
+                )
+        );
     }
 
 }

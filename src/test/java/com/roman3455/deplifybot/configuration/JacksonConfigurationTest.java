@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DisplayName("JacksonConfiguration — object mapper behavior")
 class JacksonConfigurationTest {
 
-    private final String PATH = "/fixture/configuration/jackson_configuration/";
+    private static final String PATH = "/fixture/configuration/jackson_configuration/";
 
     private final JacksonConfiguration configuration = new JacksonConfiguration();
 
