@@ -1,42 +1,64 @@
 package com.roman3455.deplifybot.util.validator.iso6391;
 
-import com.roman3455.deplifybot.util.ValidationTestSupport;
+import com.roman3455.deplifybot.test_utils.DtoValidationTestSupport;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-@DisplayName("Bean Validation of ISO6391Validator")
-class ISO6391ValidatorTest extends ValidationTestSupport {
+import java.util.stream.Stream;
+
+@DisplayName("ISO6391Validator - behavior tests")
+class ISO6391ValidatorTest extends DtoValidationTestSupport<ISO6391Validator> {
+
+    private static final String MESSAGE_TEMPLATE = "{ISO6391.validation.constraints.message}";
+    private static final String LANGUAGE_CODE_FIELD = "languageCode";
 
     private record TestDto(@ISO6391 String languageCode) {
     }
 
-    @Test
-    @DisplayName("Should allow null language code")
-    void shouldAllowNullLanguageCode() {
-        assertValid(new TestDto(null));
+    @Override
+    protected Stream<Arguments> provideInvalidArguments() {
+        return Stream.of(
+                Arguments.of(
+                        "field 'languageCode' has value less then 2 chars",
+                        new TestDto("x"),
+                        LANGUAGE_CODE_FIELD,
+                        MESSAGE_TEMPLATE
+                ),
+                Arguments.of(
+                        "field 'languageCode' has value more then 2 chars",
+                        new TestDto("eng"),
+                        LANGUAGE_CODE_FIELD,
+                        MESSAGE_TEMPLATE
+                ),
+                Arguments.of(
+                        "field 'languageCode' has not ISO 639-1 value",
+                        new TestDto("xx"),
+                        LANGUAGE_CODE_FIELD,
+                        MESSAGE_TEMPLATE
+                )
+        );
     }
 
-    @Test
-    @DisplayName("Should allow empty language code")
-    void shouldAllowEmptyLanguageCode() {
-        assertValid(new TestDto(""));
-    }
-
-    @Test
-    @DisplayName("Should accept valid ISO 639-1 codes regardless of case")
-    void shouldAcceptValidLanguageCodes() {
-        assertValid(new TestDto("en"));
-        assertValid(new TestDto("RU"));
-    }
-
-    @Test
-    @DisplayName("Should reject invalid language codes")
-    void shouldRejectInvalidLanguageCodes() {
-        final String field = "languageCode";
-        final String messagePart = "{ISO6391.validation.constraints.message}";
-        assertViolationContains(new TestDto("x"), field, messagePart);
-        assertViolationContains(new TestDto("eng"), field, messagePart);
-        assertViolationContains(new TestDto("zz"), field, messagePart);
+    @Override
+    protected Stream<Arguments> provideValidArguments() {
+        return Stream.of(
+                Arguments.of(
+                        "field 'languageCode' accept null",
+                        new TestDto(null)
+                ),
+                Arguments.of(
+                        "field 'languageCode' accept empty",
+                        new TestDto("")
+                ),
+                Arguments.of(
+                        "field 'languageCode' accept lowercase ISO 639-1 code",
+                        new TestDto("en")
+                ),
+                Arguments.of(
+                        "field 'languageCode' accept uppercase ISO 639-1 code",
+                        new TestDto("EN")
+                )
+        );
     }
 
 }

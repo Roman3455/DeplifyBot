@@ -37,7 +37,8 @@ public final class TelegramServiceImpl implements TelegramService {
                         update.message().text(),
                         ParseModeType.PLAIN,
                         true,
-                        true
+                        true,
+                        null
                 );
                 client.sendMessage(messageToReturn);
             }

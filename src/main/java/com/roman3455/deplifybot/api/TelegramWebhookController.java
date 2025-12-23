@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("${telegram.bot.webhook.path}")
+@RequestMapping("${telegram.bot.settings.webhook-path}")
 public final class TelegramWebhookController {
 
     private static final Logger LOG = LoggerFactory.getLogger(TelegramWebhookController.class);

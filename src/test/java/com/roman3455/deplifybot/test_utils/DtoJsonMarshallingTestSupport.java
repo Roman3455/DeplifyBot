@@ -15,9 +15,8 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.BDDAssertions.then;
 
-
 /**
- * Base contract for JSON marshalling tests.
+ * Base contract for JSON marshaling tests.
  *
  * <p>This support class verifies the <strong>happy-path</strong> JSON contract for a given payload type:
  * <ul>
@@ -45,7 +44,7 @@ public abstract class DtoJsonMarshallingTestSupport<T> {
     protected abstract JacksonTester<T> tester();
 
     /**
-     * Provides test cases for JSON marshalling.
+     * Provides test cases for JSON marshaling.
      *
      * <p>Each {@link Arguments} instance <strong>must</strong> follow the contract:
      * <pre>
@@ -58,7 +57,7 @@ public abstract class DtoJsonMarshallingTestSupport<T> {
      * </pre>
      * </p>
      *
-     * @return stream of marshalling test cases.
+     * @return stream of marshaling test cases.
      */
     protected abstract Stream<Arguments> provideArguments();
 
